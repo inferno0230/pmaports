@@ -2,8 +2,8 @@
 maintainer=""
 pkgname=device-xiaomi-raphael
 pkgdesc="Xiaomi Mi 9T Pro / Redmi K20 Pro"
-pkgver=6
-pkgrel=1
+pkgver=7
+pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
@@ -71,5 +71,5 @@ nonfree_firmware_openrc() {
 sha512sums="
 c31bf6104dd2d1af3313398a3cb95e92a08fb92027e57c018927b92343a878159d5cd9d2997080e11f09301020bc7e1bcda0e3daf62387beba30aa318bf6733a  deviceinfo
 42d3a47ebc8109fc3bf1ac03ddae6254ca9bc7b0a64f58cfe652b30a40bdceddf09fd65a46fddeda0138d8b52dbccc2425da06f7705373f4a4ab0babaa35b150  kernel-cmdline.conf
-d81350bb2c594d1c922b4eaa5f7ddd94ff5c52d915b6b34e01be2fddc5d624dea77343fab9b168acf889b55daa80a5deace6b81366d579816d5cc73b543a6826  modules-initfs
+9e70ca686c46e2242342ec0bf073fbb39655211c4629741d0d5f5fe9910e93e2944d52f73ba68289725ee76cf701a884033639bd8442e1bd5ce618e0638628cc  modules-initfs
 "
