@@ -8,7 +8,7 @@ fi
 
 pkgname=musl-ppc64le
 pkgver=1.2.5
-pkgrel=20
+pkgrel=21
 arch="x86_64"
 subpackages="musl-dev-ppc64le:package_dev"
 
@@ -57,6 +57,6 @@ package_dev() {
 }
 
 sha512sums="
-758d43964574c8d2bbc44c79a3842e84eeb724853e263747e9acd09a5c59c464fa1a6d20e5ef4249a27cf8b8d6014ec9aaa106a51ef5143c13a03550119f9293  musl-1.2.5-r20-ppc64le-edge.apk
-1d474396e2e2e9ef8b2af5baa2e77085b8962798b8ef674f93648da4abf20fa2a9f49ce859f49ebecf11dece549a76adc1c1be8120ed26f1c24daf5c4ef89f63  musl-dev-1.2.5-r20-ppc64le-edge.apk
+0e2720a11cd9c4417c96301d71f97dcc65ebe990e0115628aa30fe95debce12db75a716def86b4326074110c5e515f5f6876691c693c72ae211d641a43ba73cf  musl-1.2.5-r21-ppc64le-edge.apk
+fcea40a1616b49350f90fb1f0ba99ea8e7cf40544044133553ef4d70f24376d489fa5ff85c15aa4550e4283915eb172c14429ef439a51cd1ec7e08f3a231ce04  musl-dev-1.2.5-r21-ppc64le-edge.apk
 "
