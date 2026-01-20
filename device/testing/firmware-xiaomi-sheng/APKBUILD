@@ -7,7 +7,7 @@ url="https://github.com/map220v/sheng-firmware"
 arch="aarch64"
 license="proprietary"
 options="!check !strip !archcheck !tracedeps pmb:cross-native"
-_commit="92c49abb2da9f325e8385ca6f0ad1fb39608af7b"
+_commit="66a16eefbd0d042e3d13fa6adc9a84f9d633ac55"
 source="
 	$pkgname-$_commit.tar.gz::https://github.com/map220v/sheng-firmware/archive/$_commit.tar.gz
 	30-gpu-firmware.files
