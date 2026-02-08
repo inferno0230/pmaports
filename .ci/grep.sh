@@ -6,7 +6,7 @@ exit_code=0
 
 if [ "$(id -u)" = 0 ]; then
 	set -x
-	apk -q add git grep
+	apk -q add git grep ripgrep
 	exec su "${TESTUSER:-build}" -c "sh -e $0"
 fi
 
@@ -114,6 +114,24 @@ fi
 if grep -qr '# Maintainer:' -- *; then
 	echo 'ERROR: Please use maintainer variables of the form maintainer="..." instead of maintainer comments of the form # Maintainer: ...'
 	grep --color=always -r '# Maintainer:' -- *
+	exit_code=1
+fi
+
+# Enforce maintainer variables
+#
+# Use ripgrep because this doesn't work with GNU grep. Internally, `-L` uses
+# the same logic as `-l`, which means that matches are still counted. The only
+# difference is which case (matching vs non-matching) is printed to stdout.
+# This is fine if you are searching for something and only care for the output
+# of the command, but adding `-q` has unexpected output because, without
+# stdout, the difference between `-L` and `-l` doesn't exist, so as long as a
+# single file contains `maintainer=`, the return code would be 0.
+if rg -q --files-without-match -g '!archived' -g '!cross' -g 'APKBUILD' \
+		-e 'maintainer=' < /dev/null; then
+			echo 'ERROR: Please add a maintainer variable to the following files:'
+			# GNU grep can be used here because we don't care about the return code
+			grep --color=always -Lr 'maintainer=' --exclude-dir='archived' \
+				--exclude-dir='cross' --include='APKBUILD' -- *
 	exit_code=1
 fi
 
