@@ -32,12 +32,16 @@ _commit="6582515680a74ab62d7768b6a09264ed55e148a1"
 source="
 	$pkgname-$_commit.tar.gz::https://github.com/map220v/sm8550-mainline/archive/$_commit.tar.gz
 	config-postmarketos-qcom-sm8550.aarch64
+	nanosic_authhack.patch
 "
 builddir="$srcdir/sm8550-mainline-$_commit"
 
 prepare() {
 	default_prepare
 	cp "$srcdir/config-postmarketos-qcom-sm8550.aarch64" .config
+	cp "$srcdir/nanosic_authhack.patch" nanosic_authhack.patch
+	git apply nanosic_authhack.patch
+	git diff --stat
 }
 
 build() {
