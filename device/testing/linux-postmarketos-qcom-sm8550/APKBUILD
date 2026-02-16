@@ -9,7 +9,7 @@ pkgrel=1
 pkgdesc="Mainline kernel fork for SM8550"
 arch="aarch64"
 _carch="arm64"
-url="https://github.com/map220v/sm8550-mainline"
+url="https://github.com/alghiffaryfa19/sm8550-mainline"
 license="GPL-2.0-only"
 options="!strip !check !tracedeps
 	pmb:cross-native
@@ -28,20 +28,16 @@ makedepends="
 "
 
 # Source
-_commit="6582515680a74ab62d7768b6a09264ed55e148a1"
+_commit="2e6f7acf5ae05446221f6dadfde95e7472e4c880"
 source="
-	$pkgname-$_commit.tar.gz::https://github.com/map220v/sm8550-mainline/archive/$_commit.tar.gz
+	$pkgname-$_commit.tar.gz::https://github.com/alghiffaryfa19/sm8550-mainline/archive/$_commit.tar.gz
 	config-postmarketos-qcom-sm8550.aarch64
-	nanosic_authhack.patch
 "
 builddir="$srcdir/sm8550-mainline-$_commit"
 
 prepare() {
 	default_prepare
 	cp "$srcdir/config-postmarketos-qcom-sm8550.aarch64" .config
-	cp "$srcdir/nanosic_authhack.patch" nanosic_authhack.patch
-	git apply nanosic_authhack.patch
-	git diff --stat
 }
 
 build() {
