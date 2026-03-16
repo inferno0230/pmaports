@@ -1,0 +1,65 @@
+From 096e3940407647d336b51a4fff0617debe5192c7 Mon Sep 17 00:00:00 2001
+From: Alexander Koskovich <akoskovich@pm.me>
+Date: Mon, 16 Mar 2026 04:15:57 -0400
+Subject: [PATCH 6/6] Consider deviceinfo for UDC selection
+
+pmOS initramfs selects UDC via deviceinfo_usb_network_udc if present
+but this is not the case for usb-moded, so USB networking drops off
+once it loads.
+
+Signed-off-by: Alexander Koskovich <akoskovich@pm.me>
+---
+ src/usb_moded-configfs.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/src/usb_moded-configfs.c b/src/usb_moded-configfs.c
+index 22899e2..7b67a48 100644
+--- a/src/usb_moded-configfs.c
++++ b/src/usb_moded-configfs.c
+@@ -609,6 +609,32 @@ configfs_probe(void)
+     return configfs_in_use();
+ }
+ 
++static char *
++configfs_read_deviceinfo_udc(void)
++{
++    char *udc = NULL;
++    static const char *paths[] = {
++        "/usr/share/deviceinfo/deviceinfo",
++        "/etc/deviceinfo",
++        NULL
++    };
++
++    for( int i = 0; paths[i]; i++ ) {
++        FILE *fp = fopen(paths[i], "r");
++        if( fp ) {
++            char line[256];
++            while( fgets(line, sizeof line, fp) ) {
++                if( sscanf(line, " deviceinfo_usb_network_udc=\"%m[^\"]\"", &udc) == 1 )
++                    break;
++            }
++            fclose(fp);
++            if( udc )
++                return udc;
++        }
++    }
++    return NULL;
++}
++
+ static const char *
+ configfs_udc_enable_value(void)
+ {
+@@ -624,6 +650,10 @@ configfs_udc_enable_value(void)
+             value = strdup(GADGET_UDC_DEVICE);
+         }
+         else {
++            value = configfs_read_deviceinfo_udc();
++        }
++
++        if( !value ) {
+             /* Find first symlink in /sys/class/udc directory */
+             struct dirent *de;
+             DIR *dir = opendir("/sys/class/udc");
+-- 
+2.53.0
+

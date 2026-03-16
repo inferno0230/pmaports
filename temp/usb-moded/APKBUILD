@@ -4,7 +4,7 @@ maintainer="Dylan Van Assche <me@dylanvanassche.be>"
 pkgname=usb-moded
 _pkgver=0.86.0.69
 pkgver=9999$_pkgver
-pkgrel=0
+pkgrel=1
 _commit_dbus_glib="d42176ae4763e5288ef37ea314fe58387faf2005"
 pkgdesc="A daemon activating a certain USB profile based on the usb cable connection status"
 url="https://github.com/sailfishos/usb-moded"
@@ -42,6 +42,7 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/sailfishos/usb-moded/archive
 	0003-worker-only-check-daemon-running-in-FunctionFS-mode.patch
 	0004-configfs-Register-NCM-gadget-for-USB-networking.patch
 	0005-usb-moded-Allow-disabling-rescue-mode.patch
+	0006-Consider-deviceinfo-for-UDC-selection.patch
 	"
 options="!check" # No test suite available
 builddir="$srcdir/$pkgname-mer-${_pkgver%.*}-mer${_pkgver##*.}"
@@ -99,4 +100,5 @@ d6548342e6b83fe08d050d81825d14f07aa5ede4961dd7e34d5fca45fbe474e786198559f89e4de3
 fa62cce99e91437bbb9cd88cc193c66b7cf4f988708fad8647e91b031f9d0a844f11dd469f364b214b9ca65358f696d7e7b546d7887d0f99f2b5dee4328c20d3  0003-worker-only-check-daemon-running-in-FunctionFS-mode.patch
 3a905d3038309e8a54e77ee601dc98f12c339fdd9c7ba5989d2edce5baf98fdb6d6cf092c3168da577b137a4b356edfb72bf2df7ef148fa778655934dcebe72c  0004-configfs-Register-NCM-gadget-for-USB-networking.patch
 595d3541ee2aadbc3857cc81ef4c2e393351c4a9ba26c7e20b2b098c2cec32d8c6643d4f491e3c6e16be6d509486a8313f5b5627b354ee12e11f89cc62af6598  0005-usb-moded-Allow-disabling-rescue-mode.patch
+a2a2ee9cc5a25f64097c609fb6e08bb9c10b057fdbdb42f5c2db4cda134a150866c18a00053cc091361c49994243955ac4171a4fc035c57caf07d2aa29e742c4  0006-Consider-deviceinfo-for-UDC-selection.patch
 "
