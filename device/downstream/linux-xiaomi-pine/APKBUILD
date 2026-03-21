@@ -4,7 +4,7 @@
 maintainer=""
 pkgname=linux-xiaomi-pine
 pkgver=4.9.337
-pkgrel=1
+pkgrel=2
 pkgdesc="Xiaomi Redmi 7A kernel fork"
 arch="aarch64"
 _carch="arm64"
@@ -30,6 +30,7 @@ _config="config-$_flavor.$arch"
 source="
 	$pkgname-$_commit.tar.gz::https://github.com/LineageOS/$_repository/archive/$_commit.tar.gz
 	$_config
+	fix-check-lxdialog.patch
 "
 builddir="$srcdir/$_repository-$_commit"
 _outdir="out"
@@ -56,5 +57,6 @@ package() {
 
 sha512sums="
 491349581f0e0ffcbf59c20367f6d2e1a4f82d909b17398bc80db2711f543f845ddad4b8f0d0ae31f5a876e2ce1873315935700c1a42cd1f9abff1aa0d4253ae  linux-xiaomi-pine-2bcfae17be1b3e70d41ee89f6fed7825627d952b.tar.gz
-fb1c6eea21b075eaa20b95c63b18988315686b42e455c396c16ab782f6fc4edf80def5256a087b753d1f28af3e583e8ee5817acb32f4108e202dca425494998a  config-xiaomi-pine.aarch64
+e1f540830fc1fa9db3327f118aa82ff8ece822034bef46669cb09ca62ab67b9c597219242e6118219124a090c2607f57442e1c6963f5bc06c067852480a08b24  config-xiaomi-pine.aarch64
+182be3c596b9cc267ac108d7cf03fc8c328ccc6b36770800e4dcedea8d1bb65e3f5eacf590c2948f58b1418cc60a1670ba77dde8c259e428d158c31b6e1dbaf5  fix-check-lxdialog.patch
 "
