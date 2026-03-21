@@ -1,7 +1,7 @@
 maintainer=""
 pkgname=linux-htc-vision
 pkgver=3.0.101
-pkgrel=7
+pkgrel=8
 pkgdesc="HTC Desire Z kernel from milaq"
 arch="armv7"
 _carch="arm"
@@ -27,6 +27,7 @@ source="
 	02_gpu-msm-fix-gcc5-compile.patch
 	fix-boot-gcc5.patch
 	linux3.4-ARM-8933-1-replace-Sun-Solaris-style-flag-on-section.patch
+	fix-check-lxdialog.patch
 "
 builddir="$srcdir/$_repository-$_commit"
 
@@ -47,8 +48,9 @@ package() {
 
 sha512sums="
 ec0325ee9d6ca0b9222b26c188070da1f57551c359452b6cb1c2f9371b82d574520628162e30fd9bb84685d511a42bd65fc038db0329c869e1c002a77e489c3d  linux-htc-vision-9eb87bf88164847421895687ad86fd0ca144e6a0.tar.gz
-3451155f333cd8bd8bac5bece3443024f34bc3c73f77a3fea4b4082177da487ed5dd5da2118dbb8be4acbcceadd9ab2aa52e97d333252707fc293da6a7754ff4  config-htc-vision.armv7
+650c445412d9e5d9f76a2e63f79013fae5aec8cc499c888b638dbd9f484db65764139883d899aeca5fafd0ecf40b5b9abc8c285a3548ddfca6da97c58a667362  config-htc-vision.armv7
 7be03a9e78b7ac330a54b1f00509caa0621a95c0c55901878ad757f9dd69cc05ba2c8b5ea987063ae1224f92c4d090d515fa5d369e7755181a4871b0d0f82881  02_gpu-msm-fix-gcc5-compile.patch
 5ea8c150174224791466ae66e13f44b567c447382e348612e2b0f58d85d499a348a6b24cd5bd1f979631e9610cbe490a5dbe213275d13d4376964268ab3d88ea  fix-boot-gcc5.patch
 9e3b067fa1b19ad02500c4fce1b6142051df3845c508e615788beb650c4f953683107ac2d80670c4e3df38f532e0e91060d2d13ec04c9ec985abd2dfa82e900b  linux3.4-ARM-8933-1-replace-Sun-Solaris-style-flag-on-section.patch
+182be3c596b9cc267ac108d7cf03fc8c328ccc6b36770800e4dcedea8d1bb65e3f5eacf590c2948f58b1418cc60a1670ba77dde8c259e428d158c31b6e1dbaf5  fix-check-lxdialog.patch
 "
