@@ -1,8 +1,9 @@
 # Reference: <https://postmarketos.org/vendorkernel>
 
+maintainer=""
 pkgname=linux-samsung-d2vzw
 pkgver=3.4.112
-pkgrel=1
+pkgrel=2
 pkgdesc="Samsung Galaxy S III (Verizon) kernel fork"
 arch="armv7"
 _carch="arm"
@@ -30,6 +31,7 @@ source="
 	gcc8-fix-put-user.patch
 	kernel-use-the-gnu89-standard-explicitly.patch
 	linux3.4-ARM-8933-1-replace-Sun-Solaris-style-flag-on-section.patch
+	fix-check-lxdialog.patch
 "
 builddir="$srcdir/$_repository-$_commit"
 _outdir="out"
@@ -51,9 +53,10 @@ package() {
 
 sha512sums="
 6850231f0596dd272b4f963d20c77aee6ed16a1ba47261dbafe11ffccac695427db54efa71d070525c519885b795395e9ac6ca97fa06ccc36131aba1f95aa715  linux-samsung-d2vzw-716f00ee2e86adfd507842c5f193a738b57d3c49.tar.gz
-63c3c77b8cbb2a1837eb13a6e40a0bb43e83306febbdaec068d0cd45264147f788a3b5e79ef1235d7379c205095550795dbc8aeead8e066792f4b96c40261cae  config-samsung-d2vzw.armv7
+a0e5cab9caf136d274d10c0b4e407f5f7ccfcbebe1580905a1b74d757d89b06417d5d7d8aa6f562e5e49f2ac767db05cfc2550699485dbcda12d207d773b571c  config-samsung-d2vzw.armv7
 77eba606a71eafb36c32e9c5fe5e77f5e4746caac292440d9fb720763d766074a964db1c12bc76fe583c5d1a5c864219c59941f5e53adad182dbc70bf2bc14a7  gcc7-give-up-on-ilog2-const-optimizations.patch
 197d40a214ada87fcb2dfc0ae4911704b9a93354b75179cd6b4aadbb627a37ec262cf516921c84a8b1806809b70a7b440cdc8310a4a55fca5d2c0baa988e3967  gcc8-fix-put-user.patch
 ad0182a483791fc88e058838bc331b2f04a75ba291e763767babdb815efadfc3b4fda97e69e2e3f00a426cabea088e35297a92bd287592597d1e309be68ee92c  kernel-use-the-gnu89-standard-explicitly.patch
 9e3b067fa1b19ad02500c4fce1b6142051df3845c508e615788beb650c4f953683107ac2d80670c4e3df38f532e0e91060d2d13ec04c9ec985abd2dfa82e900b  linux3.4-ARM-8933-1-replace-Sun-Solaris-style-flag-on-section.patch
+182be3c596b9cc267ac108d7cf03fc8c328ccc6b36770800e4dcedea8d1bb65e3f5eacf590c2948f58b1418cc60a1670ba77dde8c259e428d158c31b6e1dbaf5  fix-check-lxdialog.patch
 "

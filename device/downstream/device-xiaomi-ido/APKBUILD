@@ -1,4 +1,5 @@
 # Reference: <https://postmarketos.org/devicepkg>
+maintainer=""
 pkgname=device-xiaomi-ido
 pkgdesc="Xiaomi Xiaomi Redmi 3"
 pkgver=3
