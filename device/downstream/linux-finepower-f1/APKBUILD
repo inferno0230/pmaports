@@ -4,7 +4,7 @@
 maintainer=""
 pkgname=linux-finepower-f1
 pkgver=3.10.65
-pkgrel=7
+pkgrel=8
 pkgdesc="FinePower F1 kernel fork"
 arch="armv7"
 _carch="arm"
@@ -34,6 +34,7 @@ source="
 	03-set-BGR565-color-mode.patch
 	04-add-st7796s-mipi-panel-support.patch
 	05-fix-X11.patch
+	fix-check-lxdialog.patch
 "
 builddir="$srcdir/$_repository-$_commit"
 
@@ -64,7 +65,7 @@ package() {
 
 sha512sums="
 bcbb8f6e99bd53b173715765c86845f991c2f769e9c13c72503e4f9062dc7bc97a073a4ad730e804d43efd2bcbcd7b91a0890d6194b5986e453d40a79f08249b  linux-finepower-f1-b30390f1645dcf1ebd08148d7d4086a544c56435.zip
-19785c0f028b736c1b163859be9cbd928e0d0a968ef39448c101286bacdfc410c0befde8fefdc058eba69eb01849e0e99b9db46e95d141f605ecf9a75e6a4403  config-finepower-f1.armv7
+68e13ad32f58b9fb5b1c2a3aeb3851f438b3c8e226e56b095e0a729be607fa25c349583b5f522ce89d91012cfc7060c2c8c68c80d7f1b8e8e0302c6e687ac40c  config-finepower-f1.armv7
 c626828d9eac7b52a4509055d8d3b14b4dd74100e254cc212349bc4046e5583d91042f9332fb903e8d9dc6bade03cc898f26e3ac43732f423d8b6473182b357c  sprd-scx20_sp7731ceb.dts
 31f289fc3b63ace4dcd56ce289e63c55b1f622084b5d2fecc96f8f44eccccf51463ae6c7b9cdded3781d652a9be1b9f45ca4c64dfaa6160aa2f96b56d4af91ce  lcd_st7796s_mipi.c
 ad0182a483791fc88e058838bc331b2f04a75ba291e763767babdb815efadfc3b4fda97e69e2e3f00a426cabea088e35297a92bd287592597d1e309be68ee92c  kernel-use-the-gnu89-standard-explicitly.patch
@@ -78,4 +79,5 @@ ad0182a483791fc88e058838bc331b2f04a75ba291e763767babdb815efadfc3b4fda97e69e2e3f0
 6836001b24508d413a059f19b0c6f6f547037f68886c22159ad51be91d1a089e3d1d9ed79c3c62724648df7f810cd81d96a83f4a34368b373524b649e5539656  03-set-BGR565-color-mode.patch
 d54f7bf0cfd991ce303b5ac31cecb5a8b658f7e1794dcc2901a773601a521dade50ee186160b75e78040a18060a6d4c01d92eb56b121de50016739638adb980d  04-add-st7796s-mipi-panel-support.patch
 e33ed12de874c1c8bc9231aea3b0389b18ee0ff804e39c0f47d9cbf657ea19015370d6114846c2d142fbdb88f472f0e65811c53b9b335feb8ae2f30dffdf4846  05-fix-X11.patch
+182be3c596b9cc267ac108d7cf03fc8c328ccc6b36770800e4dcedea8d1bb65e3f5eacf590c2948f58b1418cc60a1670ba77dde8c259e428d158c31b6e1dbaf5  fix-check-lxdialog.patch
 "
