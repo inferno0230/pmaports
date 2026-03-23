@@ -1,8 +1,8 @@
 maintainer="Antoine Martin (ayakael) <dev@ayakael.net>"
 pkgname=device-pine64-pinenote
 pkgdesc="Pine64 PineNote"
-pkgver=11
-pkgrel=1
+pkgver=12
+pkgrel=0
 _commit="28d2c05ab4e80a7972611cd3188f3e8be4197f6a"
 url="https://postmarketos.org"
 license="GPL-3.0-only"
@@ -10,7 +10,7 @@ arch="aarch64"
 options="!check !archcheck"
 # py3-numpy used by rockchip_ebc management libraries
 depends="
-	linux-pine64-pinenote
+	linux-postmarketos-rockchip
 	postmarketos-base
 	py3-numpy
 	systemd-boot
