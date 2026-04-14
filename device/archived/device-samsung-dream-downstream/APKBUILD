@@ -1,6 +1,6 @@
 # Reference: <https://postmarketos.org/devicepkg>
-pkgname=device-samsung-dream
-pkgdesc="Samsung Galaxy S8/S8+"
+pkgname=device-samsung-dream-downstream
+pkgdesc="Samsung Galaxy S8/S8+ (downstream)"
 pkgver=5
 pkgrel=0
 url="https://postmarketos.org"

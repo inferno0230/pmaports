@@ -4,7 +4,7 @@
 deviceinfo_format_version="0"
 deviceinfo_name="Samsung Galaxy S8/S8+"
 deviceinfo_manufacturer="Samsung"
-deviceinfo_codename="samsung-dream"
+deviceinfo_codename="samsung-dream-downstream"
 deviceinfo_year="2017"
 deviceinfo_getty="ttySAC0;115200"
 deviceinfo_arch="aarch64"
