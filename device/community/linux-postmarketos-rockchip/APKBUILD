@@ -4,7 +4,7 @@ maintainer="Antoine Martin (ayakael) <dev@ayakael.net>"
 pkgname=linux-postmarketos-rockchip
 pkgver=6.19.11
 _kernver=${pkgver%.*}
-pkgrel=1
+pkgrel=2
 pkgdesc="Mainline kernel for rockchip devices"
 arch="aarch64"
 _carch="arm64"
@@ -22,6 +22,7 @@ makedepends="
 	clang
 	findutils
 	flex
+	gzip
 	lld
 	llvm
 	openssl-dev
@@ -32,8 +33,14 @@ makedepends="
 	zstd
 "
 # to allow A/B comparison testing
-replaces="linux-pine64-pinenote"
-provides="linux-pine64-pinenote=$pkgver-r$pkgrel"
+replaces="
+	linux-pine64-pinenote
+	linux-clockworkpi-uconsole-radxa-cm5
+	"
+provides="
+	linux-pine64-pinenote=$pkgver-r$pkgrel
+	linux-clockworkpi-uconsole-radxa-cm5=$pkgver-r$pkgrel
+	"
 
 # Source
 _config="config-$_flavor.$arch"
@@ -46,9 +53,21 @@ source="
 	https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver.tar.xz
 	rk3566-pinenote-support.patch
 	rk3566-pinenote-ultra-suspend.patch
+	rk3588-hdmi-improvements.patch
+	rk3588-uconsole-support.patch
+	rk3588-uconsole-devicetree.patch
 	$_config
 "
 builddir="$srcdir"/linux-$_kernver
+
+_dtso() {
+	cd "$builddir"
+	cpp -nostdinc -I "$builddir"/include -I arch -undef -x assembler-with-cpp \
+		arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-uconsole.dts \
+		"$srcdir"/rk3588s-radxa-cm5-uconsole.dts
+	dtc -O dtb -I dts -o "$srcdir"/rk3588s-radxa-cm5-uconsole.dtb "$srcdir"/rk3588s-radxa-cm5-uconsole.dts
+
+}
 
 prepare() {
 	default_prepare
@@ -87,6 +106,10 @@ package() {
 		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs
 	rm -f "$pkgdir"/lib/modules/*/build "$pkgdir"/lib/modules/*/source
 
+	# TODO: remove after figuring out why vendor uboot can't do gzip kernel
+	mv "$pkgdir"/boot/vmlinuz "$pkgdir"/boot/vmlinuz.gz
+	gunzip "$pkgdir"/boot/vmlinuz.gz
+
 	install -D "$builddir"/include/config/kernel.release \
 		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
 }
@@ -96,5 +119,8 @@ c68361a19d04529226beb12cdd3a764bdcf481dbad342d5626d83412a00857588942308e880a92fc
 01b29c7f4e5bc0c9802794c2cd027fece825f90417be229a71e60eefce530010d5d301749c54ae744e9d4a483518e769e2bb7e6e9209687681ad7fff11c3ed86  linux-6.19.tar.xz
 7117f1d9355bfa033dc0fbe823fc9e06cf5ff8cf261f6159e7f27b7a481e974c5806d2e2b5baaba948e7e0d293430df7950c0f4b4cd337cdf21a31415b5692d9  rk3566-pinenote-support.patch
 665bdc843912a22bc9f1840bf89195f6cccabd2b8ca3313f3c61b5503c84f98395e3de0d28bc31cbc9f1b4be4a41a483db156fad353506bb5be7abdc22e46501  rk3566-pinenote-ultra-suspend.patch
-1e17b546ea0a426fb1d8368bcb5801fbdbe14e1b471908dcab245f1ef3f384bfabd8310a299b1eb822bc15510d5949db498ea524b6eaeb7ad8e08772b70c8561  config-postmarketos-rockchip.aarch64
+0a9edda8a4e9a6eaa19dc7f8475f2bb5eb5dc06caaec5346a914366a865daef738fafe5bae765b631afd2cbad1abe35036eabc69ce70e9155595d106b4e55961  rk3588-hdmi-improvements.patch
+7921d2bb8346136add5663cad1d9371b2e4160c06e22b3f758d0598d804054432f9845b838b32269e6ef45d468096f660392574d5977611aebff123b7556055c  rk3588-uconsole-support.patch
+73e913d190897b124341ad28f5ba5b2d8370c13603c1c233be5b7646153fc3ba0e0dcf55774c835ea3e5c2596a59133f0cc47daa02cff213653c22161182c79d  rk3588-uconsole-devicetree.patch
+33e5be52e7cd82440825506d6908dc3776cd0123028a9d328175e87ffd188ec80af7e80e86ba4fcae0484e5739ef3ca64e8a21dec35cf079223c7956350a2b8e  config-postmarketos-rockchip.aarch64
 "

@@ -1,0 +1,2871 @@
+From d2be88305198b5462202eaa88d714a11ffc9881c Mon Sep 17 00:00:00 2001
+From: Joseph Kogut <joseph.kogut@gmail.com>
+Date: Tue, 17 Jun 2025 15:11:59 -0700
+Subject: [PATCH 1/6] dt-bindings: arm: rockchip: Add Radxa CM5 IO board
+
+Add device tree binding for the Radxa CM5 IO board.
+
+This board is based on the rk3588s.
+
+Signed-off-by: Joseph Kogut <joseph.kogut@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index 28db6bd6aa5b54..3aba5a6b618811 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -858,6 +858,13 @@ properties:
+           - const: radxa,cm3
+           - const: rockchip,rk3566
+ 
++      - description: Radxa Compute Module 5 (CM5)
++        items:
++          - enum:
++              - radxa,cm5-io
++          - const: radxa,cm5
++          - const: rockchip,rk3588s
++
+       - description: Radxa CM3 Industrial
+         items:
+           - enum:
+
+From 9ddc4d76c48bc950c50f8df518bb3048e2bc2353 Mon Sep 17 00:00:00 2001
+From: Joseph Kogut <joseph.kogut@gmail.com>
+Date: Tue, 17 Jun 2025 15:12:00 -0700
+Subject: [PATCH 2/6] arm64: dts: rockchip: Add rk3588 based Radxa CM5
+
+Add initial support for the Radxa Compute Module 5 (CM5). The CM5 uses a
+proprietary connector.
+
+Specification:
+- Rockchip RK3588
+- Up to 32 GB LPDDR4X
+- Up to 128 GB eMMC
+- 1x HDMI TX up to 8k@60 hz
+- 1x eDP TX up to 4k@60 hz
+- Gigabit Ethernet PHY
+
+Signed-off-by: Joseph Kogut <joseph.kogut@gmail.com>
+---
+ .../boot/dts/rockchip/rk3588s-radxa-cm5.dtsi  | 135 ++++++++++++++++++
+ 1 file changed, 135 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+new file mode 100644
+index 00000000000000..6410ea5255dc78
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2025 Joseph Kogut <joseph.kogut@gmail.com>
++ */
++
++/*
++ * CM5 data sheet
++ * https://dl.radxa.com/cm5/v2210/radxa_cm5_v2210_schematic.pdf
++ */
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/leds/common.h>
++#include <dt-bindings/soc/rockchip,vop2.h>
++#include <dt-bindings/usb/pd.h>
++
++/ {
++	compatible = "radxa,cm5", "rockchip,rk3588s";
++
++	aliases {
++		mmc0 = &sdhci;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led_sys: led-0 {
++			color = <LED_COLOR_ID_BLUE>;
++			default-state = "on";
++			function = LED_FUNCTION_HEARTBEAT;
++			gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++		};
++	};
++};
++
++&cpu_b0 {
++	cpu-supply = <&vdd_cpu_big0_s0>;
++};
++
++&cpu_b1 {
++	cpu-supply = <&vdd_cpu_big0_s0>;
++};
++
++&cpu_b2 {
++	cpu-supply = <&vdd_cpu_big1_s0>;
++};
++
++&cpu_b3 {
++	cpu-supply = <&vdd_cpu_big1_s0>;
++};
++
++&cpu_l0 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&cpu_l1 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&cpu_l2 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&cpu_l3 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&gpu {
++	mali-supply = <&vdd_gpu_s0>;
++	status = "okay";
++};
++
++&i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c0m2_xfer>;
++	status = "okay";
++
++	vdd_cpu_big0_s0: regulator@42 {
++		compatible = "rockchip,rk8602";
++		reg = <0x42>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-name = "vdd_cpu_big0_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <550000>;
++		regulator-max-microvolt = <1050000>;
++		regulator-ramp-delay = <2300>;
++		vin-supply = <&vcc5v0_sys>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	vdd_cpu_big1_s0: regulator@43 {
++		compatible = "rockchip,rk8602";
++		reg = <0x43>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-name = "vdd_cpu_big1_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <550000>;
++		regulator-max-microvolt = <1050000>;
++		regulator-ramp-delay = <2300>;
++		vin-supply = <&vcc5v0_sys>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++};
++
++&mdio1 {
++	rgmii_phy1: phy@1 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <0x1>;
++	};
++};
++
++&pd_gpu {
++	domain-supply = <&vdd_gpu_s0>;
++};
++
++&sdhci {
++	bus-width = <8>;
++	no-sdio;
++	no-sd;
++	non-removable;
++	max-frequency = <200000000>;
++	mmc-hs400-1_8v;
++	mmc-hs400-enhanced-strobe;
++	mmc-hs200-1_8v;
++	status = "okay";
++};
++
+
+From 7cc517522861f94380f1404abbe05372fb72b070 Mon Sep 17 00:00:00 2001
+From: Joseph Kogut <joseph.kogut@gmail.com>
+Date: Tue, 17 Jun 2025 15:12:01 -0700
+Subject: [PATCH 3/6] arm64: dts: rockchip: Add support for CM5 IO carrier
+
+Specification:
+- 1x HDMI
+- 2x MIPI DSI
+- 2x MIPI CSI
+- 1x eDP
+- 1x M.2 E key
+- 1x USB 3.0 Host
+- 1x USB 3.0 OTG
+- 2x USB 2.0 Host
+- Headphone jack w/ microphone
+- Gigabit Ethernet w/ PoE
+- microSD slot
+- 40-pin expansion header
+- 12V DC
+
+Signed-off-by: Joseph Kogut <joseph.kogut@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../dts/rockchip/rk3588s-radxa-cm5-io.dts     | 486 ++++++++++++++++++
+ 2 files changed, 487 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index 099520962ffbe5..f3802cda33bf53 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -195,6 +195,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-nanopi-r6c.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-odroid-m2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5b.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-cm5-io.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-roc-pc.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5a.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5c.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+new file mode 100644
+index 00000000000000..18e11a9c7f0377
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+@@ -0,0 +1,486 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2025 Joseph Kogut <joseph.kogut@gmail.com>
++ */
++
++/*
++ * CM5 IO board data sheet
++ * https://dl.radxa.com/cm5/v2200/radxa_cm5_io_v2200_schematic.pdf
++ */
++
++/dts-v1/;
++#include "rk3588s.dtsi"
++#include "rk3588s-radxa-cm5.dtsi"
++
++/ {
++	model = "Radxa Compute Module 5 (CM5) IO Board";
++	compatible = "radxa,cm5-io", "radxa,cm5", "rockchip,rk3588s";
++
++	aliases {
++		ethernet0 = &gmac1;
++		mmc1 = &sdmmc;
++	};
++
++	chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	hdmi-con {
++		compatible = "hdmi-connector";
++		type = "a";
++
++		port {
++			hdmi_con_in: endpoint {
++				remote-endpoint = <&hdmi0_out_con>;
++			};
++		};
++	};
++
++	vcc12v_dcin: regulator-12v0-vcc-dcin {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc12v_dcin";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
++	vcc5v0_host: vcc5v0-host-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_host";
++		regulator-boot-on;
++		regulator-always-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		enable-active-high;
++		gpio = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vcc5v0_host_en>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
++	vcc5v0_sys: regulator-5v0-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc12v_dcin>;
++	};
++
++	vbus5v0_typec: vbus5v0-typec {
++		compatible = "regulator-fixed";
++		regulator-name = "vbus5v0_typec";
++		gpio = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vbus5v0_typec_en>;
++		enable-active-high;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
++	vcc3v3_pcie: regulator-3v3-vcc-pcie {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_pcie2x1l0";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		enable-active-high;
++		regulator-boot-on;
++		regulator-always-on;
++		gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
++		startup-delay-us = <50000>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
++	vcc_3v3_s0: pldo-reg4 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_3v3_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-ramp-delay = <12500>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++};
++
++&combphy0_ps {
++	status = "okay";
++};
++
++&combphy2_psu {
++	status = "okay";
++};
++
++&gmac1 {
++	clock_in_out = "output";
++	phy-handle = <&rgmii_phy1>;
++	phy-mode = "rgmii-id";
++	phy-supply = <&vcc_3v3_s0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&gmac1_miim
++		     &gmac1_tx_bus2
++		     &gmac1_rx_bus2
++		     &gmac1_rgmii_clk
++		     &gmac1_rgmii_bus
++		     &gmac1_clkinout>;
++	status = "okay";
++};
++
++&hdmi0 {
++	status = "okay";
++};
++
++&hdmi0_in {
++	hdmi0_in_vp0: endpoint {
++		remote-endpoint = <&vp0_out_hdmi0>;
++	};
++};
++
++&hdmi0_out {
++	hdmi0_out_con: endpoint {
++		remote-endpoint = <&hdmi_con_in>;
++	};
++};
++
++&hdmi0_sound {
++	status = "okay";
++};
++
++&hdptxphy0 {
++	status = "okay";
++};
++
++&i2c6 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c6m3_xfer>;
++	status = "okay";
++
++	fusb302: usb-typec@22 {
++		compatible = "fcs,fusb302";
++		reg = <0x22>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PC4 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usbc0_int>;
++		vbus-supply = <&vbus5v0_typec>;
++
++		connector {
++			compatible = "usb-c-connector";
++			data-role = "dual";
++			label = "USB-C";
++			power-role = "dual";
++			try-power-role = "sink";
++			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
++			sink-pdos = <PDO_FIXED(5000, 1000, PDO_FIXED_USB_COMM)>;
++			op-sink-microwatt = <1000000>;
++
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@0 {
++					reg = <0>;
++					usbc0_orientation_switch: endpoint {
++						remote-endpoint = <&usbdp_phy0_orientation_switch>;
++					};
++				};
++
++				port@1 {
++					reg = <1>;
++					usbc0_role_switch: endpoint {
++						remote-endpoint = <&usb_host0_xhci_role_switch>;
++					};
++				};
++
++				port@2 {
++					reg = <2>;
++					usbc0_dp_altmode_mux: endpoint {
++						remote-endpoint = <&usbdp_phy0_dp_altmode_mux>;
++					};
++				};
++			};
++		};
++	};
++};
++
++&i2s5_8ch {
++	status = "okay";
++};
++
++&pcie2x1l2 {
++	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
++	vpcie3v3-supply = <&vcc3v3_pcie>;
++	status = "okay";
++};
++
++&pinctrl {
++	fusb302 {
++		vbus5v0_typec_en: vbus5v0-typec-en {
++			rockchip,pins = <0 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		usbc0_int: usbc0-int {
++			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	usb {
++		vcc5v0_host_en: vcc5v0-host-en {
++			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++};
++
++&sdmmc {
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	disable-wp;
++	max-frequency = <200000000>;
++	no-sdio;
++	no-mmc;
++	sd-uhs-sdr104;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
++	vmmc-supply = <&vcc_3v3_s3>;
++	vqmmc-supply = <&vccio_sd_s0>;
++	status = "okay";
++};
++
++&spi2 {
++	assigned-clocks = <&cru CLK_SPI2>;
++	assigned-clock-rates = <200000000>;
++	num-cs = <1>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
++	status = "okay";
++
++	pmic@0 {
++		compatible = "rockchip,rk806";
++		reg = <0x0>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
++			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
++		spi-max-frequency = <1000000>;
++		system-power-controller;
++
++		vcc1-supply = <&vcc5v0_sys>;
++		vcc2-supply = <&vcc5v0_sys>;
++		vcc3-supply = <&vcc5v0_sys>;
++		vcc4-supply = <&vcc5v0_sys>;
++		vcc5-supply = <&vcc5v0_sys>;
++		vcc6-supply = <&vcc5v0_sys>;
++		vcc7-supply = <&vcc5v0_sys>;
++		vcc8-supply = <&vcc5v0_sys>;
++		vcc9-supply = <&vcc5v0_sys>;
++		vcc10-supply = <&vcc5v0_sys>;
++		vcc11-supply = <&vcc_2v0_pldo_s3>;
++		vcc12-supply = <&vcc5v0_sys>;
++		vcc13-supply = <&vdd2_ddr_s3>;
++		vcc14-supply = <&vdd2_ddr_s3>;
++		vcca-supply = <&vcc5v0_sys>;
++
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		rk806_dvs1_null: dvs1-null-pins {
++			pins = "gpio_pwrctrl1";
++			function = "pin_fun0";
++		};
++
++		rk806_dvs2_null: dvs2-null-pins {
++			pins = "gpio_pwrctrl2";
++			function = "pin_fun0";
++		};
++
++		rk806_dvs3_null: dvs3-null-pins {
++			pins = "gpio_pwrctrl3";
++			function = "pin_fun0";
++		};
++
++		regulators {
++			vdd_gpu_s0: dcdc-reg1 {
++				regulator-name = "vdd_gpu_s0";
++				regulator-boot-on;
++				regulator-enable-ramp-delay = <400>;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_cpu_lit_s0: dcdc-reg2 {
++				regulator-name = "vdd_cpu_lit_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vccio_sd_s0: pldo-reg5 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "vccio_sd_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd2_ddr_s3: dcdc-reg6 {
++				regulator-name = "vdd2_ddr_s3";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc_2v0_pldo_s3: dcdc-reg7 {
++				regulator-name = "vdd_2v0_pldo_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <2000000>;
++				regulator-max-microvolt = <2000000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <2000000>;
++				};
++			};
++
++			vcc_3v3_s3: dcdc-reg8 {
++				regulator-name = "vcc_3v3_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++		};
++	};
++};
++
++&u2phy0 {
++	status = "okay";
++};
++
++&u2phy0_otg {
++	status = "okay";
++};
++
++&u2phy2 {
++	status = "okay";
++};
++
++&u2phy2_host {
++	status = "okay";
++};
++
++&u2phy3 {
++	status = "okay";
++};
++
++&u2phy3_host {
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart2m0_xfer>;
++	status = "okay";
++};
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usb_host0_xhci {
++	dr_mode = "otg";
++	usb-role-switch;
++	status = "okay";
++
++	port {
++		usb_host0_xhci_role_switch: endpoint {
++			remote-endpoint = <&usbc0_role_switch>;
++		};
++	};
++};
++
++&usb_host1_ehci {
++	status = "okay";
++};
++
++&usb_host1_ohci {
++	status = "okay";
++};
++
++&usb_host2_xhci {
++	status = "okay";
++};
++
++&usbdp_phy0 {
++	mode-switch;
++	orientation-switch;
++	sbu1-dc-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
++	sbu2-dc-gpios = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
++	status = "okay";
++
++	port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		usbdp_phy0_orientation_switch: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&usbc0_orientation_switch>;
++		};
++
++		usbdp_phy0_dp_altmode_mux: endpoint@1 {
++			reg = <1>;
++			remote-endpoint = <&usbc0_dp_altmode_mux>;
++		};
++	};
++};
++
++&vop {
++	status = "okay";
++};
++
++&vop_mmu {
++	status = "okay";
++};
++
++&vp0 {
++	vp0_out_hdmi0: endpoint@ROCKCHIP_VOP2_EP_HDMI0 {
++		reg = <ROCKCHIP_VOP2_EP_HDMI0>;
++		remote-endpoint = <&hdmi0_in_vp0>;
++	};
++};
+
+From df40ce8519a9f34748c7200dcf29170776582f2d Mon Sep 17 00:00:00 2001
+From: Andrew Yong <me@ndoo.sg>
+Date: Sat, 2 Aug 2025 18:50:01 +0800
+Subject: [PATCH 4/6] arm64: dts: rockchip: Add support for Radxa CM5 on CM4 IO
+ carrier
+
+- Move common includes to rk3588s-radxa-cm5.dtsi
+- Move peripherals which are on-board the Radxa CM5 rather than the Radxa CM5 I/O board from rk3588s-radxa-cm5-io.dts to rk3588s-radxa-cm5.dtsi
+  - Regulators: All RK806 PMIC rails
+  - GMAC: gmac1 (RTL8211FS)
+- Add peripherals which are on-board the Radxa CM5 to rk3588s-radxa-cm5.dtsi
+  - Voltage rails:
+    - vcc_sysin
+    - vcc_1v1_nldo_s3
+  - EEPROM:
+    - BL24C16F
+- Sync RK806 PMIC regulators with downstream dtsi and other Radxa RK3588S boards
+- Add DTS for rk3588s-radxa-cm5-rpi-cm4-io
+
+Signed-off-by: Andrew Yong <me@ndoo.sg>
+---
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../dts/rockchip/rk3588s-radxa-cm5-io.dts     | 164 +------
+ .../rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts | 277 +++++++++++
+ .../boot/dts/rockchip/rk3588s-radxa-cm5.dtsi  | 464 +++++++++++++++++-
+ 4 files changed, 740 insertions(+), 166 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts
+
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index f3802cda33bf53..18ef3eaaa0f3de 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -196,6 +196,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-odroid-m2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5b.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-cm5-io.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-cm5-rpi-cm4-io.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-cm5-uconsole.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-roc-pc.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5a.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5c.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+index 18e11a9c7f0377..da4fddde4c1231 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+@@ -9,7 +9,8 @@
+  */
+ 
+ /dts-v1/;
+-#include "rk3588s.dtsi"
++#include <dt-bindings/soc/rockchip,vop2.h>
++#include <dt-bindings/usb/pd.h>
+ #include "rk3588s-radxa-cm5.dtsi"
+ 
+ / {
+@@ -93,20 +94,6 @@
+ 		startup-delay-us = <50000>;
+ 		vin-supply = <&vcc5v0_sys>;
+ 	};
+-
+-	vcc_3v3_s0: pldo-reg4 {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vcc_3v3_s0";
+-		regulator-always-on;
+-		regulator-boot-on;
+-		regulator-min-microvolt = <3300000>;
+-		regulator-max-microvolt = <3300000>;
+-		regulator-ramp-delay = <12500>;
+-
+-		regulator-state-mem {
+-			regulator-off-in-suspend;
+-		};
+-	};
+ };
+ 
+ &combphy0_ps {
+@@ -117,21 +104,6 @@
+ 	status = "okay";
+ };
+ 
+-&gmac1 {
+-	clock_in_out = "output";
+-	phy-handle = <&rgmii_phy1>;
+-	phy-mode = "rgmii-id";
+-	phy-supply = <&vcc_3v3_s0>;
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&gmac1_miim
+-		     &gmac1_tx_bus2
+-		     &gmac1_rx_bus2
+-		     &gmac1_rgmii_clk
+-		     &gmac1_rgmii_bus
+-		     &gmac1_clkinout>;
+-	status = "okay";
+-};
+-
+ &hdmi0 {
+ 	status = "okay";
+ };
+@@ -253,138 +225,6 @@
+ 	status = "okay";
+ };
+ 
+-&spi2 {
+-	assigned-clocks = <&cru CLK_SPI2>;
+-	assigned-clock-rates = <200000000>;
+-	num-cs = <1>;
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
+-	status = "okay";
+-
+-	pmic@0 {
+-		compatible = "rockchip,rk806";
+-		reg = <0x0>;
+-		interrupt-parent = <&gpio0>;
+-		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
+-			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
+-		spi-max-frequency = <1000000>;
+-		system-power-controller;
+-
+-		vcc1-supply = <&vcc5v0_sys>;
+-		vcc2-supply = <&vcc5v0_sys>;
+-		vcc3-supply = <&vcc5v0_sys>;
+-		vcc4-supply = <&vcc5v0_sys>;
+-		vcc5-supply = <&vcc5v0_sys>;
+-		vcc6-supply = <&vcc5v0_sys>;
+-		vcc7-supply = <&vcc5v0_sys>;
+-		vcc8-supply = <&vcc5v0_sys>;
+-		vcc9-supply = <&vcc5v0_sys>;
+-		vcc10-supply = <&vcc5v0_sys>;
+-		vcc11-supply = <&vcc_2v0_pldo_s3>;
+-		vcc12-supply = <&vcc5v0_sys>;
+-		vcc13-supply = <&vdd2_ddr_s3>;
+-		vcc14-supply = <&vdd2_ddr_s3>;
+-		vcca-supply = <&vcc5v0_sys>;
+-
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-
+-		rk806_dvs1_null: dvs1-null-pins {
+-			pins = "gpio_pwrctrl1";
+-			function = "pin_fun0";
+-		};
+-
+-		rk806_dvs2_null: dvs2-null-pins {
+-			pins = "gpio_pwrctrl2";
+-			function = "pin_fun0";
+-		};
+-
+-		rk806_dvs3_null: dvs3-null-pins {
+-			pins = "gpio_pwrctrl3";
+-			function = "pin_fun0";
+-		};
+-
+-		regulators {
+-			vdd_gpu_s0: dcdc-reg1 {
+-				regulator-name = "vdd_gpu_s0";
+-				regulator-boot-on;
+-				regulator-enable-ramp-delay = <400>;
+-				regulator-min-microvolt = <550000>;
+-				regulator-max-microvolt = <950000>;
+-				regulator-ramp-delay = <12500>;
+-
+-				regulator-state-mem {
+-					regulator-off-in-suspend;
+-				};
+-			};
+-
+-			vdd_cpu_lit_s0: dcdc-reg2 {
+-				regulator-name = "vdd_cpu_lit_s0";
+-				regulator-always-on;
+-				regulator-boot-on;
+-				regulator-min-microvolt = <550000>;
+-				regulator-max-microvolt = <950000>;
+-				regulator-ramp-delay = <12500>;
+-
+-				regulator-state-mem {
+-					regulator-off-in-suspend;
+-				};
+-			};
+-
+-			vccio_sd_s0: pldo-reg5 {
+-				regulator-always-on;
+-				regulator-boot-on;
+-				regulator-min-microvolt = <1800000>;
+-				regulator-max-microvolt = <3300000>;
+-				regulator-name = "vccio_sd_s0";
+-
+-				regulator-state-mem {
+-					regulator-off-in-suspend;
+-				};
+-			};
+-
+-			vdd2_ddr_s3: dcdc-reg6 {
+-				regulator-name = "vdd2_ddr_s3";
+-				regulator-always-on;
+-				regulator-boot-on;
+-
+-				regulator-state-mem {
+-					regulator-on-in-suspend;
+-				};
+-			};
+-
+-			vcc_2v0_pldo_s3: dcdc-reg7 {
+-				regulator-name = "vdd_2v0_pldo_s3";
+-				regulator-always-on;
+-				regulator-boot-on;
+-				regulator-min-microvolt = <2000000>;
+-				regulator-max-microvolt = <2000000>;
+-				regulator-ramp-delay = <12500>;
+-
+-				regulator-state-mem {
+-					regulator-on-in-suspend;
+-					regulator-suspend-microvolt = <2000000>;
+-				};
+-			};
+-
+-			vcc_3v3_s3: dcdc-reg8 {
+-				regulator-name = "vcc_3v3_s3";
+-				regulator-always-on;
+-				regulator-boot-on;
+-				regulator-min-microvolt = <3300000>;
+-				regulator-max-microvolt = <3300000>;
+-
+-				regulator-state-mem {
+-					regulator-on-in-suspend;
+-					regulator-suspend-microvolt = <3300000>;
+-				};
+-			};
+-		};
+-	};
+-};
+-
+ &u2phy0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts
+new file mode 100644
+index 00000000000000..7670315c50f75d
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts
+@@ -0,0 +1,277 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2025 Andrew Yong <me@ndoo.sg>
++ */
++
++/*
++ * Raspberry Pi CM4 I/O board datasheet
++ * https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf
++ */
++
++/dts-v1/;
++#include <dt-bindings/soc/rockchip,vop2.h>
++#include "rk3588s-radxa-cm5.dtsi"
++
++/ {
++	model = "Radxa Compute Module 5 (CM5) on Raspberry Pi Compute Module 4 IO board";
++	compatible = "radxa,cm5-rpi-cm4-io", "radxa,cm5", "rockchip,rk3588s";
++
++	aliases {
++		ethernet0 = &gmac1;
++		mmc1 = &sdmmc;
++	};
++
++	chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	hdmi-con {
++		compatible = "hdmi-connector";
++		type = "a";
++
++		port {
++			hdmi_con_in: endpoint {
++				remote-endpoint = <&hdmi0_out_con>;
++			};
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&led_pins>;
++
++		led-0 {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_POWER;
++			gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "default-on";
++		};
++
++		led-1 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "on";
++			function = LED_FUNCTION_HEARTBEAT;
++			gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "heartbeat";
++		};
++	};
++
++	vcc12v0_dcin: regulator-vcc12v0-dcin {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc12v0_dcin";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
++	vcc5v0_sys: regulator-vcc5v0-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc12v0_dcin>;
++	};
++
++	vcc3v3_pcie2x1l0: regulator-vcc3v3-pcie2x1l0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_pcie2x1l0";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		enable-active-high;
++		regulator-boot-on;
++		regulator-always-on;
++		gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
++		startup-delay-us = <50000>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
++	usb20_reset: usb-up-regulator {
++		compatible = "regulator-fixed";
++		enable-active-low;
++		gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb20_reset_pin>;
++		regulator-name = "usb20_reset";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++};
++
++&combphy0_ps {
++	status = "okay";
++};
++
++&hdmi0 {
++	status = "okay";
++};
++
++&hdmi0_in {
++	hdmi0_in_vp0: endpoint {
++		remote-endpoint = <&vp0_out_hdmi0>;
++	};
++};
++
++&hdmi0_out {
++	hdmi0_out_con: endpoint {
++		remote-endpoint = <&hdmi_con_in>;
++	};
++};
++
++&hdmi0_sound {
++	status = "okay";
++};
++
++&hdptxphy0 {
++	status = "okay";
++};
++
++&i2c7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c7m2_xfer>;
++	status = "okay";
++
++	emc2301: emc2301@2f {
++		status = "okay";
++		compatible = "microchip,emc2301";
++		reg = <0x2f>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		#cooling-cells = <2>;
++		microchip,pwm-separate;
++		microchip,cooling-levels = <10>;
++		channel@0 {
++			reg = <0>;
++			pwm-min = <0>;
++		};
++	};
++
++	pcf85063: pcf85063@51 {
++		compatible = "nxp,pcf85063";
++		status = "okay";
++		reg = <0x51>;
++		quartz-load-femtofarads = <12500>;
++	};
++
++};
++
++&i2s5_8ch {
++	status = "okay";
++};
++
++&pcie2x1l2 {
++	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
++	vpcie3v3-supply = <&vcc3v3_pcie2x1l0>;
++	status = "okay";
++};
++
++&pinctrl {
++	leds {
++		led_pins: led-pins {
++			rockchip,pins = <4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>,
++			<3 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	usb {
++		usb20_reset_pin: usb20-reset {
++			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++};
++
++&sdmmc {
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	disable-wp;
++	max-frequency = <200000000>;
++	no-sdio;
++	no-mmc;
++	sd-uhs-sdr104;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
++	vmmc-supply = <&vcc_3v3_s3>;
++	vqmmc-supply = <&vccio_sd_s0>;
++	status = "okay";
++};
++
++&u2phy0 {
++	status = "okay";
++};
++
++&u2phy0_otg {
++	status = "okay";
++};
++
++&u2phy2 {
++	status = "okay";
++};
++
++&u2phy2_host {
++	status = "okay";
++	phy-supply = <&vcc5v0_sys>;
++};
++
++&u2phy3 {
++	status = "okay";
++};
++
++&u2phy3_host {
++	phy-supply = <&vcc5v0_sys>;
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart2m0_xfer>;
++	status = "okay";
++};
++
++&usbdp_phy0 {
++	status = "okay";
++	rockchip,dp-lane-mux = <2 3>;
++};
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usb_host0_xhci {
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usb_host1_ehci {
++	status = "okay";
++};
++
++&usb_host1_ohci {
++	status = "okay";
++};
++
++&usb_host2_xhci {
++	status = "okay";
++};
++
++&vop {
++	status = "okay";
++};
++
++&vop_mmu {
++	status = "okay";
++};
++
++&vp0 {
++	vp0_out_hdmi0: endpoint@ROCKCHIP_VOP2_EP_HDMI0 {
++		reg = <ROCKCHIP_VOP2_EP_HDMI0>;
++		remote-endpoint = <&hdmi0_in_vp0>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+index 6410ea5255dc78..8b104dd77e8e26 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+  * Copyright (c) 2025 Joseph Kogut <joseph.kogut@gmail.com>
++ * Copyright (c) 2025 Andrew Yong <me@ndoo.sg>
+  */
+ 
+ /*
+@@ -10,8 +11,8 @@
+ 
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/leds/common.h>
+-#include <dt-bindings/soc/rockchip,vop2.h>
+-#include <dt-bindings/usb/pd.h>
++#include <dt-bindings/pinctrl/rockchip.h>
++#include "rk3588s.dtsi"
+ 
+ / {
+ 	compatible = "radxa,cm5", "rockchip,rk3588s";
+@@ -31,6 +32,25 @@
+ 			linux,default-trigger = "heartbeat";
+ 		};
+ 	};
++
++	vcc_sysin: regulator-vcc-sysin {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_sysin";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
++
++	vcc_1v1_nldo_s3: regulator-vcc-1v1-nldo-s3 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_1v1_nldo_s3";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <1100000>;
++		regulator-max-microvolt = <1100000>;
++		vin-supply = <&vcc_sysin>;
++	};
+ };
+ 
+ &cpu_b0 {
+@@ -65,6 +85,21 @@
+ 	cpu-supply = <&vdd_cpu_lit_s0>;
+ };
+ 
++&gmac1 {
++	clock_in_out = "output";
++	phy-handle = <&rgmii_phy1>;
++	phy-mode = "rgmii-id";
++	phy-supply = <&vcc_3v3_s0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&gmac1_miim
++	&gmac1_tx_bus2
++	&gmac1_rx_bus2
++	&gmac1_rgmii_clk
++	&gmac1_rgmii_bus
++	&gmac1_clkinout>;
++	status = "okay";
++};
++
+ &gpu {
+ 	mali-supply = <&vdd_gpu_s0>;
+ 	status = "okay";
+@@ -85,7 +120,7 @@
+ 		regulator-min-microvolt = <550000>;
+ 		regulator-max-microvolt = <1050000>;
+ 		regulator-ramp-delay = <2300>;
+-		vin-supply = <&vcc5v0_sys>;
++		vin-supply = <&vcc_sysin>;
+ 
+ 		regulator-state-mem {
+ 			regulator-off-in-suspend;
+@@ -102,7 +137,36 @@
+ 		regulator-min-microvolt = <550000>;
+ 		regulator-max-microvolt = <1050000>;
+ 		regulator-ramp-delay = <2300>;
+-		vin-supply = <&vcc5v0_sys>;
++		vin-supply = <&vcc_sysin>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	eeprom:	at24c16@50 {
++		compatible = "atmel,24c16";
++		pagesize = <16>;
++		reg = <0x50>;
++		status = "okay";
++	};
++};
++
++&i2c2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c2m0_xfer>;
++	status = "okay";
++	vdd_npu_s0: regulator@42 {
++		compatible = "rockchip,rk8602";
++		reg = <0x42>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-name = "vdd_npu_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <550000>;
++		regulator-max-microvolt = <950000>;
++		regulator-ramp-delay = <2300>;
++		vin-supply = <&vcc_sysin>;
+ 
+ 		regulator-state-mem {
+ 			regulator-off-in-suspend;
+@@ -133,3 +197,395 @@
+ 	status = "okay";
+ };
+ 
++&spi2 {
++	assigned-clocks = <&cru CLK_SPI2>;
++	assigned-clock-rates = <200000000>;
++	num-cs = <1>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
++	status = "okay";
++
++	pmic@0 {
++		compatible = "rockchip,rk806";
++		reg = <0x0>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default", "pmic-power-off";
++		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
++		<&rk806_dvs2_null>, <&rk806_dvs3_null>;
++		pinctrl-1 = <&rk806_dvs1_pwrdn>;
++		spi-max-frequency = <1000000>;
++		system-power-controller;
++
++		vcc1-supply = <&vcc_sysin>;
++		vcc2-supply = <&vcc_sysin>;
++		vcc3-supply = <&vcc_sysin>;
++		vcc4-supply = <&vcc_sysin>;
++		vcc5-supply = <&vcc_sysin>;
++		vcc6-supply = <&vcc_sysin>;
++		vcc7-supply = <&vcc_sysin>;
++		vcc8-supply = <&vcc_sysin>;
++		vcc9-supply = <&vcc_sysin>;
++		vcc10-supply = <&vcc_sysin>;
++		vcc11-supply = <&vcc_2v0_pldo_s3>;
++		vcc12-supply = <&vcc_sysin>;
++		vcc13-supply = <&vcc_1v1_nldo_s3>;
++		vcc14-supply = <&vcc_1v1_nldo_s3>;
++		vcca-supply = <&vcc_sysin>;
++
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		pinctrl_rk806: pinctrl_rk806 {
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			rk806_dvs1_null: rk806_dvs1_null {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun0";
++			};
++
++			rk806_dvs1_slp: rk806_dvs1_slp {
++				pins = "gpio_pwrctrl1";
++				function = "pin_fun1";
++			};
++
++			rk806_dvs1_pwrdn: rk806_dvs1_pwrdn {
++				pins = "gpio_pwrctrl1";
++				function = "pin_fun2";
++			};
++
++			rk806_dvs1_rst: rk806_dvs1_rst {
++				pins = "gpio_pwrctrl1";
++				function = "pin_fun3";
++			};
++
++			rk806_dvs2_null: rk806_dvs2_null {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun0";
++			};
++
++			rk806_dvs2_slp: rk806_dvs2_slp {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun1";
++			};
++
++			rk806_dvs2_pwrdn: rk806_dvs2_pwrdn {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun2";
++			};
++
++			rk806_dvs2_rst: rk806_dvs2_rst {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun3";
++			};
++
++			rk806_dvs2_dvs: rk806_dvs2_dvs {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun4";
++			};
++
++			rk806_dvs2_gpio: rk806_dvs2_gpio {
++				pins = "gpio_pwrctrl2";
++				function = "pin_fun5";
++			};
++
++			rk806_dvs3_null: rk806_dvs3_null {
++				pins = "gpio_pwrctrl3";
++				function = "pin_fun0";
++			};
++
++			rk806_dvs3_slp: rk806_dvs3_slp {
++				pins = "gpio_pwrctrl3";
++				function = "pin_fun1";
++			};
++
++			rk806_dvs3_pwrdn: rk806_dvs3_pwrdn {
++				pins = "gpio_pwrctrl3";
++				function = "pin_fun2";
++			};
++
++			rk806_dvs3_rst: rk806_dvs3_rst {
++				pins = "gpio_pwrctrl3";
++				function = "pin_fun3";
++			};
++
++			rk806_dvs3_dvs: rk806_dvs3_dvs {
++				pins = "gpio_pwrctrl3";
++				function = "pin_fun4";
++			};
++
++			rk806_dvs3_gpio: rk806_dvs3_gpio {
++				pins = "gpio_pwrctrl3";
++				function = "pin_fun5";
++			};
++		};
++
++		regulators {
++			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
++				regulator-name = "vdd_gpu_s0";
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++				regulator-enable-ramp-delay = <400>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
++				regulator-name = "vdd_cpu_lit_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_log_s0: dcdc-reg3 {
++				regulator-name = "vdd_log_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <675000>;
++				regulator-max-microvolt = <750000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <750000>;
++				};
++			};
++
++			vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
++				regulator-name = "vdd_vdenc_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_ddr_s0: dcdc-reg5 {
++				regulator-name = "vdd_ddr_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <675000>;
++				regulator-max-microvolt = <900000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <850000>;
++				};
++			};
++
++			vdd2_ddr_s3: dcdc-reg6 {
++				regulator-name = "vdd2_ddr_s3";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc_2v0_pldo_s3: dcdc-reg7 {
++				regulator-name = "vdd_2v0_pldo_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <2000000>;
++				regulator-max-microvolt = <2000000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <2000000>;
++				};
++			};
++
++			vcc_3v3_s3: dcdc-reg8 {
++				regulator-name = "vcc_3v3_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vddq_ddr_s0: dcdc-reg9 {
++				regulator-name = "vddq_ddr_s0";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_1v8_s3: dcdc-reg10 {
++				regulator-name = "vcc_1v8_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			avcc_1v8_s0: pldo-reg1 {
++				regulator-name = "avcc_1v8_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_1v8_s0: pldo-reg2 {
++				regulator-name = "vcc_1v8_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			avdd_1v2_s0: pldo-reg3 {
++				regulator-name = "avdd_1v2_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1200000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_3v3_s0: pldo-reg4 {
++				regulator-name = "vcc_3v3_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vccio_sd_s0: pldo-reg5 {
++				regulator-name = "vccio_sd_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-ramp-delay = <12500>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			pldo6_s3: pldo-reg6 {
++				regulator-name = "pldo6_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vdd_0v75_s3: nldo-reg1 {
++				regulator-name = "vdd_0v75_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <750000>;
++				};
++			};
++
++			vdd_ddr_pll_s0: nldo-reg2 {
++				regulator-name = "vdd_ddr_pll_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <850000>;
++				regulator-max-microvolt = <850000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <850000>;
++				};
++			};
++
++			avdd_0v75_s0: nldo-reg3 {
++				regulator-name = "avdd_0v75_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_0v85_s0: nldo-reg4 {
++				regulator-name = "vdd_0v85_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <850000>;
++				regulator-max-microvolt = <850000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_0v75_s0: nldo-reg5 {
++				regulator-name = "vdd_0v75_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++		};
++	};
++};
+
+From ab05328a3805096f69b55319a6624149aaa8a6d5 Mon Sep 17 00:00:00 2001
+From: Andrew Yong <me@ndoo.sg>
+Date: Thu, 4 Sep 2025 02:00:45 +0800
+Subject: [PATCH 5/6] arm64: dts: rockchip: Fix Radxa CM5 GMAC1 warnings
+
+Signed-off-by: Andrew Yong <me@ndoo.sg>
+---
+ arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+index 8b104dd77e8e26..93e1613f0fd279 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+@@ -90,13 +90,15 @@
+ 	phy-handle = <&rgmii_phy1>;
+ 	phy-mode = "rgmii-id";
+ 	phy-supply = <&vcc_3v3_s0>;
+-	pinctrl-names = "default";
+ 	pinctrl-0 = <&gmac1_miim
+ 	&gmac1_tx_bus2
+ 	&gmac1_rx_bus2
+ 	&gmac1_rgmii_clk
+ 	&gmac1_rgmii_bus
+ 	&gmac1_clkinout>;
++	pinctrl-names = "default";
++	tx_delay = <0x3a>;
++	rx_delay = <0x3e>;
+ 	status = "okay";
+ };
+ 
+
+From 148f59e8d927b5126fca80c96264b258bc7b8d92 Mon Sep 17 00:00:00 2001
+From: Andrew Yong <me@ndoo.sg>
+Date: Thu, 4 Sep 2025 06:44:50 +0800
+Subject: [PATCH 6/6] arm64: dts: rockchip: Make RK806 PMIC DT similar to other
+ RK3588S mainline boards
+
+Signed-off-by: Andrew Yong <me@ndoo.sg>
+---
+ .../rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts | 101 ++-----
+ .../boot/dts/rockchip/rk3588s-radxa-cm5.dtsi  | 252 ++++++++----------
+ 2 files changed, 136 insertions(+), 217 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts
+index 7670315c50f75d..9114d4569d9180 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-rpi-cm4-io.dts
+@@ -9,6 +9,7 @@
+  */
+ 
+ /dts-v1/;
++
+ #include <dt-bindings/soc/rockchip,vop2.h>
+ #include "rk3588s-radxa-cm5.dtsi"
+ 
+@@ -25,12 +26,12 @@
+ 		stdout-path = "serial2:1500000n8";
+ 	};
+ 
+-	hdmi-con {
++	hdmi0-con {
+ 		compatible = "hdmi-connector";
+ 		type = "a";
+ 
+ 		port {
+-			hdmi_con_in: endpoint {
++			hdmi0_con_in: endpoint {
+ 				remote-endpoint = <&hdmi0_out_con>;
+ 			};
+ 		};
+@@ -75,37 +76,14 @@
+ 		regulator-max-microvolt = <5000000>;
+ 		vin-supply = <&vcc12v0_dcin>;
+ 	};
+-
+-	vcc3v3_pcie2x1l0: regulator-vcc3v3-pcie2x1l0 {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vcc3v3_pcie2x1l0";
+-		regulator-min-microvolt = <3300000>;
+-		regulator-max-microvolt = <3300000>;
+-		enable-active-high;
+-		regulator-boot-on;
+-		regulator-always-on;
+-		gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
+-		startup-delay-us = <50000>;
+-		vin-supply = <&vcc5v0_sys>;
+-	};
+-
+-	usb20_reset: usb-up-regulator {
+-		compatible = "regulator-fixed";
+-		enable-active-low;
+-		gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&usb20_reset_pin>;
+-		regulator-name = "usb20_reset";
+-		regulator-min-microvolt = <3300000>;
+-		regulator-max-microvolt = <3300000>;
+-	};
+-};
+-
+-&combphy0_ps {
+-	status = "okay";
+ };
+ 
+ &hdmi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmim0_tx0_cec
++		     &hdmim1_tx0_hpd
++		     &hdmim0_tx0_scl
++		     &hdmim0_tx0_sda>;
+ 	status = "okay";
+ };
+ 
+@@ -117,7 +95,7 @@
+ 
+ &hdmi0_out {
+ 	hdmi0_out_con: endpoint {
+-		remote-endpoint = <&hdmi_con_in>;
++		remote-endpoint = <&hdmi0_con_in>;
+ 	};
+ };
+ 
+@@ -163,8 +141,10 @@
+ };
+ 
+ &pcie2x1l2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pcie20x1_2_perstn_m0>;
+ 	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
+-	vpcie3v3-supply = <&vcc3v3_pcie2x1l0>;
++//	vpcie3v3-supply = <&vcc_3v3_s3>;
+ 	status = "okay";
+ };
+ 
+@@ -176,9 +156,9 @@
+ 		};
+ 	};
+ 
+-	usb {
+-		usb20_reset_pin: usb20-reset {
+-			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
++	pcie {
++		pcie20x1_2_perstn_m0: pcie20x1-2-perstn-m0 {
++			rockchip,pins = <3 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
+ };
+@@ -188,12 +168,9 @@
+ 	cap-mmc-highspeed;
+ 	cap-sd-highspeed;
+ 	disable-wp;
+-	max-frequency = <200000000>;
+ 	no-sdio;
+ 	no-mmc;
+ 	sd-uhs-sdr104;
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
+ 	vmmc-supply = <&vcc_3v3_s3>;
+ 	vqmmc-supply = <&vccio_sd_s0>;
+ 	status = "okay";
+@@ -207,62 +184,22 @@
+ 	status = "okay";
+ };
+ 
+-&u2phy2 {
+-	status = "okay";
+-};
+-
+-&u2phy2_host {
+-	status = "okay";
+-	phy-supply = <&vcc5v0_sys>;
+-};
+-
+-&u2phy3 {
+-	status = "okay";
+-};
+-
+-&u2phy3_host {
+-	phy-supply = <&vcc5v0_sys>;
+-	status = "okay";
+-};
+-
+ &uart2 {
+-	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart2m0_xfer>;
+ 	status = "okay";
+ };
+ 
+ &usbdp_phy0 {
+-	status = "okay";
+-	rockchip,dp-lane-mux = <2 3>;
+-};
+-
+-&usb_host0_ehci {
+-	status = "okay";
+-};
+-
+-&usb_host0_ohci {
++    maximum-speed = "high-speed";
+ 	status = "okay";
+ };
+ 
+-&usb_host0_xhci {
+-	dr_mode = "host";
+-	status = "okay";
+-};
+-
+-&usb_host1_ehci {
+-	status = "okay";
+-};
+-
+-&usb_host1_ohci {
+-	status = "okay";
+-};
+-
+-&usb_host2_xhci {
++&vop {
+ 	status = "okay";
+ };
+ 
+-&vop {
+-	status = "okay";
++&vcc_sysin {
++	vin-supply = <&vcc5v0_sys>;
+ };
+ 
+ &vop_mmu {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+index 93e1613f0fd279..7bddeb0a1c297e 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5.dtsi
+@@ -9,14 +9,14 @@
+  * https://dl.radxa.com/cm5/v2210/radxa_cm5_v2210_schematic.pdf
+  */
+ 
++/dts-v1/;
++
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/leds/common.h>
+ #include <dt-bindings/pinctrl/rockchip.h>
+ #include "rk3588s.dtsi"
+ 
+ / {
+-	compatible = "radxa,cm5", "rockchip,rk3588s";
+-
+ 	aliases {
+ 		mmc0 = &sdhci;
+ 	};
+@@ -51,6 +51,34 @@
+ 		regulator-max-microvolt = <1100000>;
+ 		vin-supply = <&vcc_sysin>;
+ 	};
++
++	vcc_3v3_pmu: regulator-vcc-3v3-pmu {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_3v3_pmu";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vcc_3v3_s3>;
++	};
++
++	vcc_3v3_s0: regulator-vcc-3v3-s0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_3v3_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vcc_3v3_s3>;
++	};
++};
++
++&combphy0_ps {
++	status = "okay";
++};
++
++&combphy2_psu {
++	status = "okay";
+ };
+ 
+ &cpu_b0 {
+@@ -130,7 +158,7 @@
+ 	};
+ 
+ 	vdd_cpu_big1_s0: regulator@43 {
+-		compatible = "rockchip,rk8602";
++		compatible = "rockchip,rk8603", "rockchip,rk8602";
+ 		reg = <0x43>;
+ 		fcs,suspend-voltage-selector = <1>;
+ 		regulator-name = "vdd_cpu_big1_s0";
+@@ -146,18 +174,17 @@
+ 		};
+ 	};
+ 
+-	eeprom:	at24c16@50 {
+-		compatible = "atmel,24c16";
+-		pagesize = <16>;
++	eeprom@50 {
++		compatible = "belling,bl24c16a", "atmel,24c16";
+ 		reg = <0x50>;
+-		status = "okay";
++		pagesize = <16>;
++		vcc-supply = <&vcc_3v3_pmu>;
+ 	};
+ };
+ 
+ &i2c2 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&i2c2m0_xfer>;
+ 	status = "okay";
++
+ 	vdd_npu_s0: regulator@42 {
+ 		compatible = "rockchip,rk8602";
+ 		reg = <0x42>;
+@@ -177,9 +204,15 @@
+ };
+ 
+ &mdio1 {
+-	rgmii_phy1: phy@1 {
+-		compatible = "ethernet-phy-ieee802.3-c22";
++	rgmii_phy1: ethernet-phy@1 {
++		/* RTL8211FS(I)(-VS) */
++		compatible = "ethernet-phy-id001c.c916";
+ 		reg = <0x1>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&gmac1_rstn>;
++		reset-assert-us = <20000>;
++		reset-deassert-us = <100000>;
++		reset-gpios = <&gpio3 RK_PB2 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+@@ -187,36 +220,52 @@
+ 	domain-supply = <&vdd_gpu_s0>;
+ };
+ 
++&pinctrl {
++	mdio {
++		gmac1_rstn: gmac1-rstn {
++			rockchip,pins = <3 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++};
++
++&saradc {
++	vref-supply = <&vcca_1v8_s0>;
++	status = "okay";
++};
++
+ &sdhci {
+ 	bus-width = <8>;
++	mmc-hs400-1_8v;
++	mmc-hs400-enhanced-strobe;
+ 	no-sdio;
+ 	no-sd;
+ 	non-removable;
+-	max-frequency = <200000000>;
+-	mmc-hs400-1_8v;
+-	mmc-hs400-enhanced-strobe;
+-	mmc-hs200-1_8v;
+ 	status = "okay";
+ };
+ 
+ &spi2 {
++	status = "okay";
+ 	assigned-clocks = <&cru CLK_SPI2>;
+ 	assigned-clock-rates = <200000000>;
+ 	num-cs = <1>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
+-	status = "okay";
+ 
+ 	pmic@0 {
+ 		compatible = "rockchip,rk806";
++		spi-max-frequency = <1000000>;
+ 		reg = <0x0>;
++
+ 		interrupt-parent = <&gpio0>;
+ 		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+-		pinctrl-names = "default", "pmic-power-off";
++
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
+-		<&rk806_dvs2_null>, <&rk806_dvs3_null>;
+-		pinctrl-1 = <&rk806_dvs1_pwrdn>;
+-		spi-max-frequency = <1000000>;
++			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
++
+ 		system-power-controller;
+ 
+ 		vcc1-supply = <&vcc_sysin>;
+@@ -235,96 +284,23 @@
+ 		vcc14-supply = <&vcc_1v1_nldo_s3>;
+ 		vcca-supply = <&vcc_sysin>;
+ 
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-
+-		pinctrl_rk806: pinctrl_rk806 {
+-			gpio-controller;
+-			#gpio-cells = <2>;
+-
+-			rk806_dvs1_null: rk806_dvs1_null {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun0";
+-			};
+-
+-			rk806_dvs1_slp: rk806_dvs1_slp {
+-				pins = "gpio_pwrctrl1";
+-				function = "pin_fun1";
+-			};
+-
+-			rk806_dvs1_pwrdn: rk806_dvs1_pwrdn {
+-				pins = "gpio_pwrctrl1";
+-				function = "pin_fun2";
+-			};
+-
+-			rk806_dvs1_rst: rk806_dvs1_rst {
+-				pins = "gpio_pwrctrl1";
+-				function = "pin_fun3";
+-			};
+-
+-			rk806_dvs2_null: rk806_dvs2_null {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun0";
+-			};
+-
+-			rk806_dvs2_slp: rk806_dvs2_slp {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun1";
+-			};
+-
+-			rk806_dvs2_pwrdn: rk806_dvs2_pwrdn {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun2";
+-			};
+-
+-			rk806_dvs2_rst: rk806_dvs2_rst {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun3";
+-			};
+-
+-			rk806_dvs2_dvs: rk806_dvs2_dvs {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun4";
+-			};
+-
+-			rk806_dvs2_gpio: rk806_dvs2_gpio {
+-				pins = "gpio_pwrctrl2";
+-				function = "pin_fun5";
+-			};
+-
+-			rk806_dvs3_null: rk806_dvs3_null {
+-				pins = "gpio_pwrctrl3";
+-				function = "pin_fun0";
+-			};
+-
+-			rk806_dvs3_slp: rk806_dvs3_slp {
+-				pins = "gpio_pwrctrl3";
+-				function = "pin_fun1";
+-			};
+-
+-			rk806_dvs3_pwrdn: rk806_dvs3_pwrdn {
+-				pins = "gpio_pwrctrl3";
+-				function = "pin_fun2";
+-			};
+-
+-			rk806_dvs3_rst: rk806_dvs3_rst {
+-				pins = "gpio_pwrctrl3";
+-				function = "pin_fun3";
+-			};
++		rk806_dvs1_null: dvs1-null-pins {
++			pins = "gpio_pwrctrl1";
++			function = "pin_fun0";
++		};
+ 
+-			rk806_dvs3_dvs: rk806_dvs3_dvs {
+-				pins = "gpio_pwrctrl3";
+-				function = "pin_fun4";
+-			};
++		rk806_dvs2_null: dvs2-null-pins {
++			pins = "gpio_pwrctrl2";
++			function = "pin_fun0";
++		};
+ 
+-			rk806_dvs3_gpio: rk806_dvs3_gpio {
+-				pins = "gpio_pwrctrl3";
+-				function = "pin_fun5";
+-			};
++		rk806_dvs3_null: dvs3-null-pins {
++			pins = "gpio_pwrctrl3";
++			function = "pin_fun0";
+ 		};
+ 
+ 		regulators {
+-			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
++			vdd_gpu_s0: dcdc-reg1 {
+ 				regulator-name = "vdd_gpu_s0";
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <550000>;
+@@ -337,7 +313,7 @@
+ 				};
+ 			};
+ 
+-			vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
++			vdd_cpu_lit_s0: dcdc-reg2 {
+ 				regulator-name = "vdd_cpu_lit_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+@@ -350,8 +326,8 @@
+ 				};
+ 			};
+ 
+-			vdd_log_s0: dcdc-reg3 {
+-				regulator-name = "vdd_log_s0";
++			vdd_logic_s0: dcdc-reg3 {
++				regulator-name = "vdd_logic_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <675000>;
+@@ -359,12 +335,12 @@
+ 				regulator-ramp-delay = <12500>;
+ 
+ 				regulator-state-mem {
+-					regulator-off-in-suspend;
++					regulator-on-in-suspend;
+ 					regulator-suspend-microvolt = <750000>;
+ 				};
+ 			};
+ 
+-			vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
++			vdd_vdenc_s0: dcdc-reg4 {
+ 				regulator-name = "vdd_vdenc_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+@@ -402,7 +378,7 @@
+ 			};
+ 
+ 			vcc_2v0_pldo_s3: dcdc-reg7 {
+-				regulator-name = "vdd_2v0_pldo_s3";
++				regulator-name = "vcc_2v0_pldo_s3";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <2000000>;
+@@ -438,8 +414,8 @@
+ 				};
+ 			};
+ 
+-			vcc_1v8_s3: dcdc-reg10 {
+-				regulator-name = "vcc_1v8_s3";
++			vcc1v8_pmu_ddr_s3: dcdc-reg10 {
++				regulator-name = "vcc1v8_pmu_ddr_s3";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1800000>;
+@@ -451,33 +427,34 @@
+ 				};
+ 			};
+ 
+-			avcc_1v8_s0: pldo-reg1 {
+-				regulator-name = "avcc_1v8_s0";
++			vcc_1v8_s0: pldo-reg1 {
++				regulator-name = "vcc_1v8_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <1800000>;
+ 
+ 				regulator-state-mem {
+-					regulator-off-in-suspend;
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
+ 				};
+ 			};
+ 
+-			vcc_1v8_s0: pldo-reg2 {
+-				regulator-name = "vcc_1v8_s0";
++			vcca_1v8_s0: pldo-reg2 {
++				regulator-name = "vcca_1v8_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <1800000>;
+ 
+ 				regulator-state-mem {
+-					regulator-off-in-suspend;
++					regulator-on-in-suspend;
+ 					regulator-suspend-microvolt = <1800000>;
+ 				};
+ 			};
+ 
+-			avdd_1v2_s0: pldo-reg3 {
+-				regulator-name = "avdd_1v2_s0";
++			vdda_1v2_s0: pldo-reg3 {
++				regulator-name = "vdda_1v2_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1200000>;
+@@ -488,16 +465,16 @@
+ 				};
+ 			};
+ 
+-			vcc_3v3_s0: pldo-reg4 {
+-				regulator-name = "vcc_3v3_s0";
++			vcca_3v3_s0: pldo-reg4 {
++				regulator-name = "vcca_3v3_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <3300000>;
+ 				regulator-max-microvolt = <3300000>;
+-				regulator-ramp-delay = <12500>;
+ 
+ 				regulator-state-mem {
+-					regulator-off-in-suspend;
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
+ 				};
+ 			};
+ 
+@@ -507,7 +484,6 @@
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <3300000>;
+-				regulator-ramp-delay = <12500>;
+ 
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+@@ -540,21 +516,21 @@
+ 				};
+ 			};
+ 
+-			vdd_ddr_pll_s0: nldo-reg2 {
+-				regulator-name = "vdd_ddr_pll_s0";
++			vdda_ddr_pll_s0: nldo-reg2 {
++				regulator-name = "vdda_ddr_pll_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <850000>;
+ 				regulator-max-microvolt = <850000>;
+ 
+ 				regulator-state-mem {
+-					regulator-off-in-suspend;
++					regulator-on-in-suspend;
+ 					regulator-suspend-microvolt = <850000>;
+ 				};
+ 			};
+ 
+-			avdd_0v75_s0: nldo-reg3 {
+-				regulator-name = "avdd_0v75_s0";
++			vdda_0v75_s0: nldo-reg3 {
++				regulator-name = "vdda_0v75_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <750000>;
+@@ -565,8 +541,8 @@
+ 				};
+ 			};
+ 
+-			vdd_0v85_s0: nldo-reg4 {
+-				regulator-name = "vdd_0v85_s0";
++			vdda_0v85_s0: nldo-reg4 {
++				regulator-name = "vdda_0v85_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <850000>;
+@@ -577,8 +553,8 @@
+ 				};
+ 			};
+ 
+-			vdd_0v75_s0: nldo-reg5 {
+-				regulator-name = "vdd_0v75_s0";
++			hdmi_vdda0v85_s0: nldo-reg5 {
++				regulator-name = "hdmi_vdda0v85_s0";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <750000>;
+@@ -591,3 +567,9 @@
+ 		};
+ 	};
+ };
++
++&tsadc {
++	rockchip,hw-tshut-mode = <1>; /* tshut mode 0:CRU 1:GPIO */
++	rockchip,hw-tshut-polarity = <0>; /* tshut polarity 0:LOW 1:HIGH */
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-uconsole.dts.orig b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-uconsole.dts
+index e69de29..d9451db 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-uconsole.dts.orig
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-uconsole.dts
+@@ -0,0 +1,409 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2025 Andrew Yong <me@ndoo.sg>
++ */
++
++/*
++ * Raspberry Pi CM4 I/O board datasheet
++ * https://datasheets.raspberrypi.com/cm4io/cm4io-datasheet.pdf
++ */
++
++/dts-v1/;
++
++#include <dt-bindings/soc/rockchip,vop2.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/pinctrl/rockchip.h>
++#include "rk3588s-radxa-cm5.dtsi"
++
++/ {
++	model = "Radxa Compute Module 5 (CM5) on Raspberry Pi Compute Module 4 IO board";
++	compatible = "radxa,cm5-rpi-cm4-io", "radxa,cm5", "rockchip,rk3588s";
++
++	aliases {
++		ethernet0 = &gmac1;
++		mmc1 = &sdmmc;
++	};
++
++	chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	hdmi0-con {
++		compatible = "hdmi-connector";
++		type = "a";
++
++		port {
++			hdmi0_con_in: endpoint {
++				remote-endpoint = <&hdmi0_out_con>;
++			};
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&led_pins>;
++
++		led-0 {
++			color = <LED_COLOR_ID_RED>;
++			function = LED_FUNCTION_POWER;
++			gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "default-on";
++		};
++
++		led-1 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "on";
++			function = LED_FUNCTION_HEARTBEAT;
++			gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "heartbeat";
++		};
++	};
++
++	vcc12v0_dcin: regulator-vcc12v0-dcin {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc12v0_dcin";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
++	vcc5v0_sys: regulator-vcc5v0-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc12v0_dcin>;
++	};
++
++	battery: battery@0 {
++		compatible = "simple-battery";
++		device-chemistry = "lithium-ion";
++		constant-charge-current-max-microamp = <2100000>;
++		voltage-max-design-microvolt = <4200000>;
++		re-charge-voltage-microvolt = <4000000>;
++		// adjust the following params according to your battery specs
++		voltage-min-design-microvolt = <3300000>;
++		energy-full-design-microwatt-hours = <24790000>; // 2x3350mAh * 3.7v
++		charge-full-design-microamp-hours = <6700000>; // 2x3350mAh
++	};
++	
++	ocp8178_backlight: backlight@0 {
++		compatible = "ocp8178-backlight";
++		backlight-control-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_HIGH>;
++		default-brightness = <5>;
++	};
++};
++
++&i2c8 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-0 = <&i2c8m2_xfer>;
++	pinctrl-names = "default";
++	status = "okay";
++	axp22x: pmic@34 {
++		interrupt-controller;
++		#interrupt-cells = <1>;
++		compatible = "x-powers,axp221";
++		reg = <0x34>; /* i2c address */
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PD0 IRQ_TYPE_EDGE_FALLING>;
++
++		regulators {
++			x-powers,dcdc-freq = <3000>;
++			reg_aldo1: aldo1 {
++				regulator-always-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "audio-vdd";
++			};
++			reg_aldo2: aldo2 {
++				regulator-always-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "display-vcc";
++			};
++				reg_dldo2: dldo2 {
++				regulator-always-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "dldo2";
++			};
++				reg_dldo3: dldo3 {
++				regulator-always-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "dldo3";
++			};
++				reg_dldo4: dldo4 {
++				regulator-always-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "dldo4";
++			};
++		};
++
++		battery_power_supply: battery-power-supply {
++			compatible = "x-powers,axp221-battery-power-supply";
++			monitored-battery = <&battery>;
++		};
++
++		ac_power_supply: ac_power_supply {
++			compatible = "x-powers,axp221-ac-power-supply";
++		};
++	};
++};
++
++&hdmi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmim0_tx0_cec
++		     &hdmim1_tx0_hpd
++		     &hdmim0_tx0_scl
++		     &hdmim0_tx0_sda>;
++	status = "okay";
++};
++
++&hdmi0_in {
++	hdmi0_in_vp0: endpoint {
++		remote-endpoint = <&vp0_out_hdmi0>;
++	};
++};
++
++&hdmi0_out {
++	hdmi0_out_con: endpoint {
++		remote-endpoint = <&hdmi0_con_in>;
++	};
++};
++
++&hdmi0_sound {
++	status = "okay";
++};
++
++&hdptxphy0 {
++	status = "okay";
++};
++
++&i2c7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c7m2_xfer>;
++	status = "okay";
++
++	emc2301: emc2301@2f {
++		status = "okay";
++		compatible = "microchip,emc2301";
++		reg = <0x2f>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		#cooling-cells = <2>;
++		microchip,pwm-separate;
++		microchip,cooling-levels = <10>;
++		channel@0 {
++			reg = <0>;
++			pwm-min = <0>;
++		};
++	};
++
++	pcf85063: pcf85063@51 {
++		compatible = "nxp,pcf85063";
++		status = "okay";
++		reg = <0x51>;
++		quartz-load-femtofarads = <12500>;
++	};
++
++};
++
++&i2s5_8ch {
++	status = "okay";
++};
++
++&pcie2x1l2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pcie20x1_2_perstn_m0>;
++	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
++//	vpcie3v3-supply = <&vcc_3v3_s3>;
++	status = "okay";
++};
++
++&pinctrl {
++	leds {
++		led_pins: led-pins {
++			rockchip,pins = <4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>,
++			<3 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	pcie {
++		pcie20x1_2_perstn_m0: pcie20x1-2-perstn-m0 {
++			rockchip,pins = <3 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++};
++
++&sdmmc {
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	disable-wp;
++	no-sdio;
++	no-mmc;
++	sd-uhs-sdr104;
++	vmmc-supply = <&vcc_3v3_s3>;
++	vqmmc-supply = <&vccio_sd_s0>;
++	status = "okay";
++};
++
++&u2phy0 {
++	status = "okay";
++};
++
++&u2phy0_otg {
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-0 = <&uart2m0_xfer>;
++	status = "okay";
++};
++
++&usbdp_phy0 {
++	maximum-speed = "high-speed";
++	status = "okay";
++};
++
++&vop {
++	status = "okay";
++};
++
++&vcc_sysin {
++	vin-supply = <&vcc5v0_sys>;
++};
++
++&vop_mmu {
++	status = "okay";
++};
++
++&vp0 {
++	vp0_out_hdmi0: endpoint@ROCKCHIP_VOP2_EP_HDMI0 {
++		reg = <ROCKCHIP_VOP2_EP_HDMI0>;
++		remote-endpoint = <&hdmi0_in_vp0>;
++	};
++};
++
++&vp2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	vp2_out_dsi0: endpoint@3 {
++		reg = <3>;
++		remote-endpoint = <&dsi0_in_vp2>;
++	};
++
++	vp2_out_dsi1: endpoint@4 {
++		reg = <4>;
++		remote-endpoint = <&dsi1_in_vp2>;
++	};
++};
++
++&vp3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	vp3_out_dsi0: endpoint@0 {
++		reg = <0>;
++		remote-endpoint = <&dsi0_in_vp3>;
++	};
++
++	vp3_out_dsi1: endpoint@1 {
++		reg = <1>;
++		remote-endpoint = <&dsi1_in_vp3>;
++	};
++};
++
++&dsi1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@1 {
++			reg = <1>;
++			dsi1_out_panel: endpoint {
++				remote-endpoint = <&panel_in_dsi1>;
++			};
++		};
++	};
++
++	panel_cwu50: panel@0 {
++		compatible = "cw,cwu50";
++		reg = <0>;
++		reset-gpio = <&gpio1 RK_PB4 GPIO_ACTIVE_HIGH>;
++		backlight = <&ocp8178_backlight>;
++		rotation = <90>;
++		port {
++			panel_in_dsi1: endpoint {
++				remote-endpoint = <&dsi1_out_panel>;
++			};
++		};
++	};
++};
++
++&dsi0_in {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	
++	dsi0_in_vp2: endpoint@0 {
++		reg = <0>;
++		remote-endpoint = <&vp2_out_dsi0>;
++		status = "disabled";
++	};
++
++	dsi0_in_vp3: endpoint@1 {
++		reg = <1>;
++		remote-endpoint = <&vp3_out_dsi0>;
++		status = "disabled";
++	};
++};
++
++&dsi1_in{
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	dsi1_in_vp2: endpoint@0 {
++		reg = <0>;
++		remote-endpoint = <&vp2_out_dsi1>;
++		status = "disabled";
++	};
++
++	dsi1_in_vp3: endpoint@1 {
++		reg = <1>;
++		remote-endpoint = <&vp3_out_dsi1>;
++		status = "okay";
++	};
++};
++
++&display_subsystem {
++	route {
++		route_dsi0: route-dsi0 {
++			status = "disabled";
++			logo,uboot = "logo.bmp";
++			logo,kernel = "logo_kernel.bmp";
++			logo,mode = "center";
++			charge_logo,mode = "center";
++			connect = <&vp3_out_dsi0>;
++		};
++
++		route_dsi1: route-dsi1 {
++			status = "okay";
++			logo,uboot = "logo.bmp";
++			logo,kernel = "logo_kernel.bmp";
++			logo,mode = "center";
++			charge_logo,mode = "center";
++			connect = <&vp3_out_dsi1>;
++		};
++	};
++};
