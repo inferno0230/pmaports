@@ -93,4 +93,3 @@
  
  ifeq ($(enable_vtable_verify),yes)
  # These are used in vtable verification; see comments in source files for
- 

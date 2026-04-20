@@ -4,7 +4,7 @@
 maintainer="Newbyte <newbyte@postmarketos.org>"
 pkgname=postmarketos-ui-gnome
 pkgver=4
-pkgrel=3
+pkgrel=4
 pkgdesc="(Wayland) Gnome Shell"
 url="https://gnome.org/"
 # armhf blocked by gnome-shell -> gjs -> mozjs102
