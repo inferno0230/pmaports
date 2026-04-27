@@ -1,0 +1,20 @@
+maintainer=""
+pkgname=firmware-samsung-matisseve-wcnss-nv
+pkgver=1
+pkgrel=0
+pkgdesc="WiFi/BT firmware for Samsung Galaxy Tab 4 10.1 WiFi (SM-T533)"
+url="https://github.com/rvlander/glowing-journey"
+arch="aarch64"
+license="proprietary"
+source="https://github.com/rvlander/glowing-journey/files/4313897/stm533-blobs.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir/blobs"
+
+package() {
+	install -Dm644 WCNSS_* \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima
+}
+
+sha512sums="
+9ab5c22904adfad8032c4f9c3abefdfc34ccbd8f26d9fa1d69c57bf76dcb0c054eb82f110cbc5f4431e2fb1d002312cc6ec3a15991f526c13d0edc85dc598e14  stm533-blobs.tar.gz
+"

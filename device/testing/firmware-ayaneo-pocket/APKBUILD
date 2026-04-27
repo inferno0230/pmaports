@@ -1,8 +1,13 @@
 maintainer="Neil Armstrong <neil.armstrong@linaro.org>"
 pkgname=firmware-ayaneo-pocket
 pkgver=20251207
-pkgrel=0
+pkgrel=1
+_commit="17fd5306f1dd33356f0bf85e2781f5c31e98ba0e"
 pkgdesc="Firmware for Ayaneo Pocket"
+url="https://github.com/sunflower2333/linux-firmware-ayaneo"
+arch="aarch64"
+license="proprietary"
+makedepends="zstd"
 subpackages="
 	$pkgname-s2-adreno:s2_adreno
 	$pkgname-s2-adsp:s2_adsp
@@ -12,68 +17,70 @@ subpackages="
 	$pkgname-s2-tplg:s2_tplg
 	$pkgname-renesas-usb:renesas_usb
 	"
-url="https://github.com/sunflower2333/linux-firmware-ayaneo"
-arch="aarch64"
-license="proprietary"
-makedepends="zstd"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-_commit="17fd5306f1dd33356f0bf85e2781f5c31e98ba0e"
 source="https://github.com/sunflower2333/linux-firmware-ayaneo/archive/$_commit/linux-firmware-ayaneo-$_commit.tar.gz"
+options="!check !strip !archcheck !tracedeps pmb:cross-native"
 builddir="$srcdir/linux-firmware-ayaneo-$_commit"
 
 package() {
-	mkdir -p "$pkgdir"
+	install -Dm644 "$builddir"/renesas_usb_fw.mem.zst \
+		-t "$pkgdir"/usr/lib/firmware/
+	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/gen70900_zap.mbn.zst \
+		-t "$pkgdir"/usr/lib/firmware/qcom/sm8650/ayaneo/ps2/
+	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/adsp* \
+		-t "$pkgdir"/usr/lib/firmware/qcom/sm8650/ayaneo/ps2/
+	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/battmgr.jsn.zst \
+		-t "$pkgdir"/usr/lib/firmware/qcom/sm8650/ayaneo/ps2/
+	install -Dm644 "$builddir"/qcom/sm8650/SM8650-APS2-tplg.bin.zst \
+		-t "$pkgdir"/usr/lib/firmware/qcom/sm8650/
+	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/cdsp* \
+		-t "$pkgdir"/usr/lib/firmware/qcom/sm8650/ayaneo/ps2/
+	install -Dm644 "$builddir"/qcom/vpu/vpu33_p4.mbn.zst \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/qcom/vpu/
+	install -Dm644 "$builddir"/ath12k/WCN7850/hw2.0/board-2.bin.zst \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/ath12k/WCN7850/hw2.0/
 }
 
 renesas_usb() {
 	pkgdesc="Renesas XHCI USB Firmware"
 
-	install -Dm644 "$builddir"/renesas_usb_fw.mem.zst -t \
-		"$subpkgdir/lib/firmware/"
+	amove usr/lib/firmware/renesas_usb_fw.mem.zst
 }
 
 s2_adreno() {
 	pkgdesc="Ayaneo Pocket S2 adreno firmware"
 
-	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/gen70900_zap.mbn.zst -t \
-		"$subpkgdir/lib/firmware/qcom/sm8650/ayaneo/ps2/"
+	amove usr/lib/firmware/qcom/sm8650/ayaneo/ps2/gen70900_zap.mbn.zst
 }
 
 s2_adsp() {
 	pkgdesc="Ayaneo Pocket S2 adsp firmware"
 
-	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/adsp* -t \
-		"$subpkgdir/lib/firmware/qcom/sm8650/ayaneo/ps2/"
-	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/battmgr.jsn.zst -t \
-		"$subpkgdir/lib/firmware/qcom/sm8650/ayaneo/ps2/"
+	amove usr/lib/firmware/qcom/sm8650/ayaneo/ps2/adsp*
+	amove usr/lib/firmware/qcom/sm8650/ayaneo/ps2/battmgr.jsn.zst
 }
 
 s2_tplg() {
 	pkgdesc="Ayaneo Pocket S2 Audio Topology"
 
-	install -Dm644 "$builddir"/qcom/sm8650/SM8650-APS2-tplg.bin.zst -t \
-		"$subpkgdir/lib/firmware/qcom/sm8650/"
+	amove usr/lib/firmware/qcom/sm8650/SM8650-APS2-tplg.bin.zst
 }
 
 s2_cdsp() {
 	pkgdesc="Ayaneo Pocket S2 cdsp firmware"
 
-	install -Dm644 "$builddir"/qcom/sm8650/ayaneo/ps2/cdsp* -t \
-		"$subpkgdir/lib/firmware/qcom/sm8650/ayaneo/ps2/"
+	amove usr/lib/firmware/qcom/sm8650/ayaneo/ps2/cdsp*
 }
 
 s2_iris() {
 	pkgdesc="Ayaneo Pocket S2 iris firmware"
 
-	install -Dm644 "$builddir"/qcom/vpu/vpu33_p4.mbn.zst -t \
-		"$subpkgdir/lib/firmware/postmarketos/qcom/vpu/"
+	amove usr/lib/firmware/postmarketos/qcom/vpu/vpu33_p4.mbn.zst
 }
 
 s2_ath12k() {
 	pkgdesc="Ayaneo Pocket S2 ath12k firmware"
 
-	install -Dm644 "$builddir"/ath12k/WCN7850/hw2.0/board-2.bin.zst -t \
-		"$subpkgdir/lib/firmware/postmarketos/ath12k/WCN7850/hw2.0/"
+	amove usr/lib/firmware/postmarketos/ath12k/WCN7850/hw2.0/board-2.bin.zst
 }
 
 sha512sums="

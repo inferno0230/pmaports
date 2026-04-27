@@ -1,0 +1,25 @@
+# Co-Maintainer: Lin, Meng-Bo <linmengbo06890@proton.me>
+maintainer="Raymond Hackley <wonderfulShrineMaidenOfParadise@postmarketos.org>"
+pkgname=firmware-samsung-j3ltetw-wcnss-nv
+pkgver=1
+pkgrel=0
+pkgdesc="WiFi/BT firmware for Samsung Galaxy J3 2016 (SM-J320YZ)"
+url="https://postmarketos.org"
+arch="aarch64"
+license="proprietary"
+source="$pkgname-WCNSS_qcom_wlan_nv.bin.base64::https://pastebin.com/raw/fRk3jmJE"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir"
+
+build() {
+	base64 -d "$pkgname"-WCNSS_qcom_wlan_nv.bin.base64 > WCNSS_qcom_wlan_nv.bin
+}
+
+package() {
+	install -Dm644 "$srcdir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/
+}
+
+sha512sums="
+5ef881795fbcd5defc0c3a040638a2d3dc1a4cc850b19f49744ea67dfd2b6bf5000cfc1987840d9a646767cfc4276cd229681c06d60ca00aeb193c2c519e7419  firmware-samsung-j3ltetw-wcnss-nv-WCNSS_qcom_wlan_nv.bin.base64
+"

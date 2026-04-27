@@ -1,6 +1,6 @@
 maintainer=""
 pkgname=firmware-ouya-ouya
-pkgver=0
+pkgver=1
 pkgrel=0
 pkgdesc="Ouya Firmware"
 url="https://github.com/milaq"
@@ -26,16 +26,16 @@ source="
 package() {
 	# close to mainline kernel
 	install -Dm644 "$srcdir/$pkgname-$_fw_commit-$_fw_file" \
-		"$pkgdir/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.bin"
+		"$pkgdir/usr/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.bin"
 	install -Dm644 "$srcdir/$pkgname-$_nvram_commit-$_nvram_file" \
-		"$pkgdir/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.txt"
+		"$pkgdir/usr/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.txt"
 
 	# downstream kernel
-	mkdir -p "$pkgdir/lib/firmware/postmarketos/bcm4330/"
-	cd "$pkgdir/lib/firmware/postmarketos/bcm4330/"
-	ln -s "/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.bin" \
+	mkdir -p "$pkgdir/usr/lib/firmware/postmarketos/bcm4330/"
+	cd "$pkgdir/usr/lib/firmware/postmarketos/bcm4330/"
+	ln -s "/usr/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.bin" \
 		"fw_bcmdhd.bin"
-	ln -s "/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.txt" \
+	ln -s "/usr/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.txt" \
 		"nvram_4330.txt"
 }
 sha512sums="51e4f0e42d13c88b360c1f2d62f11d72cd7495c10d48839291705e47775db226191ddfea4abaf09ab681bfcfa66d1953ccd7b217c0420d11df07d3920d21bd86  firmware-ouya-ouya-7ba28a076fec16c46b2513cc45eee30f1f73a9bc-fw_bcmdhd.bin

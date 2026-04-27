@@ -1,6 +1,6 @@
 maintainer="Barnabas Czeman <barnabas.czeman@postmarketos.org>"
 pkgname=firmware-qcom-msm89x7
-pkgver=2
+pkgver=3
 pkgrel=0
 pkgdesc="Firmware files for Qualcomm MSM89x7 devices"
 url="https://postmarketos.org"
@@ -16,8 +16,7 @@ source="
 	firmware-motorola-cedric-$_motorola_cedric_commit.tar.gz::https://github.com/Hacker1245/vendor_motorola_cedric/archive/$_motorola_cedric_commit/$_motorola_cedric_commit.tar.gz
 "
 
-_basefwdir="/lib/firmware"
-_fwdir="$_basefwdir/qcom/"
+_fwdir="/usr/lib/firmware/qcom/"
 
 package() {
 	motorola_montana_dir="$srcdir/firmware-motorola-montana-$_motorola_montana_commit"

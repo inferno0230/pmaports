@@ -1,20 +1,19 @@
 maintainer=""
 pkgname=firmware-alcatel-idol3
-pkgver=2
+pkgver=3
 pkgrel=0
+_commit="a6d724edf0959dbbd97aa0980f149ba51f74435d"
 pkgdesc="Firmware for Alcatel OneTouch Idol 3 (5.5)"
-url="https://github.com/vknecht/"
-subpackages="$pkgname-venus $pkgname-wcnss-nv:wcnss_nv"
+url="https://github.com/vknecht"
 arch="aarch64"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
+subpackages="$pkgname-venus $pkgname-wcnss-nv:wcnss_nv"
 makedepends="pil-squasher"
-_repository="firmware-alcatel-idol3"
-_commit="a6d724edf0959dbbd97aa0980f149ba51f74435d"
-source="$pkgname-$_commit.tar.gz::$url/$_repository/archive/$_commit.tar.gz"
-builddir="$srcdir/$_repository-$_commit"
+source="$pkgname-$_commit.tar.gz::https://github.com/vknecht/$pkgname/archive/$_commit.tar.gz"
+builddir="$srcdir/$pkgname-$_commit"
+options="!check !strip !archcheck !tracedeps pmb:cross-native"
 
-_fwdir="/lib/firmware/postmarketos"
+_fwdir="/usr/lib/firmware/postmarketos"
 
 build() {
 	# venus.mbn exists already but seems a bit different
@@ -32,13 +31,16 @@ venus() {
 	# Linux detects squashed (.mbn) vs non-squashed (.mdt + .b*) based on
 	# file contents, so it is fine to link venus.mbn to venus.mdt
 	# Older kernels look for venus.mdt, newer ones directly for venus.mbn
-	install -Dm644 "$builddir"/venus2.mbn "$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mbn
+	install -Dm644 "$builddir"/venus2.mbn \
+		"$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mbn
 	ln -s venus.mbn "$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mdt
 }
 
 wcnss_nv() {
 	pkgdesc="Alcatel OneTouch Idol 3 (5.5) WiFi/BT firmware configuration"
-	install -Dm644 "$builddir"/WCNSS_qcom_wlan_nv.bin -t "$subpkgdir/$_fwdir"/wlan/prima
+
+	install -Dm644 "$builddir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$subpkgdir/$_fwdir"/wlan/prima
 }
 
 sha512sums="

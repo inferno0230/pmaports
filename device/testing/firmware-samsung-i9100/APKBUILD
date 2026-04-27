@@ -1,28 +1,26 @@
 maintainer="Henrik Grimler <henrik@grimler.se>"
 pkgname=firmware-samsung-i9100
-pkgver=3
+pkgver=4
 pkgrel=0
+_commit="5ae6836ddc96cdb6fa1910cb36dfab3ec77d9c67"
 pkgdesc="Samsung Galaxy S II Firmware"
 url="https://github.com/TheMuppets/proprietary_vendor_samsung"
 arch="armv7"
 license="proprietary"
-options="!check !tracedeps pmb:cross-native"
-
-_commit="5ae6836ddc96cdb6fa1910cb36dfab3ec77d9c67"
-_url="https://github.com/TheMuppets/proprietary_vendor_samsung/raw/$_commit"
 source="
-	$pkgname-$_commit-bcmdhd_sta.bin::$_url/skyrocket/proprietary/etc/wifi/bcmdhd_sta.bin
-	$pkgname-$_commit-nvram_net.txt::$_url/i9100/proprietary/system/etc/wifi/nvram_net.txt
-	$pkgname-$_commit-bcm4330B1.hcd::$_url/galaxys2-common/proprietary/system/bin/bcm4330B1.hcd
-"
+	$pkgname-$_commit-bcmdhd_sta.bin::https://github.com/TheMuppets/proprietary_vendor_samsung/raw/$_commit/skyrocket/proprietary/etc/wifi/bcmdhd_sta.bin
+	$pkgname-$_commit-nvram_net.txt::https://github.com/TheMuppets/proprietary_vendor_samsung/raw/$_commit/i9100/proprietary/system/etc/wifi/nvram_net.txt
+	$pkgname-$_commit-bcm4330B1.hcd::https://github.com/TheMuppets/proprietary_vendor_samsung/raw/$_commit/galaxys2-common/proprietary/system/bin/bcm4330B1.hcd
+	"
+options="!archcheck !check !tracedeps pmb:cross-native"
 
 package() {
-	install -Dm644 "$srcdir/$pkgname-$_commit-bcmdhd_sta.bin" \
-		"$pkgdir/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.bin"
-	install -Dm644 "$srcdir/$pkgname-$_commit-nvram_net.txt"  \
-		"$pkgdir/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.samsung,i9100.txt"
-	install -Dm644 "$srcdir/$pkgname-$_commit-bcm4330B1.hcd"  \
-		"$pkgdir/lib/firmware/postmarketos/brcm/bcm4330B1.hcd"
+	install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-bcmdhd_sta.bin \
+		"$pkgdir"/usr/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.bin
+	install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-nvram_net.txt  \
+		"$pkgdir"/usr/lib/firmware/postmarketos/brcm/brcmfmac4330-sdio.samsung,i9100.txt
+	install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-bcm4330B1.hcd  \
+		"$pkgdir"/usr/lib/firmware/postmarketos/brcm/bcm4330B1.hcd
 }
 
 sha512sums="

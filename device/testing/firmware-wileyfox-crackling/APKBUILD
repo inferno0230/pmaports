@@ -1,7 +1,7 @@
 maintainer="Nikita Travkin <nikita@trvn.ru>"
 pkgname=firmware-wileyfox-crackling
-pkgver=5
-pkgrel=2
+pkgver=6
+pkgrel=0
 pkgdesc="Firmware for Wileyfox Swift"
 url="https://rizzotherat.gitlab.io/firmware/"
 subpackages="$pkgname-venus $pkgname-wcnss-nv:wcnss_nv"
@@ -12,7 +12,7 @@ makedepends="pil-squasher"
 source="https://rizzotherat.gitlab.io/firmware/crackling.tar.xz"
 builddir="$srcdir"
 
-_fwdir="/lib/firmware/postmarketos"
+_fwdir="/usr/lib/firmware/postmarketos"
 
 build() {
 	# venus.mbn exists already but seems a bit different

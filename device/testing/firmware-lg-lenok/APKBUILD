@@ -1,7 +1,8 @@
 maintainer="Luca Weiss <luca@lucaweiss.eu>"
 pkgname=firmware-lg-lenok
-pkgver=1
+pkgver=2
 pkgrel=0
+_commit="429c7160ee4fc73bd9885f743521b54831d09549"
 pkgdesc="Firmware for LG G Watch R"
 subpackages="
 	$pkgname-adsp
@@ -11,44 +12,43 @@ subpackages="
 url="https://github.com/FairBlobs/lenok-firmware"
 arch="armv7"
 license="proprietary"
-_commit="429c7160ee4fc73bd9885f743521b54831d09549"
-builddir="$srcdir/lenok-firmware-$_commit"
 source="$pkgname-$_commit.tar.gz::https://github.com/FairBlobs/lenok-firmware/archive/$_commit.tar.gz"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir/lenok-firmware-$_commit"
 
 package() {
-	# parent package is empty
-	mkdir -p "$pkgdir"
+	for _i in adsp.* mba.* modem.*; do
+		install -Dm644 "$_i" \
+			-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	done
+
+	install -Dm644 BCM4343A0.hcd \
+		-t "$pkgdir"/usr/lib/firmware/brcm/BCM4343A0.hcd
+	install -Dm644 brcmfmac43430a0-sdio.lg,lenok.bin \
+		-t "$pkgdir"/usr/lib/firmware/brcm/
+	install -Dm644 brcmfmac43430a0-sdio.lg,lenok.txt \
+		-t "$pkgdir"/usr/lib/firmware/brcm/
 }
 
 adsp() {
 	pkgdesc="LG G Watch R - ADSP firmware"
 
-	cd "$builddir"
-	for _i in adsp.*; do
-		install -Dm644 $_i "$subpkgdir"/lib/firmware/postmarketos/$_i
-	done
+	amove usr/lib/firmware/postmarketos/adsp.*
 }
 
 modem() {
 	pkgdesc="LG G Watch R - Modem firmware"
 
-	cd "$builddir"
-	for _i in modem.* mba.*; do
-		install -Dm644 $_i "$subpkgdir"/lib/firmware/postmarketos/$_i
-	done
+	amove usr/lib/firmware/postmarketos/mba.*
+	amove usr/lib/firmware/postmarketos/modem.*
 }
 
 wifi() {
 	pkgdesc="LG G Watch R - WiFi/Bluetooth firmware"
 
-	cd "$builddir"
-	install -Dm644 BCM4343A0.hcd \
-		"$subpkgdir"/lib/firmware/brcm/BCM4343A0.hcd
-	install -Dm644 brcmfmac43430a0-sdio.lg,lenok.bin \
-		"$subpkgdir"/lib/firmware/brcm/brcmfmac43430a0-sdio.lg,lenok.bin
-	install -Dm644 brcmfmac43430a0-sdio.lg,lenok.txt \
-		"$subpkgdir"/lib/firmware/brcm/brcmfmac43430a0-sdio.lg,lenok.txt
+	amove usr/lib/firmware/brcm/BCM4343A0.hcd
+	amove usr/lib/firmware/brcm/brcmfmac43430a0-sdio.lg,lenok.bin
+	amove usr/lib/firmware/brcm/brcmfmac43430a0-sdio.lg,lenok.txt
 }
 
 sha512sums="

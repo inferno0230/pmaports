@@ -1,39 +1,42 @@
 maintainer="Craig Comstock <craig@unreasonablefarm.org>"
 pkgname=firmware-motorola-surnia
-pkgver=2
+pkgver=3
 pkgrel=0
+_commit="b8dbec48197c086d22371d360fa41387880a1dcb"
 pkgdesc="Firmware for Motorola Moto E 2015 (2nd gen)"
 url="https://github.com/linuxgorl/vendor_motorola_surnia"
-subpackages="$pkgname-wcnss-nv:wcnss_nv $pkgname-venus"
 arch="aarch64"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-
-_commit="b8dbec48197c086d22371d360fa41387880a1dcb"
-source="$pkgname-$_commit.tar.gz::$url/archive/$_commit.tar.gz"
-
+subpackages="$pkgname-wcnss-nv:wcnss_nv $pkgname-venus"
+source="$pkgname-$_commit.tar.gz::https://github.com/linuxgorl/vendor_motorola_surnia/archive/$_commit.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/vendor_motorola_surnia-$_commit"
 
-_fwdir="/lib/firmware/postmarketos"
-
 package() {
-	mkdir -p "$pkgdir"
+	install -Dm644 "$builddir"/wlan/prima/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/
+
+	# Linux detects squashed (.mbn) vs non-squashed (.mdt + .b*) based on
+	# file contents, so it is fine to link venus.mbn to venus.mdt
+	# Older kernels look for venus.mdt, newer ones directly for venus.mbn
+	install -Dm644 "$builddir"/venus.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/qcom/venus-1.8/
+	ln -s venus.mbn \
+		"$pkgdir"/usr/lib/firmware/postmarketos/qcom/venus-1.8/venus.mdt
 }
 
 wcnss_nv() {
 	pkgdesc="Motorola Moto E 2015 (2nd gen) Wi-Fi/Bluetooth firmware configuration"
 	replaces="firmware-motorola-surnia-wcnss"
-	install -Dm644 "$builddir"/wlan/prima/WCNSS_qcom_wlan_nv.bin -t "$subpkgdir/$_fwdir/wlan/prima"
+
+	amove usr/lib/firmware/postmarketos/wlan/prima/WCNSS_qcom_wlan_nv.bin
 }
 
 venus() {
 	pkgdesc="Motorola Moto E 2015 (2nd gen) video firmware"
 
-	# Linux detects squashed (.mbn) vs non-squashed (.mdt + .b*) based on
-	# file contents, so it is fine to link venus.mbn to venus.mdt
-	# Older kernels look for venus.mdt, newer ones directly for venus.mbn
-	install -Dm644 "$builddir"/venus.mbn "$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mbn
-	ln -s venus.mbn "$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mdt
+	amove usr/lib/firmware/postmarketos/qcom/venus-1.8/venus.mbn
+	amove usr/lib/firmware/postmarketos/qcom/venus-1.8/venus.mdt
 }
 
 

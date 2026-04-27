@@ -1,7 +1,7 @@
 maintainer=""
 pkgname=firmware-motorola-harpia
-pkgver=4
-pkgrel=2
+pkgver=5
+pkgrel=0
 pkgdesc="Firmware for Motorola Moto G4 Play"
 url="https://github.com/Sorixelle/vendor_motorola_harpia"
 subpackages="$pkgname-wcnss-nv:wcnss_nv $pkgname-venus"
@@ -14,7 +14,7 @@ _commit="a81be710b0ff4ee7e5fd1962184dcd882cc13efc"
 source="$pkgname-$_commit.tar.gz::$url/archive/$_commit.tar.gz"
 builddir="$srcdir/vendor_motorola_harpia-$_commit"
 
-_fwdir="/lib/firmware/postmarketos"
+_fwdir="/usr/lib/firmware/postmarketos"
 
 build() {
 	# venus.mbn exists already but seems a bit different

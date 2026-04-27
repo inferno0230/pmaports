@@ -1,34 +1,36 @@
 maintainer=""
 pkgname=firmware-nokia-argon
 pkgver=17.00.17.01
-pkgrel=0
+pkgrel=1
 pkgdesc="Firmware for Nokia 8110 4G"
 url="https://storage.abscue.de/private/zImage/$pkgname-$pkgver/"
 arch="armv7"
-license="custom"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
+license="proprietary"
 subpackages="$pkgname-venus:venus_package $pkgname-wcnss-nv:wcnss_nv_package"
-source="$url/$pkgname.tar.gz"
-
-_fwsrc="$srcdir/firmware-nokia-argon"
-_fwdir="/lib/firmware/postmarketos"
+source="https://storage.abscue.de/private/zImage/$pkgname-$pkgver/$pkgname.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir/firmware-nokia-argon"
 
 package() {
-	mkdir -p "$pkgdir"
+	# venus.mbn already exists and doesn't differ from the file produced
+	# by pil-squasher
+	install -Dm644 venus.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/qcom/venus-3.0/
+
+	install -Dm644 wlan/prima/WCNSS_qcom_wlan_nv.bin -t \
+		"$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/
 }
 
 venus_package() {
 	pkgdesc="Nokia 8110 4G video encoder/decoder firmware"
 
-	# venus.mbn already exists and doesn't differ from the file produced
-	# by pil-squasher
-	install -Dm644 "$_fwsrc"/venus.mbn -t "$subpkgdir/$_fwdir"/qcom/venus-3.0/
+	amove usr/lib/firmware/postmarketos/qcom/venus-3.0/venus.mbn
 }
 
 wcnss_nv_package() {
 	pkgdesc="Nokia 8110 4G WiFi/BT firmware configuration"
-	install -Dm644 "$_fwsrc"/wlan/prima/WCNSS_qcom_wlan_nv.bin -t \
-		"$subpkgdir/$_fwdir"/wlan/prima/
+
+	amove usr/lib/firmware/postmarketos/wlan/prima/WCNSS_qcom_wlan_nv.bin
 }
 
 sha512sums="

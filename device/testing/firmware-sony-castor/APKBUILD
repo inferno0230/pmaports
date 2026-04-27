@@ -1,6 +1,6 @@
 maintainer=""
 pkgname=firmware-sony-castor
-pkgver=1
+pkgver=2
 pkgrel=0
 _commit="00b1ede4d9abb102fe6f0b9de4e795384721ceaa"
 pkgdesc="Firmware for Sony Xperia Z2 Tablet"
@@ -14,9 +14,9 @@ options="!check !strip !archcheck !tracedeps pmb:cross-native"
 
 package() {
 	install -Dm644 rootdir/system/etc/BCM4339.hcd \
-		"$pkgdir"/lib/firmware/postmarketos/brcm/BCM4335C0.hcd
+		"$pkgdir"/usr/lib/firmware/postmarketos/brcm/BCM4335C0.hcd
 	install -Dm644 rootdir/system/etc/wifi/bcmdhd.cal \
-		"$pkgdir"/lib/firmware/postmarketos/brcm/brcmfmac4339-sdio.txt
+		"$pkgdir"/usr/lib/firmware/postmarketos/brcm/brcmfmac4339-sdio.txt
 }
 
 sha512sums="2816d487e337bdd79cb60ea8b0dfbe9f5a6f063228924a216e1d857b80e4ffed981a820b643d3811ae7d6078f36807f36d17e9316435ff9df204107a71cd4bbf  firmware-sony-castor-00b1ede4d9abb102fe6f0b9de4e795384721ceaa.tar.gz"

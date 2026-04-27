@@ -1,7 +1,8 @@
 maintainer="Luca Weiss <luca@lucaweiss.eu>"
 pkgname=firmware-sony-leo
-pkgver=1
+pkgver=2
 pkgrel=0
+_commit="8d3b4c091b27ee74e973651f709adbfc5740e9fb"
 pkgdesc="Firmware for Sony Xperia Z3"
 url="https://github.com/FairBlobs/leo-firmware"
 arch="armv7"
@@ -11,42 +12,40 @@ subpackages="
 	$pkgname-modem
 	$pkgname-wifi
 	"
-options="!strip !check !archcheck !tracedeps pmb:cross-native"
-_commit="8d3b4c091b27ee74e973651f709adbfc5740e9fb"
 source="https://github.com/FairBlobs/leo-firmware/archive/$_commit/leo-firmware-$_commit.tar.gz"
+options="!strip !check !archcheck !tracedeps pmb:cross-native"
 builddir="$srcdir/leo-firmware-$_commit"
 
 package() {
-	# parent package is empty
-	mkdir -p "$pkgdir"
+	for _i in adsp.* mba.* modem.*; do
+		install -Dm644 "$_i" \
+			-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	done
+
+	install -Dm644 brcmfmac4339-sdio.sony,xperia-leo.bin \
+		-t "$pkgdir"/usr/lib/firmware/brcm/
+	install -Dm644 brcmfmac4339-sdio.txt \
+		-t "$pkgdir"/usr/lib/firmware/brcm/
 }
 
 adsp() {
-	pkgdesc="Sony Xperia Z3 adsp firmware"
+	pkgdesc="$pkgdesc (adsp)"
 
-	cd "$builddir"
-	for _i in adsp.*; do
-		install -Dm644 $_i "$subpkgdir"/lib/firmware/postmarketos/$_i
-	done
+	amove usr/lib/firmware/postmarketos/adsp.*
 }
 
 modem() {
-	pkgdesc="Sony Xperia Z3 modem firmware"
+	pkgdesc="$pkgdesc (modem)"
 
-	cd "$builddir"
-	for _i in modem.* mba.*; do
-		install -Dm644 $_i "$subpkgdir"/lib/firmware/postmarketos/$_i
-	done
+	amove usr/lib/firmware/postmarketos/mba.*
+	amove usr/lib/firmware/postmarketos/modem.*
 }
 
 wifi() {
-	pkgdesc="Sony Xperia Z3 wifi firmware"
+	pkgdesc="$pkgdesc (wifi)"
 
-	cd "$builddir"
-	install -Dm644 brcmfmac4339-sdio.sony,xperia-leo.bin -t \
-		"$subpkgdir"/lib/firmware/brcm/
-	install -Dm644 brcmfmac4339-sdio.txt -t \
-		"$subpkgdir"/lib/firmware/brcm/
+	amove usr/lib/firmware/brcm/brcmfmac4339-sdio.sony,xperia-leo.bin
+	amove usr/lib/firmware/brcm/brcmfmac4339-sdio.txt
 }
 
 sha512sums="

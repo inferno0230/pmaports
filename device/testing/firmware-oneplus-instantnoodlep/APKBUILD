@@ -1,21 +1,21 @@
 maintainer="Frieder Hannenheim <git@fhannenheim.net>"
 pkgname=firmware-oneplus-instantnoodlep
-pkgver=1
-pkgrel=1
+pkgver=2
+pkgrel=0
+_commit="2dce2681689fcf615198c663555c5a7c7b3650ba"
 pkgdesc="Firmware for OnePlus 8 Pro (instantnoodlep)"
 url="https://github.com/pangwalla/oneplus-instantnoodlep-firmware"
 arch="aarch64"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
 makedepends="
 	qca-swiss-army-knife
 	pil-squasher
-"
+	"
 replaces="
 	linux-firmware-ath11k
 	linux-firmware-qca
 	linux-firmware-qcom
-"
+	"
 subpackages="
 	$pkgname-adsp:adsp
 	$pkgname-bluetooth:bluetooth
@@ -26,67 +26,95 @@ subpackages="
 	$pkgname-slpi:slpi
 	$pkgname-wifi:wifi
 	$pkgname-venus:venus
-"
-_commit="2dce2681689fcf615198c663555c5a7c7b3650ba"
+	"
 source="https://github.com/pangwalla/oneplus-instantnoodlep-firmware/archive/$_commit/oneplus-instantnoodlep-firmware-$_commit.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/oneplus-instantnoodlep-firmware-$_commit"
 
+build() {
+	pil-squasher adsp.mbn adsp/adsp.mdt
+	pil-squasher cdsp.mbn cdsp/cdsp.mdt
+	pil-squasher ipa_fws.mbn ipa/ipa_fws.mdt
+	pil-squasher ipa_uc.mbn ipa/ipa_uc.mdt
+	pil-squasher slpi.mbn slpi/slpi.mdt
+	pil-squasher venus.mbn venus/venus.mdt
+	cd wlan
+	ath11k-bdencoder -c board-2.json
+}
+
 package() {
-	mkdir -p "$pkgdir"
-}
+	install -Dm644 adsp.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 cdsp.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 ipa_fws.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 ipa_uc.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 slpi.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 wlan/board-2.bin \
+		-t "$pkgdir"/usr/lib/firmware/ath11k/QCA6390/hw2.0/
+	install -Dm644 wlan/amss.bin \
+		-t "$pkgdir"/usr/lib/firmware/ath11k/QCA6390/hw2.0/
+	install -Dm644 wlan/m3.bin \
+		-t "$pkgdir"/usr/lib/firmware/ath11k/QCA6390/hw2.0/
+	install -Dm644 venus.mbn \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/venus.mbn
 
-adsp() {
-	pil-squasher "$builddir/adsp/adsp.mbn" "$builddir/adsp/adsp.mdt"
-	install -Dm644 "$builddir/adsp/adsp.mbn" -t $subpkgdir/lib/firmware/postmarketos
-}
-
-bluetooth() {
-	for file in $builddir/bluetooth/*; do
-		install -Dm644 $file -t "$subpkgdir/lib/firmware/qca/"
+	for file in bluetooth/*; do
+		install -Dm644 "$file" \
+			-t "$pkgdir"/usr/lib/firmware/qca/
+	done
+	for file in gpu/*; do
+		install -Dm644 "$file" \
+			-t "$pkgdir"/usr/lib/firmware/qcom/
+	done
+	for file in modem/*; do
+		install -Dm644 "$file" \
+			-t "$pkgdir"/usr/lib/firmware/qcom/sdx55m/
 	done
 }
 
+adsp() {
+	amove usr/lib/firmware/postmarketos/adsp.mbn
+}
+
+bluetooth() {
+	amove usr/lib/firmware/qca
+}
+
 cdsp() {
-	pil-squasher "$builddir/cdsp/cdsp.mbn" "$builddir/cdsp/cdsp.mdt"
-	install -Dm644 "$builddir/cdsp/cdsp.mbn" -t $subpkgdir/lib/firmware/postmarketos
+	amove usr/lib/firmware/postmarketos/cdsp.mbn
 }
 
 gpu() {
-	for file in $builddir/gpu/*; do
-		install -Dm644 $file -t "$subpkgdir/lib/firmware/qcom/"
+	for file in $(ls "$builddir"/gpu/); do
+		amove usr/lib/firmware/qcom/"$file"
 	done
 }
 
 ipa() {
-	pil-squasher "$builddir/ipa/ipa_fws.mbn" "$builddir/ipa/ipa_fws.mdt"
-	install -Dm644 "$builddir/ipa/ipa_fws.mbn" -t $subpkgdir/lib/firmware/postmarketos
-
-	pil-squasher "$builddir/ipa/ipa_uc.mbn" "$builddir/ipa/ipa_uc.mdt"
-	install -Dm644 "$builddir/ipa/ipa_uc.mbn" -t $subpkgdir/lib/firmware/postmarketos
+	amove usr/lib/firmware/postmarketos/ipa_fws.mbn
+	amove usr/lib/firmware/postmarketos/ipa_uc.mbn
 }
 
 modem() {
-	for file in $builddir/modem/*; do
-		install -Dm644 $file -t "$subpkgdir/lib/firmware/qcom/sdx55m"
-	done
+	amove usr/lib/firmware/qcom/sdx55m
 }
 
 slpi() {
-	pil-squasher "$builddir/slpi/slpi.mbn" "$builddir/slpi/slpi.mdt"
-	install -Dm644 "$builddir/slpi/slpi.mbn" -t $subpkgdir/lib/firmware/postmarketos
+	amove usr/lib/firmware/postmarketos/slpi.mbn
 }
 
 wifi() {
-	cd "$builddir/wlan"
-	ath11k-bdencoder -c board-2.json
-	install -Dm644 "$builddir/wlan/board-2.bin" -t "$subpkgdir/lib/firmware/ath11k/QCA6390/hw2.0"
-	install -Dm644 "$builddir/wlan/amss.bin" -t "$subpkgdir/lib/firmware/ath11k/QCA6390/hw2.0"
-	install -Dm644 "$builddir/wlan/m3.bin" -t "$subpkgdir/lib/firmware/ath11k/QCA6390/hw2.0"
+	amove usr/lib/firmware/ath11k/QCA6390/hw2.0/board-2.bin
+	amove usr/lib/firmware/ath11k/QCA6390/hw2.0/amss.bin
+	amove usr/lib/firmware/ath11k/QCA6390/hw2.0/m3.bin
 }
 
 venus() {
-	pil-squasher "$builddir/venus/venus.mbn" "$builddir/venus/venus.mdt"
-	install -Dm644 "$builddir/venus/venus.mbn" -t $subpkgdir/lib/firmware/postmarketos
+	amove usr/lib/firmware/postmarketos/venus.mbn
 }
 
 sha512sums="

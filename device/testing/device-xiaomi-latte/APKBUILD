@@ -3,7 +3,7 @@
 maintainer=""
 pkgname=device-xiaomi-latte
 pkgdesc="XiaoMi Pad2"
-pkgver=2
+pkgver=3
 pkgrel=0
 url="https://github.com/Qs315490/linux_latte"
 license="MIT"
@@ -48,11 +48,11 @@ package() {
 	devicepkg_package $startdir $pkgname
 
 	# If you change the all 'm' setting to 'y' in the kconfig, you need to uncomment this line.
-	# echo "/lib/firmware" >> "$pkgdir/usr/share/mkinitfs/files/00-$pkgname-modules.files"
+	# echo "/usr/lib/firmware" >> "$pkgdir/usr/share/mkinitfs/files/00-$pkgname-modules.files"
 
 	# Firmware for Xiaomi Mi Pad 2
 	install -Dm755 "$SRCDEST/BCM4356A2.hcd" \
-		"$pkgdir/lib/firmware/brcm/BCM4356A2.hcd"
+		"$pkgdir/usr/lib/firmware/brcm/BCM4356A2.hcd"
 
 	# ALSA Use Case Manager configuration for Xiaomi Mi Pad 2
 	install -Dm755 "alsa-ucm-conf/cht-bsw-rt5659.conf" \

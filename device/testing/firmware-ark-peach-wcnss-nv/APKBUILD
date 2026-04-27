@@ -1,0 +1,27 @@
+maintainer=""
+pkgname=firmware-ark-peach-wcnss-nv
+pkgver=2
+pkgrel=0
+pkgdesc="WiFi/BT firmware for ARK Benefit A3"
+url="https://postmarketos.org"
+arch="aarch64"
+license="proprietary"
+source="$pkgname-WCNSS_qcom_wlan_nv.bin.base64::https://pastebin.com/raw/F2zDaaqf"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir"
+replaces="firmware-ark-peach-wcnss"
+
+_fwdir="/usr/lib/firmware/postmarketos"
+
+build() {
+	base64 -d $pkgname-WCNSS_qcom_wlan_nv.bin.base64 > WCNSS_qcom_wlan_nv.bin
+}
+
+package() {
+	install -Dm644 "$srcdir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir/$_fwdir"/wlan/prima
+}
+
+sha512sums="
+214a1e9ec215f4cdf25fee73b2cec446815131b1de283c887a30ea41deffd54c78e7d56cc7f895c5832d568eb336ec8c5ebc114f8a0d331876f940276741c082  firmware-ark-peach-wcnss-nv-WCNSS_qcom_wlan_nv.bin.base64
+"

@@ -1,7 +1,7 @@
 maintainer="Nikita Travkin <nikita@trvn.ru>"
 pkgname=firmware-acer-aspire1
-pkgver=1
-pkgrel=1
+pkgver=2
+pkgrel=0
 pkgdesc="Firmware for Acer Aspire 1"
 url="https://laughlonely.gitlab.io"
 arch="aarch64"
@@ -12,7 +12,7 @@ source="https://laughlonely.gitlab.io/firmware/aspire1.tar.xz"
 package() {
 	mkdir -p "$pkgdir"
 	install -Dm644 "$srcdir"/*.jsn "$srcdir"/*.mbn \
-		-t "$pkgdir"/lib/firmware/qcom/sc7180/acer/aspire1/
+		-t "$pkgdir"/usr/lib/firmware/qcom/sc7180/acer/aspire1/
 }
 
 sha512sums="

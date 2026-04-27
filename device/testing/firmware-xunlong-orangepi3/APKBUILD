@@ -1,6 +1,6 @@
 maintainer="Maxim Karasev <begs@disroot.org>"
 pkgname=firmware-xunlong-orangepi3
-pkgver=1
+pkgver=2
 pkgrel=0
 _commit="3ddc301c272f081aa5513c1934f6d530bf80de4a"
 pkgdesc="Firmware for the Xunlong Orange Pi 3 (xunlong-orangepi3)"
@@ -13,7 +13,7 @@ builddir="$srcdir/brcmfmac_sdio-firmware-$_commit"
 
 package() {
 	for file in BCM4345C5.hcd brcmfmac43456-sdio.bin brcmfmac43456-sdio.xunlong,orangepi-3.txt; do
-		install -Dm 0644 "$file" -t "$pkgdir"/lib/firmware/postmarketos/brcm
+		install -Dm 0644 "$file" -t "$pkgdir"/usr/lib/firmware/postmarketos/brcm
 	done
 }
 

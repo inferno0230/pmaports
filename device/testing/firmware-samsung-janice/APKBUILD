@@ -1,6 +1,6 @@
 maintainer=""
 pkgname=firmware-samsung-janice
-pkgver=1
+pkgver=2
 pkgrel=0
 _commit="e24d9687e7fda4f94fc6652d137ed8e703930c3a"
 pkgdesc="Samsung Galaxy S Advance Firmware"
@@ -8,14 +8,14 @@ url="https://github.com/Epirex/android_vendor_samsung_u8500"
 arch="armv7"
 license="proprietary"
 source="$pkgname-$_commit.tar.gz::https://github.com/Epirex/android_vendor_samsung_u8500/archive/$_commit.tar.gz"
-options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
+options="!archcheck !check !spdx !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/android_vendor_samsung_u8500-$_commit"
 
 package() {
 	# Wifi
 	for _i in bcmdhd_sta.bin nvram_net.txt; do
 		install -Dm644 janice/system/etc/wifi/"$_i" \
-		"$pkgdir"/lib/firmware/postmarketos/"$_i"
+		"$pkgdir"/usr/lib/firmware/postmarketos/"$_i"
 	done
 }
 

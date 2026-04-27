@@ -1,7 +1,7 @@
 maintainer=""
 pkgname=firmware-bq-picmt
-pkgver=4
-pkgrel=1
+pkgver=5
+pkgrel=0
 _commit="04cced17ab21d84ea6145e58f0b12fd67ef640d0"
 pkgdesc="Firmware for BQ Aquaris X5"
 url="https://github.com/JonnyMe/picmt-firmware"
@@ -13,7 +13,7 @@ makedepends="pil-squasher"
 source="https://github.com/JonnyMe/picmt-firmware/raw/$_commit/picmt_firmware_files.tar.xz"
 builddir="$srcdir"
 
-_fwdir="/lib/firmware/postmarketos"
+_fwdir="/usr/lib/firmware/postmarketos"
 
 build() {
 	pil-squasher wcnss.mbn wcnss.mdt

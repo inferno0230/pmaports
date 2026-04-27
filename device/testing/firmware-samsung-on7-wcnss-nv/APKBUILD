@@ -1,0 +1,24 @@
+maintainer=""
+pkgname=firmware-samsung-on7-wcnss-nv
+pkgver=1
+pkgrel=0
+pkgdesc="WiFi/BT firmware for Samsung Galaxy On7 (2015)"
+url="https://postmarketos.org"
+arch="aarch64"
+license="proprietary"
+source="$pkgname-WCNSS_qcom_wlan_nv.bin.base64::https://pastebin.com/raw/4c9b2b94"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir"
+
+build() {
+	base64 -d $pkgname-WCNSS_qcom_wlan_nv.bin.base64 > WCNSS_qcom_wlan_nv.bin
+}
+
+package() {
+	install -Dm644 "$srcdir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/
+}
+
+sha512sums="
+804aeab6ba94c6a0bf44f2b9681b6ed3609df529f3f2a2b645dfd543c152997a2527044028c743e2767671819300ee7779ffa9eed7e17e359889e1af0a030987  firmware-samsung-on7-wcnss-nv-WCNSS_qcom_wlan_nv.bin.base64
+"

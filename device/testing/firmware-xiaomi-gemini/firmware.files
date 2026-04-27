@@ -1,6 +1,6 @@
-./lib/firmware/qcom/msm8996/gemini/a530_zap.mbn
-./lib/firmware/qcom/msm8996/gemini/adsp.mbn
-./lib/firmware/qcom/msm8996/gemini/mba.mbn
-./lib/firmware/qcom/msm8996/gemini/modem.mbn
-./lib/firmware/qcom/msm8996/gemini/slpi.mbn
-./lib/firmware/qcom/msm8996/gemini/venus.mbn
+/usr/lib/firmware/qcom/msm8996/gemini/a530_zap.mbn
+/usr/lib/firmware/qcom/msm8996/gemini/adsp.mbn
+/usr/lib/firmware/qcom/msm8996/gemini/mba.mbn
+/usr/lib/firmware/qcom/msm8996/gemini/modem.mbn
+/usr/lib/firmware/qcom/msm8996/gemini/slpi.mbn
+/usr/lib/firmware/qcom/msm8996/gemini/venus.mbn

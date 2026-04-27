@@ -1,20 +1,19 @@
 maintainer=""
 pkgname=firmware-huawei-kiwi
-pkgver=2
+pkgver=3
 pkgrel=0
-_name="Huawei Honor 5X / GR5 (2016)"
-pkgdesc="Firmware for $_name"
+_commit="2a4db2a026568abfaf342211e9f3d63ac044a9d9"
+pkgdesc="Firmware for Huawei Honor 5X / GR5 (2016)"
 url="https://git.sr.ht/~bo41/firmware-huawei-kiwi"
-subpackages="$pkgname-venus $pkgname-wcnss-nv:wcnss_nv"
 arch="aarch64"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
 makedepends="pil-squasher"
-_commit="2a4db2a026568abfaf342211e9f3d63ac044a9d9"
+subpackages="$pkgname-venus $pkgname-wcnss-nv:wcnss_nv"
 source="$pkgname-$_commit.tar.gz::$url/archive/$_commit.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/$pkgname-$_commit"
 
-_fwdir="/lib/firmware/postmarketos"
+_fwdir="/usr/lib/firmware/postmarketos"
 
 build() {
 	# venus.mbn exists already but seems a bit different
@@ -22,23 +21,28 @@ build() {
 }
 
 package() {
-	# parent package is empty
-	mkdir -p "$pkgdir"
-}
-
-venus() {
-	pkgdesc="$_name video firmware"
-
 	# Linux detects squashed (.mbn) vs non-squashed (.mdt + .b*) based on
 	# file contents, so it is fine to link venus.mbn to venus.mdt
 	# Older kernels look for venus.mdt, newer ones directly for venus.mbn
-	install -Dm644 "$builddir"/venus2.mbn "$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mbn
-	ln -s venus.mbn "$subpkgdir/$_fwdir"/qcom/venus-1.8/venus.mdt
+	install -Dm644 "$builddir"/venus2.mbn \
+		"$pkgdir/$_fwdir"/qcom/venus-1.8/venus.mbn
+	ln -s venus.mbn \
+		"$pkgdir/$_fwdir"/qcom/venus-1.8/venus.mdt
+	install -Dm644 "$builddir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir/$_fwdir"/wlan/prima
+}
+
+venus() {
+	pkgdesc="$pkgdesc (video firmware)"
+
+	amove usr/lib/firmware/postmarketos/qcom/venus-1.8/venus.mbn
+	amove usr/lib/firmware/postmarketos/qcom/venus-1.8/venus.mdt
 }
 
 wcnss_nv() {
-	pkgdesc="$_name WiFi/BT firmware configuration"
-	install -Dm644 "$builddir"/WCNSS_qcom_wlan_nv.bin -t "$subpkgdir/$_fwdir"/wlan/prima
+	pkgdesc="$pkgdesc (WiFi/BT firmware configuration)"
+
+	amove usr/lib/firmware/postmarketos/wlan/prima/WCNSS_qcom_wlan_nv.bin
 }
 
 sha512sums="

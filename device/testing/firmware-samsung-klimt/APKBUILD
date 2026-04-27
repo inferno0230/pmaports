@@ -1,58 +1,58 @@
 maintainer="Henrik Grimler <henrik@grimler.se>"
 pkgname=firmware-samsung-klimt
-pkgver=4
+pkgver=5
 pkgrel=0
+_commit="418be0d7638e9b67c0fc3e6a3403951bf64ba67f"
 pkgdesc="Firmware for Samsung klimtwifi and klimtlte"
 url="https://github.com/exynos5420/android_vendor_samsung_klimt-common"
 arch="armv7"
 license="proprietary"
-options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
 subpackages="
-	$pkgname-downstream:downstream
-	$pkgname-mainline:mainline
-"
-
-_klimt_commit="418be0d7638e9b67c0fc3e6a3403951bf64ba67f"
-_klimt_url="$url/raw/$_klimt_commit"
-_klimt_wifi_files="
-	bcmdhd_apsta.bin
-	bcmdhd_ibss.bin
-	bcmdhd_mfg.bin
-	bcmdhd_sta.bin
-	cred.conf
-	nvram_mfg.txt
-	nvram_net.txt
-"
-
-for _i in $_klimt_wifi_files; do
-	source="$source $pkgname-$_klimt_commit-$_i::$_klimt_url/proprietary/etc/wifi/$_i";
-done
+	$pkgname-downstream
+	$pkgname-mainline
+	"
+source="
+	$pkgname-$_commit-bcmdhd_apsta.bin::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/bcmdhd_apsta.bin
+	$pkgname-$_commit-bcmdhd_ibss.bin::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/bcmdhd_ibss.bin
+	$pkgname-$_commit-bcmdhd_mfg.bin::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/bcmdhd_mfg.bin
+	$pkgname-$_commit-bcmdhd_sta.bin::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/bcmdhd_sta.bin
+	$pkgname-$_commit-cred.conf::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/cred.conf
+	$pkgname-$_commit-nvram_mfg.txt::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/nvram_mfg.txt
+	$pkgname-$_commit-nvram_net.txt::https://github.com/exynos5420/android_vendor_samsung_klimt-common/raw/$_commit/proprietary/etc/wifi/nvram_net.txt
+	"
+options="!archcheck !check !spdx !strip !tracedeps pmb:cross-native"
 
 package() {
-	mkdir -p "$pkgdir"
+	local file
+	for file in bcmdhd_apsta.bin bcmdhd_ibss.bin bcmdhd_mfg.bin bcmdhd_sta.bin \
+		cred.conf nvram_mfg.txt nvram_net.txt; do
+			install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-"$file" \
+				"$pkgdir"/usr/lib/firmware/postmarketos/"$file"
+	done
+
+	install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-nvram_net.txt \
+		"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,klimt-wifi.txt
+	ln -s brcmfmac4354-sdio.samsung,klimt-wifi.txt \
+		"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,klimt-lte.txt
 }
 
 downstream() {
 	pkgdesc="Firmware for Samsung klimt* when using downstream kernel"
 	depends="firmware-samsung-exynos5420-downstream"
-	mkdir -p "$subpkgdir"
 
 	local file
-	for file in $_klimt_wifi_files; do
-		 install -Dm644 "$srcdir/$pkgname-$_klimt_commit-$file" \
-			"$subpkgdir/lib/firmware/postmarketos/$file"
+	for file in bcmdhd_apsta.bin bcmdhd_ibss.bin bcmdhd_mfg.bin bcmdhd_sta.bin \
+		cred.conf nvram_mfg.txt nvram_net.txt; do
+			amove usr/lib/firmware/postmarketos/"$file"
 	done
 }
 
 mainline() {
 	pkgdesc="Firmware for Samsung klimt* when using mainline kernel"
-	depends="linux-firmware-s5p-mfc linux-firmware-brcm"
-	mkdir -p "$subpkgdir"
+	depends="linux-firmware-brcm linux-firmware-s5p-mfc"
 
-	install -Dm644 "$srcdir/$pkgname-$_klimt_commit"-nvram_net.txt \
-		"$subpkgdir"/lib/firmware/brcm/brcmfmac4354-sdio.samsung,klimt-wifi.txt
-	ln -s brcmfmac4354-sdio.samsung,klimt-wifi.txt \
-		"$subpkgdir"/lib/firmware/brcm/brcmfmac4354-sdio.samsung,klimt-lte.txt
+	amove usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,klimt-wifi.txt
+	amove usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,klimt-lte.txt
 }
 
 sha512sums="

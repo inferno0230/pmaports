@@ -3,7 +3,7 @@
 maintainer="WeirdTreeThing <bradyn127@protonmail.com>"
 pkgname=device-google-nyan-blaze
 pkgdesc="HP Chromebook 14 G3"
-pkgver=8
+pkgver=9
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
@@ -75,7 +75,7 @@ sway() {
 }
 
 sha512sums="
-793688374d77efaf050c187d296d7fd55243773a1257b4d8adfa4cda50d4c0cacc035fb3d419a4b608989ed920636048680d900afe8a712f2166edf51552087a  30-xusb-firmware.files
+cf2bdd057c970913bbb914ff70ecc578f6938db1165d026e919ababa1b0cd764d5b16b563aba34c57a50dad056225e2d14b4ac9490f640dae01e87784f3c4e91  30-xusb-firmware.files
 d341d5c98867e530c3eb86ec2703a41f008f0e2c42074e52f81f3f92ca33c99bde4b95d2b63c51a589ea16333167ff34945fbc6b25dd84e6116cc308f459ecc8  deviceinfo
 97e88eaa9b8e7989a20d2572479fe5d1fe0284de862da11c91b1f347099d5704673837db01a6b0c289fee0a2d7236f64fba31fd6001475f957c23203e34fd6fb  kernel-cmdline.conf
 8cf99819584972f96c2342d6fa945bea13f0f374d1525d3b35c41137f4cce71ade20b927072e16c1e354f2a62018bd6c9bed2923a0afa127cc0b9bd645fc3937  modules-initfs

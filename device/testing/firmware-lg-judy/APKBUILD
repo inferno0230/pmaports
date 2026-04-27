@@ -1,29 +1,29 @@
 
 maintainer="Paul Sajna <hello@paulsajna.com>"
 pkgname=firmware-lg-judy
-pkgver=1
+pkgver=2
 pkgrel=0
+_commit="ab8a4a58e52df0a5ddbc76fc5e88936518af9e0c"
 pkgdesc="Firmware for LG judyln and judyp"
 url="https://gitlab.com/sajattack/firmware-lg-judy"
 arch="aarch64"
 depends="linux-firmware-qcom linux-firmware-qca"
 license="proprietary"
-options="!strip !check !archcheck !tracedeps textrels pmb:cross-native"
-
-_commit="ab8a4a58e52df0a5ddbc76fc5e88936518af9e0c"
-
-source="$pkgname.tar.gz::$url/-/archive/$_commit/$pkgname-$_commit.tar.gz
+source="$pkgname.tar.gz::https://gitlab.com/sajattack/firmware-lg-judy/-/archive/$_commit/$pkgname-$_commit.tar.gz
 	firmware.files
 	"
+options="!strip !check !archcheck !tracedeps textrels pmb:cross-native"
+builddir="$srcdir/${pkgname}ln-$_commit"
 
 package() {
 	while IFS="" read -r _i || [ -n "$_i" ]; do
-		[ ! -d $(dirname $_i) ] && mkdir -p $(dirname $_i)
-		install -Dm644 "$srcdir/$pkgname-$_commit/$_i" "$pkgdir/$_i"
-	done < "$srcdir/firmware.files"
+		local _u="${_i/\/usr\/lib/lib}"
+		[ ! -d $(dirname "$_i") ] && mkdir -p $(dirname "$pkgdir"/"$_i")
+		install -Dm644 "$builddir"/"$_u" "$pkgdir"/"$_i"
+	done < "$srcdir"/firmware.files
 }
 
 sha512sums="
-fb03c47a062871de31060972e7c51c1a915c11490b660251b87f581680c254b8dc97b941968fef52896744b69a07dbf5483473ab2b81531300bd863369e506ef  firmware-lg-judy.tar.gz
-bade96d27d66a42c0f64ff1fb2537654c6c26bccb2c2ac2c854697c4f23bb73fd6d6c19eb2f06758803488497667c7961e095de99a4ae85b6eec9f170c92d23d  firmware.files
+b1add767db6c8d98a0d272f75f123c89456527138326358f4fc2841e3c449f47818fcffb62063690f2257eac90ec0e9c560a4cccec71b28c4a0543d70038bf66  firmware-lg-judy.tar.gz
+7591ed0135c4b8d54169f953ab817f3473626471a4c5b7bef141041efa87311e82e9235db52d8478a24078da865e6a78e28e7803aaccf4f22ec79fb594392735  firmware.files
 "

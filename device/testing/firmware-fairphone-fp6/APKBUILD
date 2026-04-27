@@ -1,8 +1,13 @@
 maintainer="Luca Weiss <luca@lucaweiss.eu>"
 pkgname=firmware-fairphone-fp6
 pkgver=20250606
-pkgrel=3
+pkgrel=4
+_commit="cb1e77ced667a95ee637964124ff83bb0373838b"
 pkgdesc="Firmware for The Fairphone (Gen. 6)"
+url="https://github.com/FairBlobs/FP6-firmware"
+arch="aarch64"
+license="proprietary"
+makedepends="pil-squasher"
 subpackages="
 	$pkgname-adreno
 	$pkgname-adsp
@@ -13,13 +18,8 @@ subpackages="
 	$pkgname-vpu
 	$pkgname-wpss
 	"
-url="https://github.com/FairBlobs/FP6-firmware"
-arch="aarch64"
-license="proprietary"
-makedepends="pil-squasher"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-_commit="cb1e77ced667a95ee637964124ff83bb0373838b"
 source="https://github.com/FairBlobs/FP6-firmware/archive/$_commit/FP6-firmware-$_commit.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/FP6-firmware-$_commit"
 
 build() {
@@ -29,84 +29,99 @@ build() {
 }
 
 package() {
-	# parent package is empty
-	mkdir -p "$pkgdir"
+	install -Dm644 "$builddir"/gen80300_zap.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	# TODO: Remove once firmware files are in linux-firmware
+	install -Dm644 "$builddir"/gen80300_gmu.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 "$builddir"/gen80300_sqe.fw \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/
+	install -Dm644 "$builddir"/adsp*.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/adsp*.jsn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/battmgr.jsn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/msbtfw12.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qca/
+	install -Dm644 "$builddir"/msnv12.bin \
+		-t "$pkgdir"/usr/lib/firmware/qca/
+	install -Dm644 "$builddir"/cdsp*.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/cdsp*.jsn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/ipa_fws.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/modem.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/modem*.jsn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/vpu20_2v.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	install -Dm644 "$builddir"/wpss.mbn \
+		-t "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+
+	cp -r "$builddir"/modem_pr/ \
+		"$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/
+	# Used cp to move subdirectories, so set perms manually
+	find "$pkgdir"/usr/lib/firmware/qcom/milos/fairphone/fp6/ \
+		-type f -exec chmod 0644 {} \;
 }
 
 adreno() {
 	pkgdesc="The Fairphone (Gen. 6) adreno firmware"
 
-	install -Dm644 "$builddir"/gen80300_zap.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-	# TODO: Remove once firmware files are in linux-firmware
-	install -Dm644 "$builddir"/gen80300_gmu.bin -t \
-		"$subpkgdir/lib/firmware/postmarketos/"
-	install -Dm644 "$builddir"/gen80300_sqe.fw -t \
-		"$subpkgdir/lib/firmware/postmarketos/"
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/gen80300_zap.mbn
+	amove usr/lib/firmware/postmarketos/gen80300_gmu.bin
+	amove usr/lib/firmware/postmarketos/gen80300_sqe.fw
 }
 
 adsp() {
 	pkgdesc="The Fairphone (Gen. 6) adsp firmware"
 
-	install -Dm644 "$builddir"/adsp*.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-	install -Dm644 "$builddir"/adsp*.jsn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-	install -Dm644 "$builddir"/battmgr.jsn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/adsp*.mbn
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/adsp*.jsn
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/battmgr.jsn
 }
 
 bluetooth() {
 	pkgdesc="The Fairphone (Gen. 6) bluetooth firmware"
 
-	install -Dm644 "$builddir"/msbtfw12.mbn -t \
-		"$subpkgdir/lib/firmware/qca/"
-	install -Dm644 "$builddir"/msnv12.bin -t \
-		"$subpkgdir/lib/firmware/qca/"
+	amove usr/lib/firmware/qca/msbtfw12.mbn
+	amove usr/lib/firmware/qca/msnv12.bin
 }
 
 cdsp() {
 	pkgdesc="The Fairphone (Gen. 6) cdsp firmware"
 
-	install -Dm644 "$builddir"/cdsp*.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-	install -Dm644 "$builddir"/cdsp*.jsn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/cdsp*.mbn
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/cdsp*.jsn
 }
 
 ipa() {
 	pkgdesc="The Fairphone (Gen. 6) ipa firmware"
 
-	install -Dm644 "$builddir"/ipa_fws.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/ipa_fws.mbn
 }
 
 modem() {
 	pkgdesc="The Fairphone (Gen. 6) modem firmware"
 
-	install -Dm644 "$builddir"/modem.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-	install -Dm644 "$builddir"/modem*.jsn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-
-	cp -r "$builddir"/modem_pr/ \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
-	find "$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/" \
-		-type f -exec chmod 0644 {} \;
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/modem.mbn
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/modem*.jsn
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/modem_pr
 }
 
 vpu() {
 	pkgdesc="The Fairphone (Gen. 6) vpu firmware"
 
-	install -Dm644 "$builddir"/vpu20_2v.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/vpu20_2v.mbn
 }
 
 wpss() {
 	pkgdesc="The Fairphone (Gen. 6) wpss firmware"
 
-	install -Dm644 "$builddir"/wpss.mbn -t \
-		"$subpkgdir/lib/firmware/qcom/milos/fairphone/fp6/"
+	amove usr/lib/firmware/qcom/milos/fairphone/fp6/wpss.mbn
 }
 
 sha512sums="

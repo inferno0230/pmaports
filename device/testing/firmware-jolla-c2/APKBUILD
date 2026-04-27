@@ -1,45 +1,60 @@
 maintainer="Affe Null <affenull2345@gmail.com>"
 pkgname=firmware-jolla-c2
-pkgver=1
-pkgrel=1
+pkgver=2
+pkgrel=0
+_commit="fe6e8d0f5bc55878e6fe659a3ca6cb33141a0690"
 pkgdesc="Firmware for the Jolla C2"
 url="https://git.abscue.de/linux-mainlining/sailfish-os/device-bsp-s19mps"
 arch="aarch64"
 license="proprietary"
 subpackages="$pkgname-wcn"
 makedepends="python3"
-options="!check !archcheck !strip !spdx !tracedeps pmb:cross-native"
-
-_commit="fe6e8d0f5bc55878e6fe659a3ca6cb33141a0690"
-source="
-	$url/-/archive/$_commit/device-bsp-s19mps-$_commit.tar.gz
+source="https://git.abscue.de/linux-mainlining/sailfish-os/device-bsp-s19mps/-/archive/$_commit/device-bsp-s19mps-$_commit.tar.gz
 	https://storage.abscue.de/private/zImage/sprd-prebuilts-jolla-c2.tar.gz
-"
+	"
+options="!archcheck !check !spdx !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/device-bsp-s19mps-$_commit"
 
 build() {
-	python3 convert_ini.py marlin3 bt_config_rf ../prebuilts/odm/firmware/bt_configure_rf.ini bt_config_rf.bin
-	python3 convert_ini.py marlin3 bt_config_pskey ../prebuilts/odm/firmware/bt_configure_pskey.ini bt_config_pskey.bin
-	python3 convert_ini.py marlin3 wifi_board_config ../prebuilts/odm/firmware/wifi_board_config.ini wifi_board_config.bin
-	python3 convert_bootcode.py ../prebuilts/vendor/etc/modem_sp_info.xml pm_bootcode.bin
+	python3 convert_ini.py \
+		marlin3 \
+		bt_config_rf \
+		../prebuilts/odm/firmware/bt_configure_rf.ini \
+		bt_config_rf.bin
+	python3 convert_ini.py \
+		marlin3 \
+		bt_config_pskey \
+		../prebuilts/odm/firmware/bt_configure_pskey.ini \
+		bt_config_pskey.bin
+	python3 convert_ini.py \
+		marlin3 \
+		wifi_board_config \
+		../prebuilts/odm/firmware/wifi_board_config.ini \
+		wifi_board_config.bin
+	python3 convert_bootcode.py \
+		../prebuilts/vendor/etc/modem_sp_info.xml \
+		pm_bootcode.bin
 }
 
 package() {
-	# parent package is empty
-	mkdir -p "$pkgdir"
+	install -Dm644 "$srcdir"/prebuilts/odm/firmware/wcnmodem.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/sprd/
+	install -Dm644 "$srcdir"/prebuilts/odm/firmware/gnssmodem.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/sprd/
+	install -Dm644 "$builddir"/bt_config_rf.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/sprd/
+	install -Dm644 "$builddir"/bt_config_pskey.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/sprd/
+	install -Dm644 "$builddir"/wifi_board_config.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/sprd/
+	install -Dm644 "$builddir"/pm_bootcode.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/sprd/
 }
 
 wcn() {
 	pkgdesc="Jolla C2 WiFi, Bluetooth and GNSS firmware"
-	_fwdir="$subpkgdir"/lib/firmware/postmarketos/sprd
 
-	cd "$srcdir/prebuilts/"
-	install -Dm644 odm/firmware/wcnmodem.bin -t "$_fwdir"
-	install -Dm644 odm/firmware/gnssmodem.bin -t "$_fwdir"
-	install -Dm644 "$builddir"/bt_config_rf.bin -t "$_fwdir"
-	install -Dm644 "$builddir"/bt_config_pskey.bin -t "$_fwdir"
-	install -Dm644 "$builddir"/wifi_board_config.bin -t "$_fwdir"
-	install -Dm644 "$builddir"/pm_bootcode.bin -t "$_fwdir"
+	amove usr/lib/firmware/postmarketos/sprd
 }
 
 sha512sums="

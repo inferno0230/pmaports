@@ -1,35 +1,35 @@
 maintainer=""
 pkgname=firmware-samsung-a6lte
-pkgver=3
-pkgrel=2
+pkgver=4
+pkgrel=0
 pkgdesc="Firmware files for Samsung Galaxy A6 (2018)"
 arch="aarch64"
 url="https://dumps.tadiphone.dev/dumps/samsung/a6lte"
 license="proprietary"
-options="!strip !check !archcheck !spdx !tracedeps pmb:cross-native"
 depends="linux-firmware-brcm"
 makedepends="
 	linux-firmware-brcm
 	zstd
-"
-
-# Source
-_raw_wifi_path="https://dumps.tadiphone.dev/dumps/samsung/a6lte/-/raw/a6ltejx-user-9-PPR1.180610.011-A600FJXS5BSL1-release-keys/vendor/etc/wifi"
-_install_wifi_path="/lib/firmware/postmarketos/wifi"
-source="
-	nvram.txt_c5::$_raw_wifi_path/nvram.txt_c5
-"
+	"
+source="nvram.txt_c5::https://dumps.tadiphone.dev/dumps/samsung/a6lte/-/raw/a6ltejx-user-9-PPR1.180610.011-A600FJXS5BSL1-release-keys/vendor/etc/wifi/nvram.txt_c5"
+options="!archcheck !check !spdx !strip !tracedeps pmb:cross-native"
 
 package() {
-	mkdir -p "$pkgdir$_install_wifi_path"
-	unzstd < /lib/firmware/brcm/brcmfmac43456-sdio.bin.zst > "$pkgdir$_install_wifi_path/bcmdhd_apsta.bin_c5"
-	unzstd < /lib/firmware/brcm/brcmfmac43456-sdio.clm_blob.zst > "$pkgdir$_install_wifi_path/bcmdhd_clm.blob"
-	ln -s bcmdhd_apsta.bin_c5 "$pkgdir$_install_wifi_path/bcmdhd_apsta.bin_c5_blob"
-	ln -s bcmdhd_apsta.bin_c5 "$pkgdir$_install_wifi_path/bcmdhd_mfg.bin_c5"
-	ln -s bcmdhd_apsta.bin_c5 "$pkgdir$_install_wifi_path/bcmdhd_mfg.bin_c5_blob"
-	ln -s bcmdhd_apsta.bin_c5 "$pkgdir$_install_wifi_path/bcmdhd_sta.bin_c5"
-	ln -s bcmdhd_apsta.bin_c5 "$pkgdir$_install_wifi_path/bcmdhd_sta.bin_c5_blob"
-	install -Dm644 "$srcdir/nvram.txt_c5" -t "$pkgdir$_install_wifi_path"
+	mkdir -p "$pkgdir"/usr/lib/firmware/postmarketos/wifi
+	unzstd < /usr/lib/firmware/brcm/brcmfmac43456-sdio.bin.zst > "$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_apsta.bin_c5
+	unzstd < /usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob.zst > "$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_clm.blob
+	ln -s bcmdhd_apsta.bin_c5 \
+		"$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_apsta.bin_c5_blob
+	ln -s bcmdhd_apsta.bin_c5 \
+		"$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_mfg.bin_c5
+	ln -s bcmdhd_apsta.bin_c5 \
+		"$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_mfg.bin_c5_blob
+	ln -s bcmdhd_apsta.bin_c5 \
+		"$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_sta.bin_c5
+	ln -s bcmdhd_apsta.bin_c5 \
+		"$pkgdir"/usr/lib/firmware/postmarketos/wifi/bcmdhd_sta.bin_c5_blob
+	install -Dm644 "$srcdir"/nvram.txt_c5 \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wifi/
 }
 
 sha512sums="

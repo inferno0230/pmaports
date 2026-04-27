@@ -1,0 +1,26 @@
+maintainer=""
+pkgname=firmware-huawei-g7-wcnss-nv
+pkgver=1
+pkgrel=0
+pkgdesc="WiFi/BT firmware for Huawei Ascend G7"
+url="https://postmarketos.org"
+arch="aarch64"
+license="proprietary"
+source="$pkgname-WCNSS_qcom_wlan_nv.bin.base64::https://pastebin.com/raw/UmTSZBW7"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir"
+
+_fwdir="/usr/lib/firmware/postmarketos"
+
+build() {
+	base64 -d $pkgname-WCNSS_qcom_wlan_nv.bin.base64 > WCNSS_qcom_wlan_nv.bin
+}
+
+package() {
+	install -Dm644 "$srcdir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir/$_fwdir"/wlan/prima/
+}
+
+sha512sums="
+0202ce7d2f736a6a2d37ab571233d715376184c647ba916d9e3e9aaf1408f1aa41f877d6f805d274ead1440dabf295e7477da6957555604cee90ecd5a9a3a24b  firmware-huawei-g7-wcnss-nv-WCNSS_qcom_wlan_nv.bin.base64
+"

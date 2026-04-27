@@ -1,21 +1,20 @@
 maintainer="Petr Vorel <petr.vorel@gmail.com>"
 pkgname=firmware-lg-bullhead
-pkgver=0.1
-pkgrel=1
+pkgver=1
+pkgrel=0
+_commit="1052f2f7c3e2cedc71706751e88ef3e97f07bb0e"
 pkgdesc="Firmware for lg-bullhead"
 url="https://github.com/undevdecatos/firmware-lg-bullhead"
 arch="aarch64"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-
-_commit="1052f2f7c3e2cedc71706751e88ef3e97f07bb0e"
-
 source="firmware-lg-bullhead-$_commit.tar.gz::https://github.com/undevdecatos/firmware-lg-bullhead/archive/$_commit.tar.gz"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
 
 package() {
 	for path in "$srcdir/$pkgname-$_commit"/*; do
 		if test -f "$path"; then
-			install -Dm644 -t"$pkgdir/lib/firmware/postmarketos" "$path"
+			install -Dm644 "$path" \
+				-t "$pkgdir/usr/lib/firmware/postmarketos"
 		fi
 	done
 }

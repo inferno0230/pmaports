@@ -1,20 +1,17 @@
 maintainer="Henrik Grimler <henrik@grimler.se>"
 pkgname=firmware-samsung-chagall
-pkgver=4
+pkgver=5
 pkgrel=0
+_commit="3ef6a550213d915356d3fb25cf0560f5d5c87d3d"
 pkgdesc="Firmware for Samsung chagallwifi and chagalllte"
 url="https://github.com/exynos5420/android_vendor_samsung_chagall-common"
 arch="armv7"
 license="proprietary"
-options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
 subpackages="
-	$pkgname-downstream:downstream
-	$pkgname-mainline:mainline
+	$pkgname-downstream
+	$pkgname-mainline
 	"
-
-_chagall_commit="3ef6a550213d915356d3fb25cf0560f5d5c87d3d"
-_chagall_url="$url/raw/$_chagall_commit"
-_chagall_wifi_files="
+_wifi_files="
 	bcmdhd_apsta.bin
 	bcmdhd_ibss.bin
 	bcmdhd_mfg.bin
@@ -22,48 +19,60 @@ _chagall_wifi_files="
 	cred.conf
 	nvram_mfg.txt_4354_a1
 	nvram_net.txt_4354_a1
-"
-
-for _i in $_chagall_wifi_files; do
-	source="$source $pkgname-$_chagall_commit-$_i::$_chagall_url/proprietary/etc/wifi/$_i";
+	"
+for _i in $_wifi_files; do
+	source="$source $pkgname-$_commit-$_i::https://github.com/exynos5420/android_vendor_samsung_chagall-common/tree/lineage-18.1/proprietary/etc/wifi/$_i";
 done
+options="!archcheck !check !spdx !strip !tracedeps pmb:cross-native"
 
 package() {
-	mkdir -p "$pkgdir"
+	for file in $_wifi_files; do
+		 install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-"$file" \
+			"$pkgdir"/usr/lib/firmware/postmarketos/"$file"
+	done
+
+	ln -s bcmdhd_sta.bin \
+		"$pkgdir"/usr/lib/firmware/postmarketos/bcmdhd_sta.bin_4354_a0
+	ln -s bcmdhd_sta.bin \
+		"$pkgdir"/usr/lib/firmware/postmarketos/bcmdhd_sta.bin_4354_a1
+	ln -s nvram_net.txt_4354_a1 \
+		"$pkgdir"/usr/lib/firmware/postmarketos/nvram_net.txt_4354_a0
+
+	install -Dm644 "$srcdir"/"$pkgname"-"$_commit"-nvram_net.txt_4354_a1 \
+		"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,chagall-wifi.txt
+	ln -s brcmfmac4354-sdio.samsung,chagall-wifi.txt \
+		"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,chagall-lte.txt
 }
 
 downstream() {
 	pkgdesc="Firmware for Samsung chagall* when using downstream kernel"
 	depends="firmware-samsung-exynos5420-downstream"
-	mkdir -p "$subpkgdir"
+
 	# Wifi
 	local file
-	for file in $_chagall_wifi_files; do
-		 install -Dm644 "$srcdir/$pkgname-$_chagall_commit-$file" \
-			"$subpkgdir/lib/firmware/postmarketos/$file"
+	for file in $_wifi_files; do
+		 amove usr/lib/firmware/postmarketos/"$file"
 	done
-	ln -s nvram_net.txt_4354_a1 "$subpkgdir"/lib/firmware/postmarketos/nvram_net.txt_4354_a0
-	ln -s bcmdhd_sta.bin "$subpkgdir"/lib/firmware/postmarketos/bcmdhd_sta.bin_4354_a1
-	ln -s bcmdhd_sta.bin "$subpkgdir"/lib/firmware/postmarketos/bcmdhd_sta.bin_4354_a0
+
+	amove usr/lib/firmware/postmarketos/bcmdhd_sta.bin_4354_a0
+	amove usr/lib/firmware/postmarketos/bcmdhd_sta.bin_4354_a1
+	amove usr/lib/firmware/postmarketos/nvram_net.txt_4354_a0
 }
 
 mainline() {
 	pkgdesc="Firmware for Samsung chagall* when using mainline kernel"
-	depends="linux-firmware-s5p-mfc linux-firmware-brcm"
-	mkdir -p "$subpkgdir"
+	depends="linux-firmware-brcm linux-firmware-s5p-mfc"
 
-	install -Dm644 "$srcdir/$pkgname-$_chagall_commit"-nvram_net.txt_4354_a1 \
-		"$subpkgdir"/lib/firmware/brcm/brcmfmac4354-sdio.samsung,chagall-wifi.txt
-	ln -s brcmfmac4354-sdio.samsung,chagall-wifi.txt \
-		"$subpkgdir"/lib/firmware/brcm/brcmfmac4354-sdio.samsung,chagall-lte.txt
+	amove usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,chagall-wifi.txt
+	amove usr/lib/firmware/brcm/brcmfmac4354-sdio.samsung,chagall-lte.txt
 }
 
 sha512sums="
-4449d14eafe81afe2b3a8f81b00af1fd36e493cfde8892d83a9853b9ee9fc8551970b363f7e73d4a98640a043856e1374deabea5ec06dc46e86312d6e3687d35  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_apsta.bin
-755810fc6a72860a21a3392c6fa1070382877e6c1bccea353dd808e5ed2c1741d5c67481465252857b1f86bb1928cf4d9014e6e88063d156afeb7d278149c202  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_ibss.bin
-712d9fa7b823383fcd586419dbd54eb824bf23cab17d352a39032d304ff0768cc29f47d2fcd0a9c819e18c55f688b32984f9514e775358f6299caacefa5e668f  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_mfg.bin
-e382700c6af5f592ebb10c4eca038289ae09a3de36a3f330b81c2c6322b75a85d1bbe1e3061f4c2d889bf32e9cf92f17e3474c324e166aa89847bd401aa902df  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_sta.bin
-16ee43800bf7c05f550a14036ef1d648999568996854c72c1ef3965a8fd18eabfda284266fa2e2a0fee8c5fec01fd9a7e22b11b6723797742b5a6260e0b44096  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-cred.conf
-4f18c1cb303ab4c633d84a5d2713265821de66385c396422e5e2621bdfe980befa52395c11edcd2eb45fb7d1a471b368ce63634a92aa11eefbc275ef62d869f1  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-nvram_mfg.txt_4354_a1
-cd7da23af0b3b15c8a6242cb32fd028dbb31fc2e257f847c3c1c4c282e4b0bb1cbee6b6cc710f507b12d6480f75af128ed13c75674e96f3ce85c9d32fc8a2e85  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-nvram_net.txt_4354_a1
+4953c5bdc0de1d2fa0b63a3b41446f8cb2c78c33dec1f0923d627cb70fe50e7d7b20069ba330332e437596183862890d410a0195af7fbdb482f6233b0692feae  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_apsta.bin
+d31a88db039afe3f972dd15a1769964ca4907e5301025adc6cf0b25ebbd4a08d7f0242a9b5337eb5ef3c8fede6d967436073e965ad343be3957c7ce3f20c064a  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_ibss.bin
+c9db1e09ab27a43be9c23ec6b681651989e8ab9f81bc0288a200c7df9a482cf01b6f91f30e6d605b85cf2e7abdc52520e5e78f6a022c3b9a8cecb746890e19bc  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_mfg.bin
+fc7d393e45923984d344f7e26737daf8e75b502f974f3ff6fe67d23bae15aced6143726a0ed0afc5256181f9e543d864012e0c17217f790abf610ecb398e6f42  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-bcmdhd_sta.bin
+c98e3c90d92c539511b4788788c7fe90fff8b7dfa48fd3f757b4524628d562c64aa8e6b147e9c57b9c1e11ca3b71abc6e2d47a723c6e6bb5bd2c20e4d880c521  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-cred.conf
+99414a27019f021b57788f01fdc2516b3e161c3542b9d04c26ee75d70fea6767c28fc4865f2113117449623c815cb883836b97b7dfe8b2f982f62fffd710f45a  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-nvram_mfg.txt_4354_a1
+6eb407649ef5fefb5c467c65379c312232adf8f02f13ab504cf9fb3db11d3884568a1bfbf4b2c5f9355008a9fa1f67271472d64f4f5a3b0e6142203341391a20  firmware-samsung-chagall-3ef6a550213d915356d3fb25cf0560f5d5c87d3d-nvram_net.txt_4354_a1
 "

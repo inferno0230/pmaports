@@ -1,6 +1,6 @@
 maintainer=""
 pkgname=firmware-lg-mako
-pkgver=1
+pkgver=2
 pkgrel=0
 pkgdesc="Firmware for lg-mako"
 url="https://developers.google.com/android/drivers#makolmy48t"
@@ -37,7 +37,7 @@ package() {
 	_files="bcm2079x_firmware.ncd  bcm2079x_pre_firmware.ncd"
 	for _i in $_files; do
 		install -Dm644 "vendor/broadcom/mako/proprietary/$_i" \
-			"$pkgdir/lib/firmware/postmarketos/$_i";
+			"$pkgdir/usr/lib/firmware/postmarketos/$_i";
 	done
 
 	# keymaster
@@ -45,15 +45,15 @@ package() {
 		keymaster.mdt"
 	for _i in $_files; do
 		install -Dm644 "vendor/lge/mako/proprietary/$_i" \
-			"$pkgdir/lib/firmware/postmarketos/keymaster/$_i";
+			"$pkgdir/usr/lib/firmware/postmarketos/keymaster/$_i";
 	done
 
 	# prima
 	install -Dm644 "$pkgname-$_commit_other-WCNSS_qcom_wlan_nv.bin" \
-		"$pkgdir/lib/firmware/postmarketos/wlan/prima/WCNSS_qcom_wlan_nv.bin"
+		"$pkgdir/usr/lib/firmware/postmarketos/wlan/prima/WCNSS_qcom_wlan_nv.bin"
 	for _i in WCNSS_qcom_cfg.ini WCNSS_cfg.dat; do
 		install -Dm644 "$pkgname-$_commit_other-$_i" \
-			"$pkgdir/lib/firmware/postmarketos/wlan/prima/$_i";
+			"$pkgdir/usr/lib/firmware/postmarketos/wlan/prima/$_i";
 	done
 
 	# qualcomm
@@ -65,7 +65,7 @@ package() {
 		vidc.mdt"
 	for _i in $_files; do
 		install -Dm644 "vendor/qcom/mako/proprietary/$_i" \
-			"$pkgdir/lib/firmware/postmarketos/$_i";
+			"$pkgdir/usr/lib/firmware/postmarketos/$_i";
 	done
 }
 sha512sums="

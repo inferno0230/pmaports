@@ -1,6 +1,6 @@
 maintainer=""
 pkgname=firmware-sony-fusion3
-pkgver=1
+pkgver=2
 pkgrel=0
 pkgdesc="Firmware for sony-fusion3 (yuga, odin, dogo, pollux/pollux_windy)"
 url="https://developer.sony.com/file/download/software-binaries-for-xperia-z-xperia-zl-and-xperia-tablet-z"
@@ -28,11 +28,11 @@ done
 package() {
 	for _i in $_files; do
 		install -Dm644 "$srcdir/$pkgname-$_commit-$_i" \
-			"$pkgdir"/lib/firmware/postmarketos/"$_i"
+			"$pkgdir"/usr/lib/firmware/postmarketos/"$_i"
 	done
 	for _i in $_files_prima; do
 		install -Dm644 "$srcdir/$pkgname-$_commit_prima-$_i" \
-			"$pkgdir"/lib/firmware/postmarketos/wlan/prima/"$_i"
+			"$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/"$_i"
 	done
 }
 

@@ -3,27 +3,25 @@
 maintainer="Victoria Brekenfeld <postmarketos@drakulix.de>"
 pkgname=firmware-google-blueline
 pkgver=2
-pkgrel=0
+pkgrel=1
+_commit="2a15e29129a607ee066b3950c578aab64e9bd82a"
 pkgdesc="Firmware for Google Pixel 3 (blueline)"
 # Suggested by Caleb as it has working Wifi
 url="https://gitlab.com/sdm845-mainline/firmware-google-pixel3"
 arch="aarch64"
-depends="linux-firmware-qca linux-firmware-qcom linux-firmware-ath10k"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-
-_commit="2a15e29129a607ee066b3950c578aab64e9bd82a"
-
+depends="linux-firmware-ath10k linux-firmware-qca linux-firmware-qcom"
 source="firmware-google-pixel3-$_commit.tar.gz::https://gitlab.com/sdm845-mainline/firmware-google-pixel3/-/archive/$_commit/firmware-google-pixel3-$_commit.tar.gz
-	firmware.files"
-
+	firmware.files
+	"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
 builddir="$srcdir/firmware-google-pixel3-$_commit"
 
 package() {
-
 	while IFS="" read -r _i || [ -n "$_i" ]; do
-		[ ! -d $(dirname $_i) ] && mkdir -p $(dirname $_i)
-		install -Dm644 "$builddir/$_i" "$pkgdir/usr/$_i"
+		local _u="${_i/\/usr\/lib/lib}"
+		[ ! -d $(dirname "$_i") ] && mkdir -p $(dirname "$pkgdir"/"$_i")
+		install -Dm644 "$builddir"/"$_u" "$pkgdir"/"$_i"
 	done < "$srcdir/firmware.files"
 
 	# TODO: Do we need these? If so put them into correct paths and into
@@ -37,5 +35,5 @@ package() {
 
 sha512sums="
 ada19a0bda67e91cfed337045cc2b95505914e4732491d28fb6d8e38318bd51822222b12ed0337509da5d20fce5b592f9736b5039e67bfeaa7ac9de4109a9453  firmware-google-pixel3-2a15e29129a607ee066b3950c578aab64e9bd82a.tar.gz
-05114af30b7207c76bd3f217abbb6cd2e45be22419d19dee5405bc25810664e009c24ebc03f5364874b99f2ce09f2f664624fb506219934494f53de769b6da02  firmware.files
+38f5153ae2300139d4f2f5cdb7afec73c1fb76bbc366af4a25adb6db1d6401e22596ca860e80a8d3eb8e142284ed411dd950bce708e39aad59075ee2cf42efa1  firmware.files
 "

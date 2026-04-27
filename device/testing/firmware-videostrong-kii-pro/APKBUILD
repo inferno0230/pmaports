@@ -1,28 +1,31 @@
 maintainer="Ferass El Hafidi <funderscore@postmarketos.org>"
 pkgname=firmware-videostrong-kii-pro
-pkgver=1
+pkgver=2
 pkgrel=0
+_commit="c70355f9ec6d015b91a5c3199aa08b433e2f7caf"
 pkgdesc="Nonfree firmware for the VideoStrong KII Pro (Wi-Fi, BT, vdec)"
 url="https://github.com/LibreELEC/brcmfmac_sdio-firmware"
 arch="aarch64"
 license="proprietary"
 depends="linux-firmware-meson linux-firmware-brcm"
-_commit="c70355f9ec6d015b91a5c3199aa08b433e2f7caf"
 source="
-	$pkgname-$_commit.zip::https://github.com/LibreELEC/brcmfmac_sdio-firmware/archive/$_commit.zip
-"
+	$pkgname-$_commit.tar.gz::https://github.com/LibreELEC/brcmfmac_sdio-firmware/archive/$_commit.tar.gz
+	"
 options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
-builddir="$srcdir/"
+builddir="$srcdir/brcmfmac_sdio-firmware-$_commit"
 
 package() {
-	cd "$srcdir/brcmfmac_sdio-firmware-$_commit"
 	# Wi-Fi
-	install -Dm644 "brcmfmac4335-sdio.txt" "$pkgdir/lib/firmware/brcm/brcmfmac4335-sdio.txt"
-	ln -s "$pkgdir/lib/firmware/brcm/brcmfmac4335-sdio.bin" "$pkgdir/lib/firmware/brcm/brcmfmac4335-sdio.videostrong,kii-pro.bin"
-	ln -s "$pkgdir/lib/firmware/brcm/brcmfmac4335-sdio.txt" "$pkgdir/lib/firmware/brcm/brcmfmac4335-sdio.videostrong,kii-pro.txt"
+	install -Dm644 brcmfmac4335-sdio.txt \
+		-t "$pkgdir"/usr/lib/firmware/brcm/
+	ln -s "$pkgdir"/usr/lib/firmware/brcm/brcmfmac4335-sdio.bin \
+		"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4335-sdio.videostrong,kii-pro.bin
+	ln -s "$pkgdir"/usr/lib/firmware/brcm/brcmfmac4335-sdio.txt \
+		"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4335-sdio.videostrong,kii-pro.txt
 	# Bluetooth
-	install -Dm644 "BCM4335A0.hcd" "$pkgdir/lib/firmware/brcm/BCM4335A0.hcd"
+	install -Dm644 BCM4335A0.hcd \
+		-t "$pkgdir"/usr/lib/firmware/brcm/
 }
 sha512sums="
-d5833029c386ca041a1968538d2ed78dbe81014ba97eddb678594444c5a4db8ab77cedc4dbe034852683cac02b2570a5b791ba3f3d263ad80234bdb58110c21d  firmware-videostrong-kii-pro-c70355f9ec6d015b91a5c3199aa08b433e2f7caf.zip
+e9d358d6942e361b9019a8d50c744826e2e6cb42326241e6b9f8b8fb50ac1567de8a9ef36204e7b39c935efd7b17a8c1e918243ba5813595b1652b870aff2ce6  firmware-videostrong-kii-pro-c70355f9ec6d015b91a5c3199aa08b433e2f7caf.tar.gz
 "

@@ -1,9 +1,9 @@
 maintainer="Nickolay Goppen <setotau@mainlining.org>"
 pkgname=firmware-xiaomi-clover
-pkgver=2
-pkgrel=1
+pkgver=3
+pkgrel=0
 pkgdesc="Firmware files for Xiaomi Mi Pad 4 / 4 Plus"
-url="https://github.com/setotau/$pkgname"
+url="https://github.com/setotau/firmware-xiaomi-clover"
 arch="aarch64"
 license="proprietary"
 options="!strip !check !archcheck !spdx !tracedeps pmb:cross-native"
@@ -12,12 +12,12 @@ makedepends="qca-swiss-army-knife"
 _commit="c850ad5d11315e690df8244670241e3d5a8436dc"
 
 source="
-	$pkgname-$_commit.tar.gz::$url/archive/$_commit/$pkgname-$_commit.tar.gz
+	$pkgname-$_commit.tar.gz::https://github.com/setotau/firmware-xiaomi-clover/archive/$_commit/$pkgname-$_commit.tar.gz
 	30-touchscreen-config.files
 "
 
 builddir="src"
-_fwdir="/lib/firmware"
+_fwdir="/usr/lib/firmware"
 
 package() {
 	ath10k-fwencoder --create \
@@ -32,5 +32,5 @@ package() {
 
 sha512sums="
 2b11770127704f31f31ac40401e7f336475491e1c5c315638b489a48d0da5e963e9a971ffd053696083306f7b778f78f6f273d9f2594b51f72cd996a407e792b  firmware-xiaomi-clover-c850ad5d11315e690df8244670241e3d5a8436dc.tar.gz
-8bfefcf41d7c6476db6911c031c706c66b1d472c342fb23ebf50c313d85154456a04d65d984d247b65c9771a48d2b4f819835b5cda73f4de6dd7071aff86a14a  30-touchscreen-config.files
+85f5f0496bae5e2684f5cc0b6599b74aecb7a6c8212f39cad12552e9b957555928ee184480bfa3de786d0a6ae08bfae964fcd39a2c74030f53f04f518589a65c  30-touchscreen-config.files
 "

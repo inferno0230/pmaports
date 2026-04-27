@@ -1,0 +1,24 @@
+maintainer=""
+pkgname=firmware-huawei-y635-wcnss-nv
+pkgver=1
+pkgrel=0
+pkgdesc="WiFi/BT firmware for Huawei Y635"
+url="https://postmarketos.org"
+arch="aarch64"
+license="proprietary"
+source="$pkgname-WCNSS_qcom_wlan_nv.bin.base64::https://pastebin.com/raw/yYNgH3PW"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir"
+
+build() {
+	base64 -d $pkgname-WCNSS_qcom_wlan_nv.bin.base64 > WCNSS_qcom_wlan_nv.bin
+}
+
+package() {
+	install -Dm644 "$builddir"/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/
+}
+
+sha512sums="
+c7c59dba8dcb527963a2710e4cf21937f0c8884f0befa1002df29bccc252d03deb79d097eb87441d73a2e889426eb3e98d96ab68fae525a317e71a4e938103eb  firmware-huawei-y635-wcnss-nv-WCNSS_qcom_wlan_nv.bin.base64
+"

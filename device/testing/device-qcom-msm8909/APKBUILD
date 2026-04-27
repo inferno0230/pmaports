@@ -2,7 +2,7 @@
 maintainer="Raymond Hackley <raymondhackley@protonmail.com>"
 pkgname=device-qcom-msm8909
 pkgdesc="Generic device package for various Qualcomm MSM8905/MSM8909/MSM8916-based devices"
-pkgver=5
+pkgver=6
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
@@ -38,9 +38,9 @@ nonfree_firmware() {
 	# temporarily link the db410c file to the expected location.
 	# It will be overriden if the file is in persist or when user
 	# installs the device-specific firmware packages.
-	mkdir -p "$subpkgdir"/lib/firmware/wlan/prima/
-	ln -s /lib/firmware/qcom/apq8016/WCNSS_qcom_wlan_nv_sbc.bin \
-		"$subpkgdir"/lib/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
+	mkdir -p "$subpkgdir"/usr/lib/firmware/wlan/prima/
+	ln -s /usr/lib/firmware/qcom/apq8016/WCNSS_qcom_wlan_nv_sbc.bin \
+		"$subpkgdir"/usr/lib/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
 }
 
 sha512sums="

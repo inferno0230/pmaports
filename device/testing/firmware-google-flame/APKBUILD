@@ -1,30 +1,28 @@
 # Co-Maintainer: Vladimir Muromskii <vmuromskii@ya.ru>
 maintainer="Andrew Gigena <mail@andrewgigena.dev>"
 pkgname=firmware-google-flame
-pkgver=1
+pkgver=2
 pkgrel=0
+_commit="f25f967d19a2f5cee5906bfce313ce734007a6be"
 pkgdesc="Firmware for Google Pixel 4"
 url="https://gitlab.postmarketos.org/andrewgigena/firmware-google-flame"
 arch="aarch64"
-depends="linux-firmware-qcom linux-firmware-qca linux-firmware-ath10k"
 license="proprietary"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-
-_version="f25f967d19a2f5cee5906bfce313ce734007a6be"
-
+depends="linux-firmware-qcom linux-firmware-qca linux-firmware-ath10k"
 source="
-	$pkgname.tar.gz::$url/-/archive/$_version.tar.gz
+	$pkgname.tar.gz::https://gitlab.postmarketos.org/andrewgigena/firmware-google-flame/-/archive/$_commit.tar.gz
 	firmware.files
 	30-gpu-firmware.files
-"
+	"
+options="!check !strip !archcheck !tracedeps pmb:cross-native"
+builddir="$srcdir/$pkgname-$_commit"
 
 package() {
-	find
-	pwd
-	cd "$srcdir/$pkgname-$_version/"
-	for i in $(cat "$srcdir"/firmware.files); do
-		install -Dm644 "$i" "$pkgdir/$i"
-	done
+	while IFS="" read -r _i || [ -n "$_i" ]; do
+		local _u="${_i/usr\/lib/\/lib}"
+		[ ! -d $(dirname $_i) ] && mkdir -p $(dirname "$pkgdir"/$_i)
+		install -Dm644 .$_u "$pkgdir/$_i"
+	done < "$srcdir/firmware.files"
 
 	install -Dm644 "$srcdir/30-gpu-firmware.files" \
 		"$pkgdir/usr/share/mkinitfs/files/30-gpu-firmware.files"
@@ -32,6 +30,6 @@ package() {
 
 sha512sums="
 84ec5875eb5f7ce7daf3a300b9b0d76f61e7bcf160a35b7bdc401d8222439804cf3a849b57618602a9dca37e10b3c83b0a5f6614ba77da883dffcd6db42316be  firmware-google-flame.tar.gz
-fade10f542a017d21be31324e4b0268ca11f98ec7a631533d7133c20a266360583aae2ed735eb817678d911e1a04eacfa775fafeaa2fc82722e3ebed52ba41d0  firmware.files
-96cca9df1d931301d5928c7cb9242793880ac73309e5da783ae5845afc898df0a9560e828b879f7912a88cf83a5e971e5e97ca0ee7db83ea84e9284f3bc0812d  30-gpu-firmware.files
+4443da80e2c0d93633d7e1f24a25422f936d7506cf03e007b04a329a79632d8f1ca2eb14989630a62ed5d91c63a368014f71700f24a4ffa9ee516b04f6e16fb1  firmware.files
+f2f7357d7602bde1db8f4ae7c57eaf7bca4296d674d3338e9c63e881da33263cd5f26fe327b87fc63658ba9629b554bf25f2387138515a4f1d7671b55250ea8a  30-gpu-firmware.files
 "

@@ -1,23 +1,22 @@
 maintainer=""
 pkgname=firmware-samsung-klte
-pkgver=4
+pkgver=5
 pkgrel=0
+_commit="63715ce31aedd827bd1f8bac5e5c42cc47f28f85"
 pkgdesc="Samsung Galaxy S5 Firmware"
 url="https://github.com/TheMuppets/proprietary_vendor_samsung"
 arch="armv7"
 license="proprietary"
-options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
 subpackages="
-	$pkgname-wifi:wifi
-	$pkgname-bt:bt
-"
-_commit="63715ce31aedd827bd1f8bac5e5c42cc47f28f85"
-
+	$pkgname-wifi
+	$pkgname-bt
+	"
 source="
 	$pkgname-$_commit-bcmdhd_sta.bin::https://github.com/TheMuppets/proprietary_vendor_samsung/raw/$_commit/klte-common/proprietary/etc/wifi/bcmdhd_sta.bin
 	$pkgname-$_commit-nvram_net.txt::https://raw.githubusercontent.com/TheMuppets/proprietary_vendor_samsung/$_commit/klte-common/proprietary/etc/wifi/nvram_net.txt
 	$pkgname-$_commit-bcm4350_V0395.0797.hcd::https://github.com/TheMuppets/proprietary_vendor_samsung/raw/$_commit/klte-common/proprietary/vendor/firmware/bcm4350_V0395.0797.hcd
-"
+	"
+options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
 
 package() {
 	# parent package is empty
@@ -25,19 +24,19 @@ package() {
 }
 
 wifi() {
-	pkgdesc="Samsung Galaxy S5 Wi-Fi firmware"
+	pkgdesc="$pkgdesc (WiFi)"
 	mkdir "$subpkgdir"
 	install -Dm644 "$srcdir/$pkgname-$_commit-bcmdhd_sta.bin" \
-		"$subpkgdir/lib/firmware/postmarketos/brcm/brcmfmac4354-sdio.bin"
+		"$subpkgdir/usr/lib/firmware/postmarketos/brcm/brcmfmac4354-sdio.bin"
 	install -Dm644 "$srcdir/$pkgname-$_commit-nvram_net.txt" \
-		"$subpkgdir/lib/firmware/postmarketos/brcm/brcmfmac4354-sdio.samsung,klte.txt"
+		"$subpkgdir/usr/lib/firmware/postmarketos/brcm/brcmfmac4354-sdio.samsung,klte.txt"
 }
 
 bt() {
-	pkgdesc="Samsung Galaxy S5 Bluetooth firmware"
+	pkgdesc="$pkgdesc (Bluetooth)"
 	mkdir "$subpkgdir"
 	install -Dm644 "$srcdir/$pkgname-$_commit-bcm4350_V0395.0797.hcd" \
-		"$subpkgdir/lib/firmware/postmarketos/brcm/BCM4354.hcd"
+		"$subpkgdir/usr/lib/firmware/postmarketos/brcm/BCM4354.hcd"
 }
 
 sha512sums="

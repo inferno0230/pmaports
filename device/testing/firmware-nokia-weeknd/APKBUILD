@@ -1,26 +1,20 @@
 maintainer=""
 pkgname=firmware-nokia-weeknd
 pkgver=00.2238.20.13
-pkgrel=0
+pkgrel=1
 pkgdesc="Firmware for Nokia 2780 Flip"
 url="https://storage.abscue.de/private/zImage/$pkgname-$pkgver"
 arch="aarch64"
-license="custom"
-options="!check !strip !archcheck !tracedeps pmb:cross-native"
-subpackages="$pkgname-wcnss-nv:wcnss_nv_package"
-source="$url/$pkgname.tar.gz"
-
-_fwsrc="$srcdir/$pkgname"
-_fwdir="/lib/firmware/postmarketos"
+license="proprietary"
+source="https://storage.abscue.de/private/zImage/$pkgname-$pkgver/$pkgname.tar.gz"
+provides="$pkgname-wcnss-nv=$pkgver-r$pkgrel"
+replaces="$pkgname-wcnss-nv"
+options="!archcheck !check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir/$pkgname"
 
 package() {
-	mkdir -p "$pkgdir"
-}
-
-wcnss_nv_package() {
-	pkgdesc="Nokia 2780 Flip WiFi/BT firmware configuration"
-	install -Dm644 "$_fwsrc"/wlan/prima/WCNSS_qcom_wlan_nv.bin -t \
-		"$subpkgdir/$_fwdir"/wlan/prima/
+	install -Dm644 wlan/prima/WCNSS_qcom_wlan_nv.bin \
+		-t "$pkgdir"/usr/lib/firmware/postmarketos/wlan/prima/
 }
 
 sha512sums="

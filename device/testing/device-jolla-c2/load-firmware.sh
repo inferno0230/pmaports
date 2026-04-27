@@ -64,7 +64,7 @@ if [ -e "/sys$DEVPATH/loading" ]; then
 		sprd/l_runtimenv.bin)
 			# Do not actually load the NV. The modem generates a valid
 			# NV if one does not exist. This script is only used to load
-			# the NV if /lib/firmware/sprd/l_runtimenv.bin is missing,
+			# the NV if /usr/lib/firmware/sprd/l_runtimenv.bin is missing,
 			# which can be created by the NV item daemon after the modem
 			# generates the NV.
 			load_zeros 0x120000

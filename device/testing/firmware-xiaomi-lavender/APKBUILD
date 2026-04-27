@@ -1,9 +1,9 @@
 maintainer="Barnabas Czeman <barnabas.czeman@postmarketos.org>"
 pkgname=firmware-xiaomi-lavender
-pkgver=1
-pkgrel=1
+pkgver=2
+pkgrel=0
 pkgdesc="Firmware files for Xiaomi Redmi Note 7"
-url="https://gitlab.com/barni2000/$pkgname"
+url="https://gitlab.com/barni2000/firmware-xiaomi-lavender"
 arch="aarch64"
 license="proprietary"
 options="!strip !check !archcheck !spdx !tracedeps pmb:cross-native"
@@ -13,12 +13,12 @@ _commit="2e88d6d6935ca75e8ae1e217422e353b0a5ddc96"
 _muppets_commit="36a0f45ed788aa7cb532e72687d6adbdcc627faa"
 
 source="
-	$pkgname-$_commit.tar.gz::$url/-/archive/$_commit/$pkgname-$_commit.tar.gz
+	$pkgname-$_commit.tar.gz::https://gitlab.com/barni2000/firmware-xiaomi-lavender/-/archive/$_commit/$pkgname-$_commit.tar.gz
 	$pkgname-$_muppets_commit.tar.gz::https://github.com/TheMuppets/proprietary_vendor_xiaomi_lavender/archive/$_muppets_commit.tar.gz
 "
 
-builddir="src"
-_fwdir="/lib/firmware"
+builddir="$srcdir"
+_fwdir="/usr/lib/firmware"
 
 package() {
 	ath10k-fwencoder --create \

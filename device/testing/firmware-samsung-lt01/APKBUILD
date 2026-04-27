@@ -1,49 +1,52 @@
 maintainer="knuxify <knuxify@gmail.com>"
 pkgname=firmware-samsung-lt01
-pkgver=1.1
+pkgver=2
 pkgrel=0
+_commit="38ea48dbc6a683874aaf3376b63fc97ff3823459"
 pkgdesc="Samsung Galaxy Tab 3 8.0 firmware"
 url="https://github.com/gr8nole/proprietary_vendor_samsung"
 arch="armv7"
 license="proprietary"
-_url="https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung"
-_commit="38ea48dbc6a683874aaf3376b63fc97ff3823459"
-source="
-	bcm4334.hcd-$_commit::$_url/$_commit/lt01-common/proprietary/system/bin/bcm4334.hcd
-	brcmfmac4334-sdio.samsung,t310-$_commit.bin::$_url/$_commit/lt01wifi/proprietary/system/etc/wifi/bcmdhd_sta.bin_b2
-	brcmfmac4334-sdio.samsung,t310-$_commit.txt::$_url/$_commit/lt01wifi/proprietary/system/etc/wifi/nvram_net.txt
-	brcmfmac4334-sdio.samsung,t311-$_commit.bin::$_url/$_commit/lt013g/proprietary/system/etc/wifi/bcmdhd_sta.bin_b2
-	brcmfmac4334-sdio.samsung,t311-$_commit.txt::$_url/$_commit/lt013g/proprietary/system/etc/wifi/nvram_net.txt
-	brcmfmac4334-sdio.samsung,t315-$_commit.bin::$_url/$_commit/lt01lte/proprietary/system/etc/wifi/bcmdhd_sta.bin_b2
-	brcmfmac4334-sdio.samsung,t315-$_commit.txt::$_url/$_commit/lt01lte/proprietary/system/etc/wifi/nvram_net.txt
-	"
-options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
-builddir="$srcdir/proprietary_vendor_samsung-$_commit"
 subpackages="
 	$pkgname-bluetooth
 	$pkgname-wifi
-"
+	"
+source="bcm4334.hcd-$_commit::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt01-common/proprietary/system/bin/bcm4334.hcd
+	brcmfmac4334-sdio.samsung,t310-$_commit.bin::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt01wifi/proprietary/system/etc/wifi/bcmdhd_sta.bin_b2
+	brcmfmac4334-sdio.samsung,t310-$_commit.txt::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt01wifi/proprietary/system/etc/wifi/nvram_net.txt
+	brcmfmac4334-sdio.samsung,t311-$_commit.bin::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt013g/proprietary/system/etc/wifi/bcmdhd_sta.bin_b2
+	brcmfmac4334-sdio.samsung,t311-$_commit.txt::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt013g/proprietary/system/etc/wifi/nvram_net.txt
+	brcmfmac4334-sdio.samsung,t315-$_commit.bin::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt01lte/proprietary/system/etc/wifi/bcmdhd_sta.bin_b2
+	brcmfmac4334-sdio.samsung,t315-$_commit.txt::https://raw.githubusercontent.com/gr8nole/proprietary_vendor_samsung/$_commit/lt01lte/proprietary/system/etc/wifi/nvram_net.txt
+	"
+options="!archcheck !check !spdx !strip !tracedeps pmb:cross-native"
+builddir="$srcdir/proprietary_vendor_samsung-$_commit"
 
 package() {
-	mkdir -p "$pkgdir"
+	install -Dm644 "$srcdir"/bcm4334.hcd-"$_commit" \
+		"$pkgdir"/usr/lib/firmware/brcm/BCM4334B0.hcd
+	local _device
+	local _ext
+	for _device in t310 t311 t315; do
+		for _ext in bin txt; do
+			install -Dm644 "$srcdir"/brcmfmac4334-sdio.samsung,"$_device"-"$_commit"."$_ext" \
+				"$pkgdir"/usr/lib/firmware/brcm/brcmfmac4334-sdio.samsung,"$_device"."$_ext"
+		done
+	done
 }
 
 bluetooth() {
 	depends="$pkgname"
 
-	install -Dm644 "$srcdir"/bcm4334.hcd-$_commit \
-		"$subpkgdir"/lib/firmware/brcm/BCM4334B0.hcd
+	amove usr/lib/firmware/brcm/BCM4334B0.hcd
 }
 
 wifi() {
-	depends="$pkgname"
 	local _device
 	local _ext
-
 	for _device in t310 t311 t315; do
 		for _ext in bin txt; do
-			install -Dm644 "$srcdir"/brcmfmac4334-sdio.samsung,$_device-$_commit.$_ext \
-				"$subpkgdir"/lib/firmware/brcm/brcmfmac4334-sdio.samsung,$_device.$_ext
+			amove usr/lib/firmware/brcm/brcmfmac4334-sdio.samsung,"$_device"."$_ext"
 		done
 	done
 }
