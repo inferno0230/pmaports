@@ -23,6 +23,7 @@ makedepends="
 	perl
 	postmarketos-installkernel
 	python3
+	zstd
 "
 
 # Source
@@ -63,5 +64,5 @@ package() {
 
 sha512sums="
 ae86b83424c7aa7195ff951435fae20b5eb8598a27782a63e5cbd5234e97798bb94ecca72896fed3c1e5efb863a309fbcd1ab08b7449207f80c934b70bdba405  linux-postmarketos-qcom-msm8227-661c321a9c4bdf9ae41fc084e1f1bdb5bf338622.tar.gz
-e29982e44fde6eca09004780b88d9342305921a38f7cf2f62ab421b85daf1f90acdf01dcd22eeaf34e22c1ce7a9077df4e07181852024ef88379cb4d7baa5b90  config-postmarketos-qcom-msm8227.armv7
+bdec8f46dd3f6871366bff92e95e8cc7f8291bec2dd06052e94e8b2c3be62952ccd00c8d626c8cc7fa50bb417ca168cccf1c6f3cff3fe242596f949a96660455  config-postmarketos-qcom-msm8227.armv7
 "
