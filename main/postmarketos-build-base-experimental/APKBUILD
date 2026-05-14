@@ -1,0 +1,23 @@
+maintainer="Aster Boese <asterboese@mailbox.org>"
+pkgname=postmarketos-build-base-experimental
+pkgver=0.1.0
+pkgrel=0
+url=https://postmarketos.org
+pkgdesc="Meta package for postmarketos build base"
+depends="
+	clang
+	file
+	fortify-headers
+	libc-dev
+	llvm
+	make
+	mold
+	patch
+	"
+arch="noarch"
+license="MIT"
+options="!check"
+
+package() {
+	mkdir -p "$pkgdir"
+}
