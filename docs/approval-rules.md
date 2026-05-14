@@ -6,10 +6,10 @@ rules, but with the following changes.
 
 ## Regular MR approvals
 
-Most MRs, those not considered critical or trivial require approval by the
-package maintainer, and by another team member with approval and merge
-rights. If the author of the merge request is the sole maintainer of a package
-it is sufficient to solely have the approval a team member.
+Most MRs, those not considered critical, trivial, and/or tree-wide, require
+approval by the package maintainer, and by another team member with approval
+and merge rights. If the author of the merge request is the sole maintainer of
+a package it is sufficient to solely have the approval a team member.
 
 If there is no package maintainer or the package maintainer does not
 reply within 2 weeks from the time the MR was opened, then any 2 approvals are
