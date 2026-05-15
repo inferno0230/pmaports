@@ -1,5 +1,5 @@
 # Reference: <https://postmarketos.org/devicepkg>
-maintainer=""
+maintainer="Robert Eckelmann <longnoserob@postmarketos.org>"
 pkgname=device-ouya-ouya
 pkgver=6
 pkgrel=0
