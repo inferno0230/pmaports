@@ -1,8 +1,9 @@
 # Kernel config based on: arch/arm/configs/tegra_defconfig
+# Archived: replace with linux-postmarketos-grate
 maintainer=""
 pkgname=linux-ouya-ouya-mainline
 pkgver=5.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Ouya kernel fork, close to mainline"
 arch="armv7"
 _carch="arm"
