@@ -28,6 +28,7 @@ COMMON_CLK = "y"
 PWM = "y"
 PWM_CLK = "m"
 ["category:clocks".">=0.0.0"."aarch64"]
+SC_CAMCC_7180 = "m"
 SC_DISPCC_7180 = "m"
 SC_GPUCC_7180 = "m"
 SC_LPASS_CORECC_7180 = "m"
@@ -39,9 +40,35 @@ SM_VIDEOCC_8350 = "m"
 ["category:ethernet".">=7.0_rc1"."loongarch64"]
 DWMAC_MOTORCOMM = "y"
 
+# Network device drivers
+["category:network".">=0.0.0"."aarch64 armv7"]
+RT2400PCI = "m"
+RT2500PCI = "m"
+RT2500USB = "m"
+RT2800PCI = "m"
+RT2800USB = "m"
+RT2X00 = "m"
+RT61PCI = "m"
+RT73USB = "m"
+RTL8187 = "m"
+RTL8723BS = "m"
+
+# Trusted Platform Modules
+["category:tpm".">=0.0.0"."aarch64 armv7"]
+TCG_TIS_SPI = "m"
+TCG_TIS_I2C = "m"
+TCG_TIS = "m"
+TCG_TIS_I2C_CR50 = "m"
+
+["category:usb".">=0.0.0"."aarch64 armv7"]
+CHARGER_CROS_USBPD = "m"
+
 # display controllers, bridges, panels, etc.
 ["category:graphics".">=0.0.0"."all"]
 DRM_AMDGPU = "m"
+BACKLIGHT_PWM = "y"
+BACKLIGHT_CLASS_DEVICE = "y"
+BACKLIGHT_GPIO = "y"
 ["category:graphics".">=0.0.0"."aarch64 armv7"]
 EXYNOS_IOMMU = "y"
 NOUVEAU_PLATFORM_DRIVER = "y"
@@ -54,6 +81,9 @@ DRM_PANEL_SAMSUNG_SOFEF00 = "m"
 DRM_PANEL_SAMSUNG_S6E3HA8 = "m"
 DRM_PANEL_VISIONOX_RM69299 = "m"
 # depends on 4k page sizes
+DRM_PANEL_BOE_TV101WUM_NL6 = "m"
+DRM_PANEL_INNOLUX_P079ZCA = "m"
+DRM_PANEL_KINGDISPLAY_KD097D04 = "m"
 ["category:graphics".">=0.0.0"."aarch64 armv7 riscv64 x86 x86_64"]
 DRM_NOUVEAU = "m"
 DRM_NOUVEAU_BACKLIGHT = "y"
@@ -74,8 +104,13 @@ IIO_ST_ACCEL_I2C_3AXIS = "m"
 IIO_ST_ACCEL_SPI_3AXIS = "m"
 INPUT_REGULATOR_HAPTIC = "m"
 INPUT_TOUCHSCREEN = "y"
+REGULATOR = "y"
 RMI4_CORE = "m"
 RMI4_I2C = "m"
+RMI4_SMB = "m"
+RMI4_SPI = "m"
+RMI4_F34 = "y"
+RMI4_F55 = "y"
 STK3310 = "m"
 TOUCHSCREEN_MELFAS_MIP4 = "m"
 TOUCHSCREEN_NOVATEK_NVT_TS = "m"
@@ -83,6 +118,11 @@ TOUCHSCREEN_S6SY761 = "m"
 TOUCHSCREEN_ZINITIX = "m"
 ["category:input".">=0.0.0"."aarch64"]
 INPUT_MAX77693_HAPTIC = "m"
+["category:input".">=0.0.0"."aarch64 armv7"]
+HID_GOOGLE_HAMMER = "m"
+HID_VIVALDI = "m"
+I2C_HID_OF_GOODIX = "m"
+
 
 # led and light devices
 ["category:led".">=0.0.0"."all"]
@@ -118,6 +158,10 @@ MFD_SL28CPLD = "m"
 QCOM_SPMI_RRADC = "m"
 REGULATOR_QCOM_LABIBB = "m"
 REGULATOR_S2DOS05 = "m"
+["category:power".">=4.19.138"."aarch64"]
+EC_ACER_ASPIRE1 = "m"
+["category:power".">=6.11.0"."aarch64"]
+CHARGER_CROS_CONTROL = "m"
 ["category:power"."<6.19"."aarch64"]
 EC_LENOVO_YOGA_C630 = "m"
 
@@ -184,3 +228,4 @@ VIRTIO_PCI = "y"
 VSOCKETS = "m"
 ["category:virtio".">=0.0.0"."aarch64 x86 x86_64"]
 VIRTIO_IOMMU = "m"
+
