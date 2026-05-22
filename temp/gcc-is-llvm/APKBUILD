@@ -1,0 +1,79 @@
+# temp: Workaround for
+# https://gitlab.postmarketos.org/postmarketOS/pmbootstrap/-/work_items/2746
+# Drop when Alpine allows alternative compilers as virtual packages.
+maintainer="Aster Boese <asterboese@mailbox.org>"
+pkgname=gcc-is-llvm
+pkgver=1
+pkgrel=0
+pkgdesc="Symlink Clang and LLVM to override the GCC and Binutils"
+url="https://postmarketos.org"
+arch="all"
+license="GPL-3.0-or-later"
+depends="clang lld llvm"
+replaces="
+	binutils
+	binutils-$CARCH
+	g++
+	g++-$CARCH
+	gcc
+	gcc-$CARCH
+	"
+replaces_priority=9999
+# check: no tests
+# tracedeps: prevents abuild from making conflicting cmd: virtual packages
+options="!check !tracedeps"
+
+# llvm-as is not included because it breaks clang's -fno-integrated-as
+_llvm_utils="
+	llvm-addr2line
+	llvm-ar
+	llvm-dwp
+	llvm-nm
+	llvm-objcopy
+	llvm-objdump
+	llvm-ranlib
+	llvm-readelf
+	llvm-size
+	llvm-strings
+	llvm-strip
+	"
+
+build() {
+	mkdir -p "$builddir"/bin
+
+	# gcc and g++
+	ln -s /usr/bin/clang \
+		"$builddir"/bin/cc
+	ln -s /usr/bin/clang++ \
+		"$builddir"/bin/c++
+	ln -s /usr/bin/clang \
+		"$builddir"/bin/gcc
+	ln -s /usr/bin/clang++ \
+		"$builddir"/bin/g++
+
+	# lld
+	ln -s /usr/bin/ld.lld \
+		"$builddir"/bin/ld
+	ln -s /usr/bin/ld.lld \
+		"$builddir"/bin/ld.bfd
+
+	# binutils
+	for util in $_llvm_utils; do
+		ln -s /usr/bin/"$util" \
+			"$builddir"/bin/"${util#*-}"
+	done
+
+	# outliers
+	ln -s /usr/bin/llvm-cxxfilt \
+		"$builddir"/bin/c++filt
+}
+
+package() {
+	mkdir -p "$pkgdir"/usr
+	cp -r "$builddir"/bin \
+		"$pkgdir"/usr/
+	# mimic binutils with arch-specific paths
+	cp -r "$builddir"/bin \
+		"$pkgdir"/usr/"$CTARGET"
+}
+
