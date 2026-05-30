@@ -1,0 +1,51 @@
+# Reference: <https://postmarketos.org/devicepkg>
+maintainer="Jonas Heinrich <onny@project-insanity.org>"
+pkgname=device-samsung-dream
+pkgdesc="Samsung Galaxy S8/S8+"
+pkgver=8
+pkgrel=1
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+  postmarketos-base
+  mkbootimg
+"
+makedepends="devicepkg-dev"
+source="deviceinfo"
+subpackages="
+  $pkgname-kernel-stable:kernel_stable
+  $pkgname-kernel-lts:kernel_lts
+  $pkgname-kernel-mainline:kernel_mainline
+  "
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+kernel_stable() {
+  pkgdesc="Stable kernel (recommended, best balance between stability and features)"
+  depends="linux-postmarketos-stable"
+  devicepkg_subpackage_kernel $startdir $pkgname $subpkgname
+}
+
+kernel_lts() {
+  pkgdesc="Long-term maintainance kernel (most stability, not all security fixes & new features)"
+  depends="linux-postmarketos-lts"
+  devicepkg_subpackage_kernel $startdir $pkgname $subpkgname
+}
+
+kernel_mainline() {
+  pkgdesc="Upstream development kernel (regular breakage, latest features)"
+  depends="linux-postmarketos-mainline"
+  devicepkg_subpackage_kernel $startdir $pkgname $subpkgname
+}
+
+sha512sums="
+d3fcc4c77af8c070e7fa898b8cf327554126822f28ad63be028f351613d7067323eed6830083b52fd4aab17b451066ba053fcd51e717a542964542e10bd270f5  deviceinfo
+"
