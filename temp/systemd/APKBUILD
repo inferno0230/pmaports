@@ -11,7 +11,7 @@ maintainer="Clayton Craft <craftyguy@postmarketos.org>"
 pkgname=systemd
 pkgver=261_rc2
 _pkgver="${pkgver/_/-}"
-pkgrel=1
+pkgrel=2
 pkgdesc="System and service manager"
 url="https://github.com/systemd/systemd"
 # armhf: no linux-stable
@@ -152,6 +152,14 @@ subpackages="
 	$pkgname-journald-zsh-completion:journald_zcomp:noarch
 	$pkgname-journald-bash-completion:journald_bcomp:noarch
 
+	$pkgname-standalone-repart:standalone
+	$pkgname-standalone-shutdown:standalone
+	$pkgname-standalone-sysusers:standalone
+	$pkgname-standalone-tmpfiles:standalone
+
+	$pkgname-standalone-sysusers-openrc:standalone_sysusers_openrc
+	$pkgname-standalone-tmpfiles-openrc:standalone_tmpfiles_openrc
+
 	$pkgname-libs
 
 	$pkgname-bash-completion
@@ -160,6 +168,11 @@ subpackages="
 
 source="$pkgname-$pkgver.tar.gz::https://github.com/systemd/systemd/archive/refs/tags/v$_pkgver.tar.gz
 	wired.network
+	$pkgname-sysusers.initd
+	$pkgname-tmpfiles-clean.initd
+	$pkgname-tmpfiles-setup-dev-early.initd
+	$pkgname-tmpfiles-setup-dev.initd
+	$pkgname-tmpfiles-setup.initd
 	"
 builddir="$srcdir/$pkgname-$_pkgver"
 
@@ -255,6 +268,7 @@ build() {
 		-Dbpf-framework=disabled\
 		-Dvmlinux-h=provided \
 		-Dvmlinux-h-path="$(find /usr/src -path "/usr/src/linux-headers-*-stable/vmlinux.h" | sort -V | tail -n1)" \
+		-Dstandalone-binaries=true \
 		build .
 	meson compile ${JOBS:+-j ${JOBS}} -C build
 }
@@ -288,6 +302,14 @@ package() {
 		mkdir -p "$pkgdir"/usr/lib/systemd/"$type"-preset
 		echo 'disable *' > "$pkgdir"/usr/lib/systemd/"$type"-preset/99-default.preset
 	done
+
+	# install service files for standalone binaries
+	for i in clean setup-dev-early setup-dev setup; do
+		install -Dm755 "$srcdir"/systemd-tmpfiles-"$i".initd \
+			"$pkgdir"/etc/init.d/systemd-tmpfiles-"$i"
+	done
+	install -Dm755 "$srcdir"/systemd-sysusers.initd \
+		"$pkgdir"/etc/init.d/systemd-sysusers
 
 	# initramfs hardcodes /sbin/init
 	mkdir -p "$pkgdir"/sbin
@@ -469,6 +491,36 @@ journald_zcomp() {
 	_default_zshcomp _journalctl
 }
 
+standalone() {
+	local binary="${subpkgname##*-}"
+	pkgdesc="systemd-$binary (standalone)"
+	# shouldn't be installed with systemd proper
+	depends="!systemd"
+
+	local install_dir="usr/bin"
+	if [ "$binary" = "shutdown" ]; then
+		install_dir="usr/lib/systemd"
+	fi
+
+	amove "$install_dir"/systemd-"$binary".standalone
+	ln -s systemd-"$binary".standalone \
+		"$subpkgdir"/"$install_dir"/"$pkgname"-"$binary"
+}
+
+standalone_sysusers_openrc() {
+	pkgdesc="systemd-sysusers (standalone) (OpenRC init scripts)"
+	install_if="$pkgname-standalone-sysusers=$pkgver-r$pkgrel openrc"
+
+	amove etc/init.d/systemd-sysusers
+}
+
+standalone_tmpfiles_openrc() {
+	pkgdesc="systemd-tmpfiles (standalone) (OpenRC init scripts)"
+	install_if="$pkgname-standalone-tmpfiles=$pkgver-r$pkgrel openrc"
+
+	amove etc/init.d/systemd-tmpfiles*
+}
+
 x11() {
 	pkgdesc="systemd x11"
 	install_if="$pkgname=$pkgver-r$pkgrel xorg-server-common"
@@ -533,4 +585,9 @@ _resolve_packages() {
 sha512sums="
 4a46d24b4b4dd386a3077669b74fc4f98be064d19b72089d271724c097eb0c6d07a1cc9322fdcb7d501135e51d2f1dda01eb90bbfbda0aecabc900fefb1b8aa0  systemd-261_rc2.tar.gz
 81c897fed8a3fbfb67ec591b2398a5d65e4af1b3ef379376c157c98d71f085b707f8ebc896d5571a94f99f8fc84fd6b43e3b879ca9b0d57fc6c4596034c7a777  wired.network
+77bdcd754c01acf2d040fff626604adfa5206e53ee0cb06c8591cc75a1ce2f6842afd91bb15dec58ab25b096de4ee9b5637aefdf94ff0d9c6bd8708948da97ab  systemd-sysusers.initd
+6f82a990266b1e39955eab0f04be7a9ee25c0cf800d373a3c9814a81923137846ee4743388272547f68c9c0849be4ed192881418598ef846dc91d3049dc0985e  systemd-tmpfiles-clean.initd
+afc1d66f74818c13ddbb9db65446b82d1aa4e638cbe97f518b1da19b67e9d01ccbb109f13521dec75edc01594d4e930867df79ad5e52ee6bf261651ebf837d9e  systemd-tmpfiles-setup-dev-early.initd
+4f83ab9e6bb76d8eb8f7ac97e87a75437077c95810281e155bcc72eed8e48db8cf35ec7d452334e80afed0549e95dae4d5b5cff251ed7b8bad1bc158b6db9342  systemd-tmpfiles-setup-dev.initd
+cbd6ce7b5c44aa92f6d819a2f1862eeab0b4ef221e2abc2a18c2f782c2b0856c80f4ddf45e2376ad15f077eff6c7ad2dad6402a538b70bbb737ad0ee847d3e0a  systemd-tmpfiles-setup.initd
 "
