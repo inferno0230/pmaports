@@ -1,3 +1,5 @@
+# temp: pending push to Alpine
+
 # Contributor: Jakub Panek <me@panekj.dev>
 # Co-Maintainer: Achill Gilgenast <achill@achill.org>
 
@@ -9,7 +11,7 @@ maintainer="Clayton Craft <craftyguy@postmarketos.org>"
 pkgname=systemd
 pkgver=261_rc2
 _pkgver="${pkgver/_/-}"
-pkgrel=0
+pkgrel=1
 pkgdesc="System and service manager"
 url="https://github.com/systemd/systemd"
 # armhf: no linux-stable
@@ -116,7 +118,7 @@ depends="
 # provides=openrc and openrc-settingsd to prevent those packages
 # getting pulled in, as there are some conflicts (dbus)
 provides="busctl eudev openrc-settingsd=$pkgver-r$pkgrel systemd-stage0=$pkgver-r$pkgrel"
-provider_priority=100
+provider_priority=0
 
 install="$pkgname.pre-install"
 subpackages="
@@ -305,7 +307,7 @@ udevd() {
 
 	# NOTE: should only be udev, but packages hardcode eudev
 	provides="eudev udev eudev-libs"
-	provider_priority=100
+	provider_priority=0
 
 	amove usr/bin/udevadm
 	amove usr/lib/libudev*
@@ -423,7 +425,7 @@ logind() {
 	"
 
 	provides="elogind"
-	provider_priority=100
+	provider_priority=0
 
 	amove usr/bin/loginctl
 	amove usr/lib/systemd/systemd-logind
@@ -476,7 +478,7 @@ x11() {
 
 dev() {
 	provides="eudev-dev udev-dev systemd-stage0-dev=$pkgver-r$pkgrel"
-	provider_priority=100
+	provider_priority=0
 
 	default_dev
 }
