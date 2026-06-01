@@ -2,7 +2,7 @@ maintainer="bluebunny <bluebunny@postmarketos.org>"
 _flavor="xiaomi-pipa"
 pkgname=linux-$_flavor
 pkgver=7.0.6
-pkgrel=1
+pkgrel=2
 pkgdesc="Stable kernel for Xiaomi Pad 6"
 arch="aarch64"
 _carch="arm64"
@@ -88,7 +88,7 @@ package() {
 
 sha512sums="
 770e2b7e5669b20c2c8d98be5333e756062e379246eb9561b5024644eecfd1ef66776e4ad813375e748be1b88493c649892afc38176c1b9bfd3b88c4e8754b29  linux-7.0.6.tar.xz
-392450ca034ebaaff4d5e86d14003ea0f5c3f162e78f908f2abcdbc9041666f16bcd6992df4c4437188a8e7c8346aa290c03c19343086513926f3be84e1f5865  config-xiaomi-pipa.aarch64
+66968df83d2eec948baf852e2377e6736cf5de253d5ecc3f14eff16d404b53ce297741946241ed00c91b309e094b555aa7b6751ac1b4c70af7dc94f9a1f3b7b8  config-xiaomi-pipa.aarch64
 c218e68276c1736e83a32ffdb826255cdf0732b930ee95e3c3a4343d3540808d735fbe9cb68a13d681ce88f55cd89f3c76c89da0a9925e0a43471154e34ecdcc  0001-arm64-dts-qcom-sm8250-xiaomi-pipa-Add-device-tree-fo.patch
 469bd89303e4f08d3b36a9423d7a5f05d159e5e8eefdc872d20253304ad22b669cba6f1609cda0bb9d2b3e0396f0e41995613b95d547dca4bb6c2e9d03e9243c  0002-power-supply-Add-driver-for-Qualcomm-PMIC-fuel-gauge.patch
 0be3f438f15da0ffdde0a4351c12a93e5f56db318306b4be7598d769b86dc4b9da95f663f59763017fbd96b9824ac396895d1bd3926bac15e06a30454fb06d41  0003-Input-Add-nt36523-touchscreen-driver.patch
