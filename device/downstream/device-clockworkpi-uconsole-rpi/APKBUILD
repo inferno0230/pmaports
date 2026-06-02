@@ -2,24 +2,24 @@
 maintainer="Antoine Martin (ayakael) <dev@ayakael.net>"
 pkgname=device-clockworkpi-uconsole-rpi
 pkgdesc="Clockwork Tech ClockworkPi uConsole with Raspberry Pi compute modules"
-pkgver=9
+pkgver=10
+pkgrel=0
 # commit to fork of kernel with drivers maintained by ak-rex
 _commit=d340a0416d34bf94591b45b50c5538aecbf5b09b
-pkgrel=2
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!archcheck"
 depends="
-	linux-rpi
+	linux-raspberry-rpi
 	postmarketos-base
 	raspberrypi-bootloader
 "
 makedepends="
 	devicepkg-dev
-	gcc
 	dtc
-	linux-rpi-dev
+	clang
+	linux-raspberry-rpi-dev
 "
 subpackages="
 	$pkgname-nonfree-firmware:nonfree_firmware
@@ -96,10 +96,10 @@ build() {
 	done
 
 	# generate dtbo for uconsole
-	_kernel_ver=$(find /lib/modules -maxdepth 1 -mindepth 1 | grep rpi | sed 's|.*/||g')
+	_kernel_ver=$(find /usr/lib/modules -maxdepth 1 -mindepth 1 | sed 's|.*/||g')
 	echo ">>> Generating dtbo against $_kernel_ver"
 	for dts in "$builddir"/dtso/*.dts; do
-		cpp -nostdinc -I "/usr/src/linux-headers-$_kernel_ver/include" -I arch -undef -x assembler-with-cpp $dts $dts.preprocessed
+		clang -E -P -nostdinc -I "/usr/src/linux-headers-$_kernel_ver/include" -I arch -undef -x assembler-with-cpp $dts -o $dts.preprocessed
 		dtc -O dtb -o ${dts/-overlay.dts/.dtbo} $dts.preprocessed
 	done
 }
@@ -127,7 +127,7 @@ check() {
 
 akms() {
 	pkgdesc="uConsole kernel module (AKMS)"
-	depends="akms linux-rpi-dev build-base"
+	depends="akms linux-raspberry-rpi-dev build-base"
 	install_if="$pkgname=$pkgver-r$pkgrel"
 
 	mkdir -p "$subpkgdir"/usr/src

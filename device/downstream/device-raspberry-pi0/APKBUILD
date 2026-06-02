@@ -1,13 +1,13 @@
 # Reference: <https://postmarketos.org/devicepkg>
 pkgname=device-raspberry-pi0
 pkgdesc="Raspberry Pi Zero"
-pkgver=7
+pkgver=8
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
 arch="armhf"
 options="!check !archcheck"
-depends="postmarketos-base raspberrypi-bootloader linux-rpi bluetooth-raspberry-pi"
+depends="postmarketos-base raspberrypi-bootloader linux-raspberry-rpi bluetooth-raspberry-pi"
 makedepends="devicepkg-dev"
 subpackages="$pkgname-openrc $pkgname-udev"
 source="deviceinfo kernel-cmdline.conf modules-initfs usercfg.txt 95-vchiq-permissions.rules"

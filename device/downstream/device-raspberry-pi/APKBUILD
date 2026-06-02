@@ -1,14 +1,14 @@
 # Reference: <https://postmarketos.org/devicepkg>
 pkgname=device-raspberry-pi
 pkgdesc="Raspberry Pi"
-pkgver=6
+pkgver=7
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
 arch="armhf"
 options="!check !archcheck"
 depends="
-	linux-rpi
+	linux-raspberry-rpi
 	postmarketos-base
 	raspberrypi-bootloader
 "

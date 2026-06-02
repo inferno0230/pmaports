@@ -1,0 +1,157 @@
+maintainer="Aster Boese <asterboese@mailbox.org>"
+pkgname=linux-raspberry-rpi
+pkgver=6.12.85
+pkgrel=0
+_kernver=${pkgver%.*}
+pkgdesc="Linux kernel with Raspberry Pi patches"
+arch="armhf armv7 aarch64"
+url="https://github.com/raspberrypi/linux"
+license="GPL-2.0-only"
+depends="linux-firmware-brcm"
+makedepends="
+	bison
+	clang
+	diffutils
+	elfutils-dev
+	findutils
+	flex
+	kmod
+	linux-headers
+	lld
+	llvm
+	openssl-dev
+	pahole
+	perl
+	postmarketos-installkernel
+	python3
+	sed
+	zstd
+	"
+_flavor="raspberry-rpi"
+# Specifically for device-clockworkpi-uconsole-rpi
+# Do not use this logic in other kernels
+subpackages="$pkgname-dev:_dev"
+source="https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver.tar.xz
+	patch-$pkgver.patch.xz::https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz
+	https://dev.alpinelinux.org/archive/rpi-patches/rpi-$pkgver-alpine.patch
+	config-$_flavor.aarch64
+	config-$_flavor.armhf
+	config-$_flavor.armv7
+	"
+options="!check !strip !tracedeps pmb:cross-native"
+builddir="$srcdir"/linux-$_kernver
+
+case "$CARCH" in
+	aarch64) _carch="arm64" ;;
+	arm*) _carch="arm" ;;
+esac
+
+_outdir="$builddir"/out
+
+prepare() {
+	default_prepare
+	mkdir -p "$_outdir"
+	cp "$srcdir/config-$_flavor.$CARCH" "$_outdir"/.config
+}
+
+build() {
+	unset LDFLAGS
+	make ARCH="$_carch" LLVM=1 O="$_outdir" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-$_flavor"
+}
+
+package() {
+	local _install
+	case "$CARCH" in
+		arm*)
+			_install="zinstall dtbs_install"
+			;;
+		aarch64)
+			_install="install dtbs_install"
+			;;
+		*)
+			_install=install
+			;;
+	esac
+
+	make modules_install $_install \
+		ARCH="$_carch" \
+		LLVM=1 \
+		O="$_outdir" \
+		INSTALL_PATH="$pkgdir"/boot \
+		INSTALL_MOD_PATH="$pkgdir"/usr \
+		INSTALL_MOD_STRIP=1 \
+		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs
+
+	rm -f "$pkgdir"/usr/lib/modules/*/build "$pkgdir"/usr/lib/modules/*/source
+
+	install -D "$_outdir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/"$_flavor"/kernel.release
+}
+
+# Directly taken from linux-pi in aports
+_dev() {
+	local _abi_release
+	_abi_release="$(make -C $_outdir -s kernelrelease LLVM=1)"
+	# copy the only the parts that we really need for build 3rd party
+	# kernel modules and install those as /usr/src/linux-headers,
+	# simlar to what ubuntu does
+	#
+	# this way you dont need to install the 300-400 kernel sources to
+	# build a tiny kernel module
+	#
+	pkgdesc="Headers and script for third party modules for $_flavor kernel"
+
+	local _headerdir="$subpkgdir"/usr/src/linux-headers-$_abi_release
+	mkdir -p "$_headerdir"
+	# first we import config, run prepare to set up for building
+	# external modules, and create the scripts
+	cp "$_outdir"/.config "$_headerdir"/
+	echo "-$pkgrel-$_flavor" > "$_headerdir"/localversion-postmarketos
+
+	make -C "$builddir" \
+		ARCH="$_carch" \
+		LLVM=1 \
+		O="$_headerdir" \
+		prepare modules_prepare scripts
+
+	# remove the stuff that points to real sources. we want 3rd party
+	# modules to believe this is the soruces
+	rm "$_headerdir"/Makefile "$_headerdir"/source
+
+	# copy the needed stuff from real sources
+	#
+	# this is taken from ubuntu kernel build script
+	# http://kernel.ubuntu.com/git/ubuntu/ubuntu-zesty.git/tree/debian/rules.d/3-binary-indep.mk
+	cd "$builddir"
+	find .  -path './include/*' -prune \
+		-o -path './scripts/*' -prune -o -type f \
+		\( -name 'Makefile*' -o -name 'Kconfig*' -o -name 'Kbuild*' -o \
+		   -name '*.sh' -o -name '*.pl' -o -name '*.lds' \) \
+		-print | cpio -pdm "$_headerdir"
+
+	cp -a scripts include "$_headerdir"
+	find "arch/$_carch" "tools/include" "tools/arch/$_carch" -type f -path '*/include/*' \
+		-print | cpio -pdm "$_headerdir"
+
+	install -Dm644 "$_outdir"/Module.symvers \
+		"$_headerdir"/Module.symvers
+
+	rm -r "$_headerdir"/Documentation
+	sed -i -e '/Documentation/d' "$_headerdir"/Kconfig
+	find "$_headerdir" -type f \( -name '*.o' -o -name '*.cmd' \) -exec rm -v -- {} +
+
+	mkdir -p "$subpkgdir"/usr/lib/modules/"$_abi_release"
+	ln -sf /usr/src/linux-headers-"$_abi_release" \
+		"$subpkgdir"/usr/lib/modules/"$_abi_release"/build
+}
+
+
+sha512sums="
+a37b1823df7b4f72542f689b65882634740ba0401a42fdcf6601d9efd2e132e5a7650e70450ba76f6cd1f13ca31180f2ccee9d54fe4df89bc0000ade4380a548  linux-6.12.tar.xz
+6b7c0c220ca26b900462b21641f8615f7c84dc25cc79527c8d32e9ac5742bb89851d30a69e1f1b1bfdb5bd353153c31ae523538eca1cead8cc12261a47f4a18b  patch-6.12.85.patch.xz
+0b4124f429a7858abd62e04a2a59fdc9c6b72e2a290882cdecf2834ce8697ac277e95d4cf6e4b9f97dc736baf970924f69ae87c9f2dfdc1ce3ee611176549885  rpi-6.12.85-alpine.patch
+af98ac8b6a09ac8eca408381d5aebf09be28e2fa5497547a421f9e3c1e4675a49aea190530e664341bc072ceff81e2fcfac6ebcbb063d3ad409a53282144e259  config-raspberry-rpi.aarch64
+2e8e541c7c99bc29d60dbab50904c157a757d31b3b3d21f683b78ce4d0460abee0cd7432bd041c459af1f12f6bc05af5db34a94b25a20de07295b3b65d8b6b16  config-raspberry-rpi.armhf
+a3af5a1ec2a775c84c8704c26a7fd315fd2ec5b3036b84c7be31bee31588e4702789282dfc82bc84bfdea6c032284b4d6baef1f5796ffa3b9f37c9d2d92c5cae  config-raspberry-rpi.armv7
+"

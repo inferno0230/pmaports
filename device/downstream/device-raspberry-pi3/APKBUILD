@@ -2,13 +2,13 @@
 maintainer="Achill Gilgenast <achill@achill.org>"
 pkgname=device-raspberry-pi3
 pkgdesc="Raspberry Pi 3B/3B+"
-pkgver=6
+pkgver=7
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!check !archcheck"
-depends="postmarketos-base raspberrypi-bootloader linux-rpi bluetooth-raspberry-pi"
+depends="postmarketos-base raspberrypi-bootloader linux-raspberry-rpi bluetooth-raspberry-pi"
 makedepends="devicepkg-dev"
 subpackages="$pkgname-openrc"
 source="deviceinfo kernel-cmdline.conf modules-initfs usercfg.txt 95-vchiq-permissions.rules networkmanager.conf"
