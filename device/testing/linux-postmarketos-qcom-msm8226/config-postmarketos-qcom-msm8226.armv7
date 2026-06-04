@@ -3198,7 +3198,7 @@ CONFIG_REGULATOR_QCOM_SPMI=y
 # CONFIG_REGULATOR_TPS6287X is not set
 # CONFIG_REGULATOR_TPS65023 is not set
 # CONFIG_REGULATOR_TPS6507X is not set
-CONFIG_REGULATOR_TPS65132=m
+CONFIG_REGULATOR_TPS65132=y  # Must be =y to prevent blue screen on motorola-titan
 # CONFIG_REGULATOR_TPS6524X is not set
 # CONFIG_REGULATOR_VCTRL is not set
 # CONFIG_REGULATOR_VQMMC_IPQ4019 is not set
@@ -3269,7 +3269,7 @@ CONFIG_DRM_SCHED=m
 #
 CONFIG_DRM_SYSFB_HELPER=m
 # CONFIG_DRM_EFIDRM is not set
-CONFIG_DRM_SIMPLEDRM=m
+CONFIG_DRM_SIMPLEDRM=y  # Must be =y to prevent blue screen on motorola-titan
 # end of Drivers for system framebuffers
 
 #
