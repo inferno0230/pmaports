@@ -1,0 +1,47 @@
+Patch-Source: https://github.com/jirutka/akms/pull/21
+From 7d5dfe52471fca6c2452772b9e2f8532c4733a6e Mon Sep 17 00:00:00 2001
+From: Andres Erbsen <andres-github@andres.systems>
+Date: Sat, 30 May 2026 00:58:41 -0700
+Subject: [PATCH] akms-runas: use busbox su
+
+The way akms-runas calls su is not compatible with util-linux su -- there is a discrepancy in whether arguments after the username are interpreted as flags or arguments to the shell.
+
+~ # /bin/su --version
+su from util-linux 2.42
+~ # /bin/su akms -s /bin/sh -c yes
+/root $ # got a shell not "y"
+/root $ echo "$@"
+/bin/sh -c yes
+/root $ exit
+~ # apk info --who-owns /bin/su
+/bin/su is owned by util-linux-login-2.42-r0
+/ # apk info --who-owns /usr/libexec/akms/akms-runas
+/usr/libexec/akms/akms-runas is owned by akms-0.3.0-r0
+
+This issue in turn led an upgrade of `linux-lts` to fail to rebuild an AKMS module with the error message "akms: ERROR: Failed to evaluate /usr/src/mymodule/AKMBUILD" even though that file evaluates just fine independently.
+---
+ akms-runas | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/akms-runas b/akms-runas
+index 5aabf53..3d3d960 100755
+--- a/akms-runas
++++ b/akms-runas
+@@ -26,7 +26,7 @@ if [ "$1" = '--sandbox' ]; then
+ 		echo 'akms-runas: missing <cmd>'; exit 1
+ 	fi
+ 
+-	exec /bin/su "$user" -s /bin/sh -c 'exec /usr/bin/bwrap "$@"' -- -- \
++	exec /bin/busybox su "$user" -s /bin/sh -c 'exec /usr/bin/bwrap "$@"' -- -- \
+ 		--unshare-all \
+ 		--bind "$rootfs" / \
+ 		--proc /proc \
+@@ -36,5 +36,5 @@ if [ "$1" = '--sandbox' ]; then
+ 		-- /usr/bin/env -i $base_env "$@"
+ else
+ 	[ "$1" = '--' ] && shift
+-	exec /bin/su "$user" -s /bin/sh -c 'exec /usr/bin/env -i "$@"' -- -- $base_env "$@"
++	exec /bin/busybox su "$user" -s /bin/sh -c 'exec /usr/bin/env -i "$@"' -- -- $base_env "$@"
+ fi
+-- 
+2.54.0

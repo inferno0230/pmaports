@@ -4,7 +4,7 @@ maintainer="Antoine Martin <dev@ayakael.net>"
 pkgname=akms
 _pkgver=0.3.0
 pkgver=9999$_pkgver
-pkgrel=1
+pkgrel=2
 pkgdesc="Alpine Kernel Module Support"
 url="https://github.com/jirutka/akms"
 arch="noarch"
@@ -18,6 +18,7 @@ source="https://github.com/jirutka/akms/archive/v$_pkgver/akms-$_pkgver.tar.gz
 	modules-load.conf
 	0001-Add-use_sandbox-boolean-and-no-sandbox-option-to-dis.patch
 	0002-Check-if-build-base-is-installed-by-checking-if-file.patch
+	0003-akms-runas-use-busybox-su.patch
 	"
 builddir="$srcdir"/$pkgname-$_pkgver
 options="!check"  # no tests provided
@@ -39,4 +40,5 @@ sha512sums="
 e61ebacae17e4e6b9ec39c0673d46c7764cba7f1378208341688f201c396a1599f8a518ce0849f36da0de2710391014f45d90ab09f6b36a579970d1672b0d71d  modules-load.conf
 93550c02695b288a0626bafc11670d09b4563ad94df0816c2cbe11944762fe4c500b6dafb06ef6b48ab3205e708321d727ee20b37a239576f8afd6c443567ace  0001-Add-use_sandbox-boolean-and-no-sandbox-option-to-dis.patch
 d33815d42de28b89cf69f6480ce91ef9005e0456df8943324b6cc06fca5ac083013b35862c8931e3402a9d526f0ec1575efadf54482bbbd2074fac4aff988a3b  0002-Check-if-build-base-is-installed-by-checking-if-file.patch
+68ed6c98bf910b7084ec2b15d2db200755562493e0fc190fe76bf3cfa1e718e08cb0b709f9c4d6a7cea5516fdc3ee4223fb2dc4b7b037784b77fd29ca8eee898  0003-akms-runas-use-busybox-su.patch
 "
