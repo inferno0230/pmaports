@@ -1,0 +1,7 @@
+pkgname=nomaintainer
+pkgver=1
+pkgrel=0
+pkgdesc="This pkg has no maintainer"
+url="https://example.com"
+arch="aarch64"
+license="custom"
