@@ -1,7 +1,7 @@
 # Reference: <https://postmarketos.org/devicepkg>
-maintainer=""
+maintainer="Robert Eckelmann <longnoserob@postmarketos.org>"
 pkgname=device-ouya-ouya
-pkgver=5
+pkgver=6
 pkgrel=0
 pkgdesc="Ouya"
 url="https://postmarketos.org"
@@ -10,7 +10,7 @@ license="MIT"
 options="!check !archcheck"
 depends="
 	firmware-ouya-ouya
-	linux-ouya-ouya-mainline
+	linux-postmarketos-grate
 	mkbootimg
 	postmarketos-base
 	"
