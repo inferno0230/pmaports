@@ -120,6 +120,14 @@ if grep -qr '# Maintainer:' -- *; then
 	exit_code=1
 fi
 
+# Disallow sysadmin OpenRC files
+if grep -qr '/etc/local.d' --exclude-dir='archived' -- *; then
+	echo "ERROR: Please use real OpenRC service files instead of sysadmin files."
+	echo "See https://gitlab.postmarketos.org/postmarketOS/pmaports/-/work_items/4360"
+	grep --color=always -r '/etc/local.d' --exclude-dir='archived' -- *
+	exit_code=1
+fi
+
 if [ -n "$CI_MERGE_REQUEST_DIFF_BASE_SHA" ]; then
 	# Find all moved or new kernel APKBUILDs in main, community or testing
 	MOVED_OR_NEW_MAINLINE_KERNEL_PACKAGES=$(git show --pretty="" --name-only --diff-filter=AR "$CI_MERGE_REQUEST_DIFF_BASE_SHA"..HEAD | grep "device/\(main\|community\|testing\)/linux-.*/APKBUILD" || true)
