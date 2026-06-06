@@ -2,7 +2,7 @@
 maintainer=""
 pkgname=device-amazon-biscuit
 pkgdesc="Amazon Echo Dot (2nd gen)"
-pkgver=6
+pkgver=7
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
@@ -40,8 +40,11 @@ build() {
 
 package() {
 	devicepkg_package $startdir $pkgname
-	install -Dm755 "$srcdir"/led.start "$pkgdir"/etc/local.d/led.start
-	install -Dm755 "$srcdir"/led.stop "$pkgdir"/etc/local.d/led.stop
+
+	# FIXME: Convert the start/stop scripts into OpenRC services
+	#
+	# install -Dm755 "$srcdir"/led.start "$pkgdir"/etc/ local.d/led.start
+	# install -Dm755 "$srcdir"/led.stop "$pkgdir"/etc/ local.d/led.stop
 
 	# ALSA configs
 	install -Dm644 "$srcdir"/asound.conf "$pkgdir"/etc/asound.conf

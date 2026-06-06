@@ -2,7 +2,7 @@
 maintainer=""
 pkgname=device-samsung-lt023g
 pkgdesc="Galaxy Tab 3 7.0"
-pkgver=5
+pkgver=6
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
@@ -26,7 +26,9 @@ package() {
 	install -Dm644 "$srcdir"/HiFi.conf \
 		"$pkgdir"/usr/share/alsa/ucm2/conf.d/emei-dkb-hifi/HiFi.conf
 
-	install -Dm755 "$srcdir/device-ssp.start" "$pkgdir/etc/local.d/device-ssp.start"
+	# FIXME: Convert the start script into a OpenRC service
+	#
+	# install -Dm755 "$srcdir/device-ssp.start" "$pkgdir/etc/ local.d/device-ssp.start"
 }
 
 audio() {

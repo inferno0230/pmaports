@@ -2,7 +2,7 @@
 maintainer=""
 pkgname=device-gp-peak
 pkgdesc="Geeksphone Peak"
-pkgver=4
+pkgver=5
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
@@ -24,7 +24,9 @@ build() {
 package() {
 	devicepkg_package $startdir $pkgname
 
-	install -Dm755 "$srcdir"/$pkgname.start "$pkgdir"/etc/local.d/$pkgname.start
+	# FIXME: Convert the start script into a OpenRC service
+	#
+	# install -Dm755 "$srcdir"/$pkgname.start "$pkgdir"/etc/ local.d/$pkgname.start
 	install -Dm644 "$srcdir"/fb.modes "$pkgdir"/etc/fb.modes
 }
 
