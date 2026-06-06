@@ -2,6 +2,8 @@
 
 # Enable acpid
 rc-update add acpid default
+# Enable device-specific alsa restore
+rc-update add device-nokia-n900-alsa-restore boot
 # hwdrivers is required for acpid to 'see' all devices
 rc-update add hwdrivers boot
 # Enable ofono
