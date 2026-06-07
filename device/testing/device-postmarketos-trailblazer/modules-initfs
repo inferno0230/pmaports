@@ -55,6 +55,8 @@ pmic-glink-altmode
 ps883x
 pwm_bl
 pwm_sun4i
+pwrseq-core
+pwrseq-pcie-m2
 qcom-apcs-ipc-mailbox
 qcom_glink
 qcom_glink_rpm
