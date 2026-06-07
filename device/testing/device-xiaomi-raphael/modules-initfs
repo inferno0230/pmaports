@@ -1,6 +1,4 @@
-gpi 
-i2c_qcom_geni 
-goodix_i2c 
-qcom_pmi8998_charger 
+goodix_gtx8
+qcom_pmi8998_charger
 qcom_fg
-
+tfa9872

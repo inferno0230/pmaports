@@ -10,7 +10,7 @@ arch="aarch64"
 _carch="arm64"
 options="!check !archcheck"
 depends="
-	linux-xiaomi-raphael
+	linux-postmarketos-qcom-sm8150
 	mkbootimg
 	postmarketos-base
 	mesa-vulkan-freedreno
@@ -71,5 +71,5 @@ nonfree_firmware_openrc() {
 sha512sums="
 5a4790e6c3c1070a19ffc2cfb18e49905c420ced11317cd468c0f4db4767c9b57290d1fadd822005d185f7cbc75b9bf362db401d552d9c0af53cf2de6f2df461  deviceinfo
 42d3a47ebc8109fc3bf1ac03ddae6254ca9bc7b0a64f58cfe652b30a40bdceddf09fd65a46fddeda0138d8b52dbccc2425da06f7705373f4a4ab0babaa35b150  kernel-cmdline.conf
-d81350bb2c594d1c922b4eaa5f7ddd94ff5c52d915b6b34e01be2fddc5d624dea77343fab9b168acf889b55daa80a5deace6b81366d579816d5cc73b543a6826  modules-initfs
+9e70ca686c46e2242342ec0bf073fbb39655211c4629741d0d5f5fe9910e93e2944d52f73ba68289725ee76cf701a884033639bd8442e1bd5ce618e0638628cc  modules-initfs
 "
