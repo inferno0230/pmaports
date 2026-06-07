@@ -1,0 +1,5 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/alsactl"
+pidfile="/run/${RC_SVCNAME}.pid"
+command_args="restore -f /var/lib/alsa/asound.state.speakers"
