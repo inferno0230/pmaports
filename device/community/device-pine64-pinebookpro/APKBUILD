@@ -1,9 +1,9 @@
 # Reference: <https://postmarketos.org/devicepkg>
-maintainer="Quade Curry <qc8086@qc8086.com>"
+maintainer="Hugo Osvaldo Barrera <hugo@whynothugo.nl>"
 pkgname=device-pine64-pinebookpro
 pkgdesc="PINE64 Pinebook Pro"
 pkgver=20
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
