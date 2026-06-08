@@ -4,7 +4,7 @@
 maintainer="Alistair Francis <alistair@alistair23.me>"
 pkgname=linux-purism-librem5
 pkgver=6.12.92
-pkgrel=1
+pkgrel=0
 # NOTE: Don't forget to rebase the config! See prepare() for instructions.
 _purismrel=_1
 _pureosrel=_cri1
