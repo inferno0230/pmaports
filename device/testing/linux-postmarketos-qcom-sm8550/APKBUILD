@@ -9,7 +9,7 @@ pkgrel=1
 pkgdesc="Mainline kernel fork for SM8550"
 arch="aarch64"
 _carch="arm64"
-url="https://github.com/map220v/sm8550-mainline"
+url="https://github.com/ianchb/sm8550-mainline"
 license="GPL-2.0-only"
 options="!strip !check !tracedeps
 	pmb:cross-native
@@ -28,9 +28,9 @@ makedepends="
 "
 
 # Source
-_commit="f273227fab85e2ad8391c61c21b3556bd017a726"
+_commit="c09fbf12214af3b7a5615cb15b90c37d564b8eb3"
 source="
-	$pkgname-$_commit.tar.gz::https://github.com/map220v/sm8550-mainline/archive/$_commit.tar.gz
+	$pkgname-$_commit.tar.gz::https://github.com/ianchb/sm8550-mainline/archive/$_commit.tar.gz
 	config-postmarketos-qcom-sm8550.aarch64
 "
 builddir="$srcdir/sm8550-mainline-$_commit"

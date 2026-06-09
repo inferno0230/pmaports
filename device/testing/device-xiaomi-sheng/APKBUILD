@@ -16,6 +16,7 @@ depends="
 	alsa-ucm-conf
 	firmware-xiaomi-sheng
 	sheng-devauth
+	sheng-mipps
 	linux-postmarketos-qcom-sm8550
 	make-dynpart-mappings
 	mkbootimg
@@ -23,6 +24,9 @@ depends="
 	postmarketos-base
 	soc-qcom
 	soc-qcom-qbootctl
+	sheng-iio-sensor-proxy
+	sheng-sensors
+	sheng-fastrpc
 "
 makedepends="devicepkg-dev"
 source="
