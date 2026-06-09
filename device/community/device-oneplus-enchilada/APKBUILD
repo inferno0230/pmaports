@@ -25,17 +25,19 @@ depends="
 "
 makedepends="devicepkg-dev"
 source="
+	alsa-restore-override.conf
+	alsa-state-override.conf
 	deviceinfo
-	kernel-cmdline.conf
 	hexagonrpcd.confd
+	kernel-cmdline.conf
 	modules-initfs
 	q6voiced.conf
-	80-device-oneplus-enchilada.preset
 "
 install="
 	$pkgname-openrc.post-install
 	$pkgname-openrc.post-upgrade
-	"
+	$pkgname-systemd.post-upgrade
+"
 subpackages="
 	$pkgname-pmtest
 	$pkgname-openrc
@@ -54,8 +56,11 @@ package() {
 		"$pkgdir"/etc/conf.d/q6voiced
 	install -Dm644 "$srcdir"/hexagonrpcd.confd \
 		"$pkgdir"/usr/share/hexagonrpcd/hexagonrpcd-sdsp.conf
-	install -Dm644 -t "$pkgdir"/usr/lib/systemd/system-preset \
-		"$srcdir"/80-device-oneplus-enchilada.preset
+
+	install -Dm644 "$srcdir"/alsa-restore-override.conf \
+		"$pkgdir"/usr/lib/systemd/system/alsa-restore.service.d/override.conf
+	install -Dm644 "$srcdir"/alsa-state-override.conf \
+		"$pkgdir"/usr/lib/systemd/system/alsa-state.service.d/override.conf
 }
 
 openrc() {
@@ -72,10 +77,11 @@ pmtest() {
 }
 
 sha512sums="
+73fd6340e5ed9652d2d706afef21b56764b5047c9015cff78059ac128d43e030afaa23d25517b6245ec08d00fc30b82e6e38bd2dc3dff8828337dd8441a8b611  alsa-restore-override.conf
+73fd6340e5ed9652d2d706afef21b56764b5047c9015cff78059ac128d43e030afaa23d25517b6245ec08d00fc30b82e6e38bd2dc3dff8828337dd8441a8b611  alsa-state-override.conf
 73088bcff276b1e2f03efc3776be4c7d9a367ef898031686b88e5a853f8910373eb9f77b8e035d58149947929e908e745f255fbd24d02bed7bdc816afd703d2b  deviceinfo
-f16e550f623522be29027954c69a956eb6543f2f608a4c6b37c1a3983403a3edaa24e70aa42dbe88e76216991aba867b48c7341c9b8a81f675902d6223937b51  kernel-cmdline.conf
 c8d3026e9f803ea823e35f83dab66fa8545e99af9655576476c194567113084d78200feab46f84983a2dad608ca55c0a4a66e36406c6d64023c0aec59307d146  hexagonrpcd.confd
+f16e550f623522be29027954c69a956eb6543f2f608a4c6b37c1a3983403a3edaa24e70aa42dbe88e76216991aba867b48c7341c9b8a81f675902d6223937b51  kernel-cmdline.conf
 ea8709aa214cffaefb1d486c0c47044537446faebff16efb3b015623f043f730b7121e401c676e43aa8868bd6c630fc8a2d7dbf5fb082490e9b5493e0405b66d  modules-initfs
 fe9871c325a38c0cadc9631870801ec15ab9f5b786ee854325b93eb3d23e7d8b1ac4f1075572ffcd225d8ec514dec09b986972ddff12a89260c0218af6de7887  q6voiced.conf
-a72de3293bc59e0afa0114d74030e4e725959f7619879ab616b0164595d57033affc3d1d4ccc9d8bc191b177a4c1593c1ad0a19fe7e452c3e0c9c847135c1102  80-device-oneplus-enchilada.preset
 "

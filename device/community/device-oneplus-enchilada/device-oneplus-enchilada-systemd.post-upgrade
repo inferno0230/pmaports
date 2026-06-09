@@ -1,0 +1,6 @@
+#!/bin/sh
+# Remove ALSA state file if it exists
+if [ -f /var/lib/alsa/asound.state ]; then
+    echo "Removing /var/lib/alsa/asound.state"
+    rm -f /var/lib/alsa/asound.state
+fi
