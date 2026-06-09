@@ -2,14 +2,17 @@
 maintainer=""
 pkgname=device-samsung-maguro
 pkgver=6
-pkgrel=0
+pkgrel=1
 pkgdesc="Google Galaxy Nexus (GSM)"
 url="https://postmarketos.org"
 arch="armv7"
 license="MIT"
 depends="postmarketos-base linux-samsung-maguro mkbootimg"
 makedepends="devicepkg-dev"
-subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
+subpackages="
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-udev
+"
 source="deviceinfo kernel-cmdline.conf"
 options="!check !archcheck"
 

@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-samsung-kylepro
 pkgdesc="Samsung Galaxy Trend Plus"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-samsung-kyleproxx mkbootimg msm-fb-refresher firmware-samsung-kyleproxx"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo"
 
 build() {

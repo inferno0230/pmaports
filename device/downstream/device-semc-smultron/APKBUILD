@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-semc-smultron
 pkgdesc="Xperia mini"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-semc-smultron mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo fb.modes directfbrc"
 
 build() {

@@ -2,7 +2,7 @@
 maintainer=""
 pkgname=device-motorola-thea
 pkgver=4
-pkgrel=0
+pkgrel=1
 pkgdesc="Motorola Moto G 2014"
 url="https://postmarketos.org"
 arch="armv7"

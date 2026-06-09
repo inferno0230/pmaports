@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-motorola-shamu
 pkgdesc="Motorola Google Nexus 6"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-motorola-shamu mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf initfs-hook.sh"
 
 build() {

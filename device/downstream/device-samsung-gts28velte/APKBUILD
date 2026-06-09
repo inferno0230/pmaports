@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-samsung-gts28velte
 pkgdesc="Samsung Galaxy Tab S2 8.0 LTE"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!check !archcheck"
 depends="postmarketos-base linux-samsung-gts28velte mkbootimg mdss-fb-init-hack"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo"
 
 build() {

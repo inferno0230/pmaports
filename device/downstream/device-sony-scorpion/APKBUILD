@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-sony-scorpion
 pkgdesc="Xperia Z3 Tablet Compact"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armhf"
 options="!check !archcheck"
 depends="postmarketos-base linux-sony-scorpion mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf"
 
 build() {

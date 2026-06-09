@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-sony-suzu
 pkgdesc="Sony Xperia X"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!check !archcheck"
 depends="postmarketos-base linux-sony-suzu mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf"
 
 build() {

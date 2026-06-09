@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-nokia-sand
 pkgdesc="Lumia 620"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-nokia-sand mkbootimg mdss-fb-init-hack"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf"
 
 build() {

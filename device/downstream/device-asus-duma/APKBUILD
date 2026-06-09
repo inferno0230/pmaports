@@ -3,14 +3,17 @@ maintainer=""
 pkgname=device-asus-duma
 pkgdesc="ASUS MeMO Pad FHD 10 (ME302KL)"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armhf"
 options="!check !archcheck"
 depends="postmarketos-base linux-asus-duma mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
-subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
+subpackages="
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-udev
+"
 source="deviceinfo kernel-cmdline.conf"
 
 build() {

@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-finepower-f1
 pkgdesc="FinePower F1"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-finepower-f1 mkbootimg alsa-utils soc-sprd-audio-sc8830 reboot-mode"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="
 	deviceinfo
 	kernel-cmdline.conf

@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-motorola-athene
 pkgdesc="Motorola Moto G4"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!check !archcheck"
 depends="postmarketos-base linux-motorola-athene mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf initfs-hook.sh"
 
 build() {

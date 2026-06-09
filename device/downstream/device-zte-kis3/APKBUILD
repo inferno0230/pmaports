@@ -3,15 +3,18 @@ maintainer=""
 pkgname=device-zte-kis3
 pkgdesc="ZTE Open C / Kis 3"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-zte-kis3 mkbootimg"
 makedepends="devicepkg-dev"
+subpackages="
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-udev
+"
 source="deviceinfo kernel-cmdline.conf initfs-hook.sh"
-subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
 
 build() {
 	devicepkg_build $startdir $pkgname

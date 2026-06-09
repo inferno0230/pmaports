@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-infocus-flatfish
 pkgdesc="InFocus New Tab F1"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armhf"
 options="!check !archcheck"
 depends="postmarketos-base linux-infocus-flatfish mkbootimg"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="
 	deviceinfo
 	kernel-cmdline.conf

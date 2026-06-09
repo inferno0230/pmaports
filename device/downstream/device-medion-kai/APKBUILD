@@ -3,14 +3,17 @@ maintainer=""
 pkgname=device-medion-kai
 pkgdesc="Lenovo Medion Lifetab S9714"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-medion-kai mkbootimg"
 makedepends="devicepkg-dev"
-subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
+subpackages="
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-udev
+"
 source="deviceinfo
 	nvram_4330.txt
 	modules-load.conf"

@@ -1,7 +1,7 @@
 # Reference: <https://postmarketos.org/devicepkg>
 maintainer=""
 pkgname=device-lg-mako
-pkgver=10
+pkgver=11
 pkgrel=0
 pkgdesc="Google Nexus 4"
 url="https://postmarketos.org"
@@ -16,6 +16,7 @@ subpackages="
 	$pkgname-kernel-next:kernel_next
 	$pkgname-kernel-stable:kernel_stable
 	$pkgname-kernel-lts:kernel_lts
+	$pkgname-udev
 "
 makedepends="devicepkg-dev"
 source="deviceinfo kernel-cmdline.conf"

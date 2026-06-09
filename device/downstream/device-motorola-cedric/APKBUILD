@@ -3,14 +3,17 @@ maintainer=""
 pkgname=device-motorola-cedric
 pkgdesc="Motorola Moto G5"
 pkgver=3
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!check !archcheck"
 depends="postmarketos-base linux-motorola-cedric mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
-subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
+subpackages="
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-udev
+"
 source="deviceinfo kernel-cmdline.conf initfs-hook.sh"
 
 build() {

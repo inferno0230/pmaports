@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-samsung-j1mini3g
 pkgdesc="Samsung Galaxy J1 mini"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="postmarketos-base linux-samsung-j1mini3g mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf"
 
 build() {

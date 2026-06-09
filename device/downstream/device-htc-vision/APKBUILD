@@ -2,7 +2,7 @@
 maintainer=""
 pkgname=device-htc-vision
 pkgver=4
-pkgrel=0
+pkgrel=1
 pkgdesc="HTC Desire Z"
 url="https://github.com/postmarketOS"
 arch="armv7"

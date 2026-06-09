@@ -2,13 +2,14 @@
 maintainer=""
 pkgname=device-amazon-thor
 pkgver=5
-pkgrel=0
+pkgrel=1
 pkgdesc="Amazon KFHDX 7inch 2013"
 url="https://postmarketos.org"
 arch="armv7"
 license="MIT"
 depends="postmarketos-base linux-amazon-thor mkbootimg msm-fb-refresher"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="
 	deviceinfo
 	kernel-cmdline.conf

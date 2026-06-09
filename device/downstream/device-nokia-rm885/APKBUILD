@@ -3,13 +3,14 @@ maintainer=""
 pkgname=device-nokia-rm885
 pkgdesc="Lumia 720"
 pkgver=4
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="armhf"
 options="!check !archcheck"
 depends="postmarketos-base linux-nokia-rm885 mkbootimg mdss-fb-init-hack"
 makedepends="devicepkg-dev"
+subpackages="$pkgname-udev"
 source="deviceinfo kernel-cmdline.conf"
 
 build() {
