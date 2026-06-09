@@ -1,0 +1,17 @@
+[Unit]
+Description=Activate the WWAN port on the embedded QMI modem
+After=rmtfs.service
+Before=ModemManager.service ofono.service
+Requires=rmtfs.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=qmicli --silent -pd qrtr://0 --dpm-open-port=hw-data-ep-type=bam-dmux,hw-data-ep-iface-number=1,hw-data-rx-id=1,hw-data-tx-id=1
+Restart=on-failure
+RestartSec=1s
+StartLimitIntervalSec=60s
+StartLimitBurst=45
+
+[Install]
+WantedBy=multi-user.target

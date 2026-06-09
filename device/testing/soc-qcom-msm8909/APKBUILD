@@ -2,7 +2,7 @@ maintainer=""
 pkgname=soc-qcom-msm8909
 pkgdesc="Common package for Qualcomm MSM8909 devices"
 pkgver=1
-pkgrel=3
+pkgrel=4
 url="https://postmarketos.org"
 license="GPL-3.0-or-later"
 arch="armv7 aarch64"
@@ -12,11 +12,14 @@ install="$pkgname-modem-openrc.post-install"
 subpackages="
 	$pkgname-modem
 	$pkgname-modem-openrc:modem_openrc
+	$pkgname-modem-systemd:modem_systemd
 "
 
 source="
 	msm8909-modem-wwan-port.initd
-	"
+	msm8909-modem-wwan-port.service
+	80-msm8909-modem-wwan-port.preset
+"
 
 package() {
 	mkdir -p "$pkgdir"
@@ -36,6 +39,17 @@ modem_openrc() {
 		"$subpkgdir"/etc/init.d/msm8909-modem-wwan-port
 }
 
+modem_systemd() {
+	install_if="$pkgname-modem=$pkgver-r$pkgrel systemd"
+
+	install -D -m644 "$srcdir"/msm8909-modem-wwan-port.service \
+		"$subpkgdir"/usr/lib/systemd/system/msm8909-modem-wwan-port.service
+	install -D -m644 "$srcdir"/80-msm8909-modem-wwan-port.preset \
+		"$subpkgdir"/usr/lib/systemd/system-preset/80-msm8909-modem-wwan-port.preset
+}
+
 sha512sums="
 4a11a35f766af798ca6052dd236094b9aed46cc8761a38437c42d58ab6de6247943c1186d50f70c405df0b73d3d72b6e378a054429505e98c5204391165a4a3a  msm8909-modem-wwan-port.initd
+7d009ae2408dbc4e268462e7cc16bff65c5eaee6180bc6dbfaf9d7cd26a7dd249bbfe194b0fb1d4754047b6ab54dbcaa2615fb63b57529e245f25a4d292363c9  msm8909-modem-wwan-port.service
+72ac86ff10e16c347cb5bbce76d61a962de3df2e6ec3a4ae48b52a81452220134ff63108cc61f0eeea321403f847a8d2cb6ce214494f96f717f11261fffa539f  80-msm8909-modem-wwan-port.preset
 "
