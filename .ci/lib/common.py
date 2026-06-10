@@ -18,6 +18,7 @@ def get_pmaports_dir():
 def run_git(parameters, check=True, stderr=None):
     """ Run git in the pmaports dir and return the output """
     cmd = ["git", "-C", get_pmaports_dir()] + parameters
+    print(f"+ {cmd}")
     try:
         return subprocess.check_output(cmd, stderr=stderr).decode()
     except subprocess.CalledProcessError:
