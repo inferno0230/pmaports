@@ -2,7 +2,7 @@ maintainer="Antoine Martin (ayakael) <dev@ayakael.net>"
 pkgname=device-pine64-pinenote
 pkgdesc="Pine64 PineNote"
 pkgver=15
-pkgrel=0
+pkgrel=1
 _commit="42cf0c3dc26d6e0b2a32ef5a00e7ca4ae77034c7"
 _swayconfver="v1.1.0"
 url="https://postmarketos.org"
@@ -51,11 +51,18 @@ subpackages="
 	$pkgname-nonfree-firmware-openrc:firmware_openrc
 	$pkgname-nonfree-firmware-systemd:firmware_systemd
 	$pkgname-openrc
-	$pkgname-sway
 	$pkgname-sway-hrdl
 	$pkgname-systemd
 	$pkgname-xournalpp
 	$pkgname-x11
+"
+install="
+	$pkgname-sway-hrdl.post-install
+	$pkgname-sway-hrdl.post-deinstall
+	$pkgname-nonfree-firmware.pre-upgrade
+	$pkgname-nonfree-firmware.pre-install
+	$pkgname-nonfree-firmware-openrc.post-install
+	$pkgname-openrc.post-install
 "
 builddir="$srcdir"/pinenote-dist-$_commit
 _swayconfdir="$srcdir"/pinenote-config-sway-$_swayconfver
@@ -121,9 +128,11 @@ package() {
 		-t "$pkgdir"/usr/lib/modprobe.d
 }
 
+# since pinenote requires such an opinionated UI, hrdl's sway configuration is packaged that offers
+# an optimized configuration for sway that matches the featureset offered by their Arch Linux image
 hrdl() {
 	pkgdesc="Opinionated sway UI by hrdl optimized for the Pinenote"
-	install="$subpkgname.post-install $subpkgname.post-deinstall"
+	install_if="$pkgname=$pkgver-r$pkgrel postmarketos-ui-sway"
 	depends="
 		adwaita-icon-theme
 		bash
@@ -139,7 +148,6 @@ hrdl() {
 		network-manager-applet
 		nwg-menu
 		papirus-icon-theme
-		postmarketos-ui-sway
 		py3-crcmod
 		py3-dbus-next
 		py3-i3ipc
@@ -216,7 +224,6 @@ firmware() {
 	pkgdesc="WiFi, Bluetooth and display firmware"
 	depends="linux-firmware-cypress linux-firmware-brcm"
 	replaces="firmware-pine64-pinenote"
-	install="$subpkgname.pre-upgrade $subpkgname.pre-install"
 
 	# waveform firmware is provided locally via /dev/disk/by-label/waveform
 	# extracted using waveform_exctract.sh, then adapted to kernel using wbf_to_custom.py
@@ -234,24 +241,9 @@ firmware() {
 	ln -s ../cypress/cyfmac43455-sdio.bin.zst "$subpkgdir"/usr/lib/firmware/brcm/brcmfmac43455-sdio.pine64,pinenote-v1.2.bin.zst
 }
 
-sway() {
-	install_if="$pkgname=$pkgver-r$pkgrel sway"
-	install="$subpkgname.post-upgrade"
-
-	# since pinenote requires such an opinionated UI, UI configurations ar
-	# packaged from community developpers who are leading these efforts, and since
-	# there is the possibility of multiple UI configurations per UI, aport
-	# is architectured in a way to support multiple configurations. Since only hrdl's
-	# configuration is integrated, automatically depend on its subpackage for now.
-	depends="device-pine64-pinenote-sway-hrdl"
-
-	mkdir -p "$subpkgdir"
-}
-
 openrc() {
 	# rockchip_ebc sometimes fails to load the initial waveform.
 	# This forces a reload before starting tinydm
-	install="$subpkgname.post-install"
 	install -Dm755 "$srcdir"/tinydm-ebc-workaround-openrc.initd \
 		"$subpkgdir"/etc/init.d/tinydm-ebc
 
@@ -260,11 +252,6 @@ openrc() {
 }
 
 systemd() {
-	# post-install enables tinydm if tinydm-ebc was enabled
-	# enables seamless upgrade 7-r0 to 8-r0
-	# TODO: remove in preparation for v26.06
-	install="$subpkgname.post-install"
-
 	# rockchip_ebc sometimes fails to load the initial waveform.
 	# This forces a reload before starting tinydm
 	install -Dm644 \
@@ -276,7 +263,6 @@ systemd() {
 }
 
 firmware_openrc() {
-	install="$subpkgname.post-install"
 	install -Dm755 "$srcdir"/pinenote-init-waveform.initd \
 		"$subpkgdir"/etc/init.d/pinenote-init-waveform
 
