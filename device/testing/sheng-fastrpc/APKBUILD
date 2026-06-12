@@ -16,7 +16,7 @@ makedepends="
 	linux-headers
 "
 
-depends="yaml-dev"
+depends="libyaml libyaml-dev"
 source="
 	"https://github.com/qualcomm/fastrpc/archive/refs/tags/v$pkgver.zip"
 	"adsprpcd-sensorspd.service"
