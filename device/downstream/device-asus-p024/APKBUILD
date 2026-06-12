@@ -2,7 +2,7 @@
 maintainer=""
 pkgname=device-asus-p024
 pkgdesc="ASUS ZenPad 8.0"
-pkgver=4
+pkgver=5
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
@@ -27,7 +27,9 @@ build() {
 
 package() {
 	devicepkg_package $startdir $pkgname
-	install -Dm755 "$srcdir"/brightness "$pkgdir"/etc/local.d/brightness.start
+	# FIXME: Convert the start script into a OpenRC service
+	#
+	# install -Dm755 "$srcdir"/brightness "$pkgdir"/etc/ local.d/brightness.start
 }
 
 sha512sums="
