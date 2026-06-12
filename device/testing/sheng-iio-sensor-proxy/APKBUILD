@@ -31,13 +31,6 @@ libgudev-dev
 polkit-dev
 "
 
-checkdepends="
-  py3-gobject3
-  py3-dbusmock
-  py3-psutil
-  umockdev-dev
-"
-
 
 source="
   https://gitlab.freedesktop.org/hadess/iio-sensor-proxy/-/archive/$_pkgver/iio-sensor-proxy-$_pkgver.tar.gz
