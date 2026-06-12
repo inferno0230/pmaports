@@ -1,15 +1,15 @@
 # Reference: <https://postmarketos.org/devicepkg>
-maintainer=""
+maintainer="knuxify <knuxify@gmail.com>"
 pkgname=device-sony-nicki
 pkgdesc="Sony Xperia M"
-pkgver=5
+pkgver=6
 pkgrel=0
 url="https://postmarketos.org"
 license="MIT"
 arch="armv7"
 options="!check !archcheck"
 depends="
-	linux-sony-nicki-mainline
+	linux-postmarketos-qcom-msm8227
 	mkbootimg
 	postmarketos-base
 	"
@@ -25,6 +25,6 @@ package() {
 }
 
 sha512sums="
-036b767d88c7f3ab452a21f0c1ce2958e9e6bdbfd9242da6479f12df1e306d3ba418c3197a158a55f39396f25b76851a6889ce6a3b7bbe84831ba8351bd04a83  deviceinfo
+bb98599a431c223b8815588a967cc39c2a5f846d5016fa9af496c96e2e0267efadb72123c6696a99ef948a2828db2a9dc3a7383a4808dec6717efe7951ce3e47  deviceinfo
 9c5426701335c8898bf1ee1dc22c22a17ed0360a5f7cd5a5f31e910fe68140b3f32546dfe08ae81ffb5531ba7907c70a71d60a4c224ff4b36c46345090aa96dd  kernel-cmdline.conf
 "
