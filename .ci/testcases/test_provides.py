@@ -34,7 +34,7 @@ def apkbuild_check_provides(path, apkbuild, version, pkgname, subpkgname=None):
     for provide in apkbuild["provides"]:
         # Having provides entries without version is valid if the
         # provider_priorty is also set (pma#1766)
-        if apkbuild["provider_priority"]:
+        if apkbuild["provider_priority"] is not None:
             continue
         # Otherwise the version =$pkgver-r$pkgrel needs to be set. pmbootstrap
         # already replaces the variables, so we check against the inserted
