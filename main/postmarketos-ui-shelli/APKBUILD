@@ -17,6 +17,10 @@ depends="
 	shelli
 	"
 subpackages="$pkgname-openrc"
+_pmb_groups="
+	audio
+	video
+	"
 options="!check" # No tests
 
 package() {
