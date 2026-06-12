@@ -8,7 +8,6 @@ deviceinfo_codename="fyde-fydetab-duo"
 deviceinfo_year="2024"
 deviceinfo_dtb="rockchip/rk3588s-fydetab-duo"
 deviceinfo_arch="aarch64"
-deviceinfo_disable_dhcpd="true"
 
 # Device related
 deviceinfo_drm="true"

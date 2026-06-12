@@ -57,7 +57,8 @@ build() {
 }
 
 package() {
-	downstreamkernel_package "$builddir" "$pkgdir" "$_carch" "$_flavor"
+	install -Dm644 "$builddir/$_outdir/arch/$_carch/boot/Image" \
+		"$pkgdir/boot/vmlinuz"
 
 	make modules_install dtbs_install \
 		ARCH="$_carch" \
