@@ -4,7 +4,7 @@ maintainer=""
 _flavor="postmarketos-qcom-sm8350"
 pkgname=linux-$_flavor
 pkgver=6.7
-pkgrel=2
+pkgrel=3
 pkgdesc="Mainline kernel fork for SM8350"
 arch="aarch64"
 _carch="arm64"
@@ -31,6 +31,7 @@ _config="config-$_flavor.$arch"
 source="
 	$pkgname-$_commit.tar.gz::https://gitlab.com/sm8350-mainline/linux/-/archive/$_commit.tar.gz
 	$_config
+	0001-arm64-dts-qcom-add-oneplus-martini.patch
 "
 builddir="$srcdir/linux-$_commit"
 #_outdir=".output"
@@ -68,4 +69,5 @@ package() {
 sha512sums="
 69e66fcf50d336709aa8957a7a9f493dc3ba24e8ed806ba1aca7f324ccc4dc89ad83f574b2b052c2a1ed329f4a5f6b377449629e92ce5440495b22e2e4d41ff2  linux-postmarketos-qcom-sm8350-ffb1b0db511df03829fa0c9682f2412c0db7f717.tar.gz
 3a9b07b0db408c1b8a1804e8e20356b69a0397b64f0b23ffd11d13094143fcae386cdd6d1d76e51fd2c5b60518c3445db82963b313ecbd893a31ed117cc41fef  config-postmarketos-qcom-sm8350.aarch64
+a0041f4d08bc2f9cd0499819512bf33bda6f563fd6972038682bb6aafcfe676b6882da0940a0de380dd6a54220bc2c4ae279ef0720f3bcaf2a0b930a5e37b01f  0001-arm64-dts-qcom-add-oneplus-martini.patch
 "

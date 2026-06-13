@@ -1,0 +1,50 @@
+# Reference: <https://postmarketos.org/devicepkg>
+maintainer=""
+pkgname=device-oneplus-martini
+pkgdesc="OnePlus 9RT"
+pkgver=1
+pkgrel=10
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	linux-postmarketos-qcom-sm8350
+	mkbootimg
+	postmarketos-base
+	soc-qcom-sm8350
+"
+makedepends="
+	devicepkg-dev
+	dtc
+"
+source="
+	deviceinfo
+	kernel-cmdline.conf
+	empty-oneplus-martini.dts
+"
+subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
+
+build() {
+	devicepkg_build $startdir $pkgname
+
+	dtc -O dtb -o "$srcdir/empty-oneplus-martini.dtbo" -b 0 -@ \
+		"$srcdir/empty-oneplus-martini.dts"
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+	install -Dm644 "$srcdir/empty-oneplus-martini.dtbo" "$pkgdir/boot/dtbo.img"
+}
+
+nonfree_firmware() {
+	pkgdesc="Modem, WiFi, and GPU Firmware"
+	depends="firmware-oneplus-martini"
+	mkdir "$subpkgdir"
+}
+
+sha512sums="
+6eaf82bcba19cb6d14ae50f6b2a0bf1904cbf9b6f12b25b8b37c55b1a2b8ed67acb245895e2d9f0fbc720052618f69793118dc40c612d244299905f5cbaa04bc  deviceinfo
+4499514da07ccc2622ba095df569a8c64bbba4d512b740d40dffd0284406766ece55296cc50d461afe08ec16816a9a8ed087de9a27b393edb42e5cf058dfd6e9  kernel-cmdline.conf
+734cdc1ddde374644fba545a2fe1fc7e286bb04a469da6e772f4f9b48ae96d92808ffbb6997a910fec362b3ce7456697307d21e4e8ca34e0e9ac45f5e5299845  empty-oneplus-martini.dts
+"

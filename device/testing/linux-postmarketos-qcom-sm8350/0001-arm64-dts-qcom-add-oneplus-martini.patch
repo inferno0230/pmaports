@@ -1,0 +1,120 @@
+diff -uNr a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+--- a/arch/arm64/boot/dts/qcom/Makefile	2024-01-16 16:31:05.000000000 +0200
++++ b/arch/arm64/boot/dts/qcom/Makefile	2026-04-19 17:10:00.000000000 +0200
+@@ -225,6 +225,7 @@
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-microsoft-surface-duo2.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-oneplus-lemonade.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-oneplus-martini.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-oneplus-lemonadep.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-sony-xperia-sagami-pdx214.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-sony-xperia-sagami-pdx215.dtb
+diff -uNr a/arch/arm64/boot/dts/qcom/sm8350-oneplus-martini.dts b/arch/arm64/boot/dts/qcom/sm8350-oneplus-martini.dts
+--- a/arch/arm64/boot/dts/qcom/sm8350-oneplus-martini.dts	1970-01-01 03:00:00.000000000 +0300
++++ b/arch/arm64/boot/dts/qcom/sm8350-oneplus-martini.dts	2026-04-19 17:10:00.000000000 +0200
+@@ -0,0 +1,105 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * OnePlus 9RT (martini)
++ *
++ * Initial bring-up stub, based on OnePlus SM8350 bring-up, adjusted for martini firmware paths.
++ *
++ * NOTE: This is expected to require follow-up work for panel/touch,
++ * GPIOs, regulators, modem/rf, etc.
++ */
++
++/dts-v1/;
++
++#include "sm8350-oneplus-common.dtsi"
++
++/ {
++	compatible = "oneplus,martini", "qcom,sm8350";
++	model = "OnePlus 9RT";
++};
++
++&adsp {
++	firmware-name = "qcom/sm8350/OnePlus/martini/adsp.mbn";
++	status = "disabled";
++};
++
++&cdsp {
++	firmware-name = "qcom/sm8350/OnePlus/martini/cdsp.mbn";
++	status = "disabled";
++};
++
++&gpu {
++	zap-shader {
++		firmware-name = "qcom/sm8350/OnePlus/martini/a660_zap.mbn";
++	};
++};
++
++&ipa {
++	firmware-name = "qcom/sm8350/OnePlus/martini/ipa_fws.mbn";
++	status = "disabled";
++};
++
++&mpss {
++	firmware-name = "qcom/sm8350/OnePlus/martini/modem.mbn";
++	/*
++	 * Modem is expected to require additional downstream integration.
++	 * Keep disabled for now.
++	 */
++};
++
++&slpi {
++	firmware-name = "qcom/sm8350/OnePlus/martini/slpi.mbn";
++	status = "disabled";
++};
++
++&mpss {
++	pinctrl-0 = <&rf_cable_ant0_active>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&bluetooth {
++	pinctrl-0 = <&bt_active>;
++	status = "okay";
++};
++
++&i2c4 {
++	/*
++	 * Keep touchscreen disabled for now.
++	 * Current martini bring-up hits GPI/GENI I2C failures on this bus.
++	 */
++};
++
++&qca6490_pd {
++	rf-gpios = <&tlmm 165 GPIO_ACTIVE_HIGH>;
++	status = "okay";
++};
++
++&tlmm {
++	/*
++	 * TODO: Verify martini antenna/touch GPIOs.
++	 * TODO: verify martini-specific GPIO assignments.
++	 */
++	tp_enable_2v8: tp-2v8-enable-state {
++		pins = "gpio74";
++		function = "gpio";
++		drive-strength = <8>;
++		bias-pull-up;
++		output-high;
++	};
++
++	tp_rst_suspend: tp-rst-suspend-state {
++		pins = "gpio22";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-pull-down;
++	};
++};
++
++&usb_1 {
++	status = "okay";
++};
++
++&usb_1_dwc3 {
++	status = "okay";
++	dr_mode = "peripheral";
++};
