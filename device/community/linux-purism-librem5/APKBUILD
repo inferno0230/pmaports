@@ -3,8 +3,8 @@
 # Contributor: Clayton Craft <clayton@craftyguy.net>
 maintainer="Alistair Francis <alistair@alistair23.me>"
 pkgname=linux-purism-librem5
-pkgver=6.6.118
-pkgrel=2
+pkgver=6.12.92
+pkgrel=0
 # NOTE: Don't forget to rebase the config! See prepare() for instructions.
 _purismrel=1
 _pureosrel=cri1
@@ -24,14 +24,20 @@ options="!strip !check !tracedeps
 makedepends="
 	bash
 	bison
+	clang
 	devicepkg-dev
 	findutils
 	flex
+	gcc
 	installkernel
+	linux-headers
+	lld
+	llvm
 	openssl-dev
 	perl
 	rsync
 	xz
+	zstd
 	"
 install="$pkgname.post-upgrade"
 
@@ -62,7 +68,7 @@ prepare() {
 	# This can be uncommented to help generate the defconfig using "pmbootstrap
 	# build linux-purism-librem5". The build will fail (exit 1) to let you grab
 	# the config before it starts building the kernel:
-	#    make ARCH="$_carch" CC="${CC:-gcc}" \
+	#    make ARCH="$_carch" LLVM=1 \
 	#       defconfig KBUILD_DEFCONFIG=librem5_defconfig
 	#    exit 1
 	#
@@ -75,7 +81,7 @@ prepare() {
 
 build() {
 	unset LDFLAGS
-	make ARCH="$_carch" CC="${CC:-gcc}" \
+	make ARCH="$_carch" LLVM=1 \
 		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS" \
 		LOCALVERSION=".$_purismrel"
 }
@@ -85,12 +91,13 @@ package() {
 
 	make modules_install dtbs_install \
 		ARCH="$_carch" \
+		LLVM=1 \
 		INSTALL_MOD_PATH="$pkgdir"/usr \
 		INSTALL_DTBS_PATH="$pkgdir/boot/dtbs"
 
 }
 
 sha512sums="
-f1d75865ff15793e6e70414a356209bd27fdb4c084d773698589f2e376ddcf037f2ac60a131a72ad3986b51b88c0c738deb65169bb30fd472f25cb06327ed1a8  linux-purism-librem5-6.6.118pureos1_cri1.tar.gz
-323e1d4760857c62efa67362b36b098f7fd2d6f49970236965cfab4bb8ae43ddbafa76f2fcd0deb8faa53e4b87bf202ab3507dc10f2364234af4c10453768337  config-purism-librem5.aarch64
+ad1ab5c1101cf222d2c4c3edeffeda4228fe29dfba406694370c50d724d7baecd0ab2db4f4e0c7aed60a16e9a80a4b421d82486543249eded7e9a7f1b7c996c7  linux-purism-librem5-6.12.92pureos1_cri1.tar.gz
+5c60820588ed2ce7f73656abea77138460b2d03b260811e45ad2b40b3de70a8fafc1681d2a4b32c5b7a133344134a38afee374f4e45755862e85b8cfeaba63c0  config-purism-librem5.aarch64
 "
