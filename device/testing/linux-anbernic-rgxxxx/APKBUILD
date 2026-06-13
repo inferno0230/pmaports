@@ -1,0 +1,101 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: https://github.com/ROCKNIX/distribution/blob/ca50938cbc2762d77203e1f63b8b8aa85a75f4a4/projects/ROCKNIX/devices/H700/linux/linux.aarch64.conf
+# Contributor: Seshan Ravikumar <seshan@sineware.ca>
+# Contributor: Kevin Widjaja <kevinwidjaja_dev@proton.me>
+maintainer="Kevin Widjaja <kevinwidjaja_dev@proton.me>"
+pkgname=linux-anbernic-rgxxxx
+pkgver=7.0.10
+pkgrel=0
+pkgdesc="Close-to-mainline kernel fork for Anbernic RGXXXX H700 devices"
+arch="aarch64"
+_carch="arm64"
+_flavor="anbernic-rgxxxx"
+url="https://kernel.org"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="
+	bash
+	bc
+	bison
+	clang
+	devicepkg-dev
+	findutils
+	flex
+	openssl-dev
+	perl
+	lld
+	llvm
+"
+
+# Source
+_repository="linux"
+_patches_repo="distribution"
+_pkgver="7.0.10"
+_commit="ca50938cbc2762d77203e1f63b8b8aa85a75f4a4"
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$_pkgver.tar.gz::https://www.kernel.org/pub/${_repository}/kernel/v${_pkgver/.*/}.x/linux-${_pkgver}.tar.gz
+	$_patches_repo-$_commit.tar.gz::https://github.com/ROCKNIX/$_patches_repo/archive/$_commit.tar.gz
+	remove-joypad.patch
+	patch.files
+	$_config
+"
+builddir="$srcdir/$_repository-$_pkgver"
+_outdir="out"
+
+prepare() {
+	
+	# Apply select patches to the mainline kernel.
+	while IFS="" read -r _i || [ -n "$_i" ]; do
+		patch -p1 < "$srcdir/$_patches_repo-$_commit/$_i"
+	done < "$srcdir/patch.files"
+
+	makefile="$builddir/arch/arm64/boot/dts/allwinner/Makefile"
+
+	for dts in "$srcdir/$_patches_repo"-*/projects/ROCKNIX/devices/H700/linux/dts/allwinner/*dts*; do
+		dtb="$(basename "$dts" | sed 's/\.dts$/.dtb/')"
+
+		# Move the devicetree sources in the kernel tree.
+		cp "$dts" "arch/arm64/boot/dts/allwinner/"
+
+		# Mention the devicetree blobs in the Makefile for
+		# compilation if they're absent.
+		if ! grep -q "$dtb" "$makefile"; then
+			echo "dtb-\$(CONFIG_ARCH_SUNXI) += $dtb" >> "$makefile"
+		fi
+	done
+
+	default_prepare
+	REPLACE_GCCH=0
+
+	REPLACE_GCCH=0 LLVM=1 \
+		. downstreamkernel_prepare
+
+}
+
+build() {
+	unset LDFLAGS
+	make O="$_outdir" ARCH="$_carch" LLVM=1 \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS"
+}
+
+package() {
+	downstreamkernel_package \
+		"$builddir" "$pkgdir" "$_carch" "$_flavor" "$_outdir"
+
+	mkdir -p "$pkgdir/boot/dtbs"
+
+	for dtb in "$_outdir/arch/$_carch/boot/dts/"*.dtb "$_outdir/arch/$_carch/boot/dts/"*/*.dtb; do
+		if [ -f "$dtb" ]; then
+			cp -v "$dtb" "$pkgdir/boot/dtbs/"
+		fi
+	done
+}
+
+sha512sums="
+e51522da64bb29b7ba23edab00c5eb2a9f1bbfaaa4cbe4efc3b5fc6d946e3b36e50cdf01d4392a705f29729968a840b770d26974b84e6dabf58885cea0af9221  linux-anbernic-rgxxxx-7.0.10.tar.gz
+6fa4936840eefc9c0cb3cd4758d1a336aad34a1f3cb27d65507f8b2002e84dcbe68c1210637176250123e3a66dfc2634a2fc4657bd817a77aa4d0881ade34445  distribution-ca50938cbc2762d77203e1f63b8b8aa85a75f4a4.tar.gz
+707e70f67e8d92de06c0b79b61e8ad9f9186e1510498a0d6e2b891c05bb199dd5e7d921f85bfd0a8705a2c93696b34733779f0b01c71bfecefd3bb16fe48b98b  remove-joypad.patch
+6359ca8e28ced12e1f6f2e3ac7a9df16b74c51cd20171f11fa622ae24de5590f2625089f5c8c3739f2cbf86b5adcab0c98b041b6e82847575f6a47c6e21d8893  patch.files
+46ffc4d14f743cce3171743be471c10eb7ef052de222bf7a8b3f8975e81bd802a47d8079b6fd5380b139fb9004d50300a805838c7374695168c45e79f22af135  config-anbernic-rgxxxx.aarch64
+"
