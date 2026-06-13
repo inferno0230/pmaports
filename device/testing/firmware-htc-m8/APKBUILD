@@ -1,21 +1,25 @@
-maintainer=""
 pkgname=firmware-htc-m8
-pkgver=1
+pkgver=2
 pkgrel=0
 pkgdesc="Firmware files for HTC One M8"
 url="https://github.com/TheMuppets/proprietary_vendor_htc"
 arch="armv7"
 license="proprietary"
-depends="wcnss-wlan"
+depends="wcnss-wlan firmware-qcom-adreno-a330"
 options="!strip !check !archcheck !spdx !tracedeps pmb:cross-native"
 
 # Source
+_files_hooks="30-firmware-htc-m8-a330.files"
 _files="wcnss.b00 wcnss.b01 wcnss.b02 wcnss.b04 wcnss.b06 wcnss.b07 wcnss.b08 wcnss.b09 wcnss.mdt"
 _files_prima="WCNSS_cfg.dat WCNSS_qcom_cfg.ini WCNSS_qcom_wlan_nv.bin"
 _commit="81b0d1394261882adfef18d72f38eec2189f5e7a"
 _commit_prima="80fa5952d92c7f12cb4e7c26a4e1f475562acf13"
 _url="https://github.com/TheMuppets/proprietary_vendor_htc/raw/$_commit/m8-common/proprietary/vendor/firmware"
 _url_prima="https://github.com/LineageOS/android_device_htc_msm8974-common/raw/$_commit_prima/wifi"
+
+for _i in $_files_hooks; do
+	source="30-firmware-htc-m8-a330.files"
+done
 for _i in $_files; do
 	source="$source $pkgname-$_commit-$_i::$_url/$_i"
 done
@@ -24,6 +28,10 @@ for _i in $_files_prima; do
 done
 
 package() {
+	for _i in $_files_hooks; do
+		install -Dm644 "$srcdir/30-firmware-htc-m8-a330.files" \
+			"$pkgdir/usr/share/mkinitfs/files/30-firmware-htc-m8-a330.files"
+	done
 	for _i in $_files; do
 		install -Dm644 "$srcdir/$pkgname-$_commit-$_i" \
 			"$pkgdir"/lib/firmware/postmarketos/"$_i"
@@ -35,6 +43,7 @@ package() {
 }
 
 sha512sums="
+bbe6d6f530a9fa1934dd065dd4f6da48450e2115e4656b219d7f3aebc8b6a2775c02a2e5ffb5790950bb8183fca4677fbeaf9d8a267089c9f0d08461fc8ed45d  30-firmware-htc-m8-a330.files
 80de3dde5ccbb292bd1a2a28847be542e246859a271f8b1db1ede129c85c1594e4a9499540897d9b0503a58ed782a6ac3e7a130296769dbd464c721af80fa44b  firmware-htc-m8-81b0d1394261882adfef18d72f38eec2189f5e7a-wcnss.b00
 46302f43d1b2431fa95adc05e01de3c668a591425bc1ffd52a1aecdd1d2342a7bce07549ff43d1a91ce8e36202d754fc23e6fbb6ede09ae3f6f41249a43611b3  firmware-htc-m8-81b0d1394261882adfef18d72f38eec2189f5e7a-wcnss.b01
 2e1bcdfaac92064358693126adfe4ec25be6e075c35ba9400cf36649111f854511d351e697ef281737478cc16ca289b73ccc8b44f0ff89c5eeb6eb20ad866253  firmware-htc-m8-81b0d1394261882adfef18d72f38eec2189f5e7a-wcnss.b02
