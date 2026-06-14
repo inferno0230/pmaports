@@ -15,15 +15,5 @@ in pmaports and the processes around device categorization.
 
    releases
    merge-requests
-   device-categorization
-   deviceinfo-reference
-   firmware
-   generic-device-packages
-   generic-kernels
-   kconfig-fragments
-   kconfigcheck
-   kernel-cmdline
-   kernel-versions
-   packaging-guidelines
-   ui-packages
+   packaging
 ```
