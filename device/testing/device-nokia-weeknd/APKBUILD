@@ -3,22 +3,22 @@ maintainer=""
 pkgname=device-nokia-weeknd
 pkgdesc="Nokia 2780 Flip"
 pkgver=5
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="GPL-2.0-only"
 arch="aarch64"
 options="!check !archcheck"
 depends="
-	linux-postmarketos-qcom-msm8917
+	firmware-nokia-weeknd-wcnss-nv
+	firmware-qcom-adreno-a300
+	linux-postmarketos-qcom-msm89x7
+	lk2nd-msm8952
 	mkbootimg
+	msm-firmware-loader
 	postmarketos-base
-	soc-qcom-msm8909
-	"
-subpackages="
-	$pkgname-modem
-	$pkgname-modem-openrc:modem_openrc
-	$pkgname-nonfree-firmware:nonfree_firmware
-	"
+	soc-qcom-msm89x7
+"
+
 makedepends="devicepkg-dev mipi-dbi-cmd"
 _panel="nokia,weeknd-st7789vx2-yihua-panel"
 _panel2="nokia,weeknd-gc9104-v2-panel"
@@ -49,28 +49,6 @@ package() {
 			"$pkgdir"/lib/firmware/
 	install -Dm644 "$srcdir"/00-nokia-weeknd-display.files -t \
 			"$pkgdir"/usr/share/mkinitfs/files/
-}
-
-nonfree_firmware() {
-	pkgdesc="GPU/WiFi/BT/Modem/Video firmware"
-	depends="
-		firmware-qcom-adreno-a300
-		msm-firmware-loader
-		firmware-nokia-weeknd-wcnss-nv
-	"
-	mkdir "$subpkgdir"
-}
-
-modem() {
-	depends="qrtr rmtfs msm-modem-uim-selection"
-	install_if="$pkgname=$pkgver-r$pkgrel $pkgname-nonfree-firmware"
-	mkdir "$subpkgdir"
-}
-
-modem_openrc() {
-	depends="rmtfs-openrc"
-	install_if="$pkgname-modem=$pkgver-r$pkgrel openrc"
-	mkdir "$subpkgdir"
 }
 
 sha512sums="
