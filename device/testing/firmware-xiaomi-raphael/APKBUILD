@@ -1,7 +1,7 @@
-maintainer=""
+maintainer="dabao1955 <dabao1955@163.com>"
 pkgname=firmware-xiaomi-raphael
 pkgver=20250908
-pkgrel=0
+pkgrel=1
 pkgdesc="Firmware for Xiaomi Mi 9T Pro / Redmi K20 Pro"
 arch="aarch64"
 _carch="arm64"
@@ -121,7 +121,7 @@ wlan() {
 	pkgdesc="Xiaomi raphael wlan firmware"
 
 	install -Dm644 "$builddir"/sm8150/raphael/wlanmdsp.mbn -t \
-		"$subpkgdir/lib/firmware/"
+		"$subpkgdir/lib/firmware/qcom/sm8150/Xiaomi/raphael/"
 }
 
 
