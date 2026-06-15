@@ -1,0 +1,81 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config from: https://github.com/Linux-for-Fydetab-Duo/linux-rockchip branch noble-panthor
+maintainer="Hugo Osvaldo Barrera <hugo@whynothugo.nl>"
+pkgname=linux-fydetab-duo
+pkgver=7.0.8
+_kernver=${pkgver%.*}
+pkgrel=0
+pkgdesc="Linux kernel for Fydetab Duo"
+arch="aarch64"
+_carch="arm64"
+_flavor="fydetab-duo"
+url="https://kernel.org"
+license="GPL-2.0-only"
+# TODO: stale makedepends?
+makedepends="
+	bash
+	bison
+	clang
+	devicepkg-dev
+	dtc
+	findutils
+	flex
+	installkernel
+	linux-firmware
+	linux-headers
+	lld
+	llvm
+	openssl-dev
+	perl
+	xz
+	zstd
+"
+_config="config-$_flavor.$arch"
+# get patch releases
+if [ "${pkgver/*./}" -ne 0 ]; then
+	source="$pkgname-$pkgver.patch.xz::https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/patch-$pkgver.xz"
+fi
+source="
+	$source
+	https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver.tar.xz
+	0001-fydetab-initial-commit.patch
+	$_config
+"
+options="!strip !check !tracedeps pmb:cross-native"
+builddir="$srcdir"/linux-$_kernver
+
+prepare() {
+	default_prepare
+	cp "$srcdir/config-$_flavor.$arch" .config
+}
+
+build() {
+	unset LDFLAGS
+	make ARCH="$_carch" LLVM=1 \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1))-$_flavor" \
+		Image modules dtbs
+}
+
+package() {
+	install -Dm644 "$builddir/$_outdir/arch/$_carch/boot/Image" \
+		"$pkgdir/boot/vmlinuz"
+
+	make modules_install dtbs_install \
+		ARCH="$_carch" \
+		LLVM=1 \
+		INSTALL_PATH="$pkgdir"/boot/ \
+		INSTALL_MOD_PATH="$pkgdir"/usr \
+		INSTALL_MOD_STRIP=1 \
+		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs
+	rm -f "$pkgdir"/lib/modules/*/build "$pkgdir"/lib/modules/*/source
+
+	install -D "$builddir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
+}
+
+sha512sums="
+cd7fbd0834ae8558fc0e9ff75591cb60cb4e1aa6beb65976ea515be1c002d9158c134a4f5b7cff56ee53639a3d20d390b2accc44a4b229e8a3a913b8c556fb15  linux-fydetab-duo-7.0.8.patch.xz
+8c85b708342f8f09ca25b2234b22e93b62b144a9ef919fbb21827f52fa47498e778c79db1559524dd7fb360f95b2ce174171443c1859656c281be41d2b6c5a0b  linux-7.0.tar.xz
+573b7cc40de5de158b660f73475475815ced7c945ddbef3fd60aeb2b2e5d497b7ed9dce4bf2d04596ef3c84a11ba7f84b86f303c0ff01219c06003ba2fb12b92  0001-fydetab-initial-commit.patch
+4438f730bef7b21d7fcb8a6619b9fadec6ba6aeec9b3e2977e2af196f93835a25e072010031012ce910e3ce940903352b03dce57fef5593279c96639d65427b8  config-fydetab-duo.aarch64
+"

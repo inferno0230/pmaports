@@ -1,0 +1,38 @@
+# Reference: <https://postmarketos.org/devicepkg>
+maintainer="Hugo Osvaldo Barrera <hugo@whynothugo.nl>"
+pkgname=device-fyde-fydetab-duo
+pkgdesc="Fyde Fydetab Duo"
+pkgver=1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+depends="
+	linux-fydetab-duo
+	postmarketos-base
+	u-boot-fydetab-duo
+"
+makedepends="
+	devicepkg-dev
+"
+source="
+	deviceinfo
+	modules-initfs
+	99-debug.conf
+"
+options="!check !archcheck"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+	install -Dm 644 99-debug.conf "$pkgdir"/etc/kernel-cmdline.d/99-debug.conf
+}
+
+sha512sums="
+555cfc792fe0e04454d2191327db590e746eac45ee5e3abbeb479d2612f7a849eecfb939e2963c77ba374e6614748e3a9eeab931b3ae8a01d514d77bcf3e1884  deviceinfo
+c8c28fb2bfb4639727edd1bc1b6148a370e9a1f65ebbd0fa5a335ac12c74b63bf4c97ef0416eb4414f3f2dc7eac9bec1ad75a8f8201d160f74c951e1ddab5b0b  modules-initfs
+f0a0e68a4196d9b0a480ad2dd7b4fe79a9bbf1325f26dbdc01986bc859e308c464449bcee26dec37dddb0f92e494fa4b3189b8d966001ee4a6c93cc3f604e5d5  99-debug.conf
+"
