@@ -24,7 +24,6 @@ depends="
 	postmarketos-base
 	soc-qcom
 	soc-qcom-qbootctl
-	sheng-iio-sensor-proxy
 	sheng-sensors
 	sheng-fastrpc
 "
@@ -66,3 +65,11 @@ openrc() {
 		"
 	mkdir -p "$subpkgdir"
 }
+
+sha512sums="
+cc19101a967b6b3b689b6730c35cc7f1980630e923a159f480a104835e148de80b4ff68b7f4aeab766dd16517b174e0f1cd23b95fad373e6f62a7d66e5310308  deviceinfo
+33309cf731e482d584a8f0a6565e4decdb6f1c61a1ce4191e4e5eb6d78e897987d0ef90375d806fa1c859b083bff244f507414cb0e5344350158f9075299e906  HiFi.conf
+f8d44dc9c360f39926030e1b15db973458418f4376739afdf8ef1d9bf0e2b21bef66ebe73197aa30dd9c31e8c00ca5784ce8caae7fa94df48546cf1961fbaa22  Xiaomi-Pad6SPro.conf
+dcf908c335e862c1dd9ec583d3c87a6a291e94e8b3f163aafee1a5d011d4db0a649f5be525c18c8cc3ec91fe4b411df7e6b19233ce44c1a8bc199779ff492956  XiaomiPad6SPro.conf
+"
+
