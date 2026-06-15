@@ -1,0 +1,36 @@
+# Reference: <https://postmarketos.org/devicepkg>
+maintainer=""
+pkgname=device-oneplus-caihong
+pkgdesc="OnePlus Pad 2"
+pkgver=1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	linux-oneplus-caihong
+	mkbootimg
+	postmarketos-base
+	soc-qcom
+"
+makedepends="devicepkg-dev"
+source="
+	deviceinfo
+	kernel-cmdline.conf
+	modules-initfs
+	"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+sha512sums="
+188b6c0f4be9f4ac7121a7c1f45342a6303a761d3a7be63e1388d47cb88db09f94c7fc23b3492d5a5131c144ae049c2fa520778a19590a4a0b09137ef45e33eb  deviceinfo
+694ad3d0d6a0465af3bf13ab5c4dce9cd103986942e6741cd1cff285f3689e95b065c36c46f3c624034d6c03c2840e39d5cdcc70431797d49aa50e5fdabe0ec5  kernel-cmdline.conf
+eaf0f3f1e8b233e8188f1bc59f2c885fbc1783eabb3bffb2ac7f6a2226d6c7a3a2d4a7a3730f1dfacd2bf49d0b1e40b2f263de01f696f00a992f86c1642aa69b  modules-initfs
+"

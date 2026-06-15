@@ -1,0 +1,63 @@
+maintainer="inferno0230 <mail@inferno0230.in>"
+_flavor="oneplus-caihong"
+pkgname=linux-$_flavor
+pkgver=7.0.12_git
+pkgrel=0
+pkgdesc="Mainline kernel for OnePlus Pad 2 / Pad Pro (caihong)"
+arch="aarch64"
+_carch="arm64"
+url="https://github.com/inferno0230/qualcomm-mainline"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps
+	pmb:cross-native
+	"
+makedepends="
+	bison
+	clang
+	findutils
+	flex
+	installkernel
+	lld
+	llvm
+	openssl-dev
+	perl
+	python3
+	zstd
+"
+
+_branch="caihong"
+_repo="qualcomm-mainline"
+_dtb="qcom/sm8650-oneplus-caihong.dtb"
+
+source="
+	$pkgname-$_repo-$_branch.tar.gz::$url/archive/refs/heads/$_branch.tar.gz
+"
+builddir="$srcdir/$_repo-$_branch"
+
+prepare() {
+	default_prepare
+	cp arch/$_carch/configs/defconfig .config
+	make ARCH="$_carch" LLVM=1 olddefconfig
+}
+
+build() {
+	unset LDFLAGS
+	make ARCH="$_carch" LLVM=1 \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-$_flavor" \
+		Image.gz "$_dtb"
+}
+
+package() {
+	install -Dm644 "$builddir/arch/$_carch/boot/Image.gz" \
+		"$pkgdir/boot/vmlinuz"
+
+	install -Dm644 "$builddir/arch/$_carch/boot/dts/$_dtb" \
+		"$pkgdir/boot/dtbs/$_dtb"
+
+	install -D "$builddir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
+}
+
+sha512sums="
+c517eafed0b4582c9917a86104b3176e8db1611e0b13b3d40de5d5577d0f33a7c2e243b1ffc6c987928179f3436e5cf31d65f6fde6e89d0174318b57d3a066de  linux-oneplus-caihong-qualcomm-mainline-caihong.tar.gz
+"
