@@ -1,0 +1,89 @@
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg34xx-sp.dts b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg34xx-sp.dts
+index 395be5f5afcf..da095f2f7817 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg34xx-sp.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg34xx-sp.dts
+@@ -14,10 +14,4 @@ / {
+ 
+ &panel {
+ 	compatible = "anbernic,rg34xx-sp-panel", "panel-mipi-dpi-spi";
+ };
+-
+-&joypad {
+-	invert-absrx;
+-	invert-absry;
+-	amux-count = <4>;
+-};
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg35xx-pro.dts b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg35xx-pro.dts
+index 618142824a7b..e5e09cbf7342 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg35xx-pro.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg35xx-pro.dts
+@@ -10,8 +10,4 @@ / {
+ 	model = "Anbernic RG35XX Pro";
+ 	compatible = "anbernic,rg35xx-pro", "allwinner,sun50i-h700";
+ 	rocknix-dt-id = "sun50i-h700-anbernic-rg35xx-pro";
+ };
+-
+-&joypad {
+-	amux-count = <4>;
+-};
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-h.dts b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-h.dts
+index 4b82de18ac73..97646fbce691 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-h.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-h.dts
+@@ -10,16 +10,8 @@ / {
+ 	compatible = "anbernic,rg40xx-h", "allwinner,sun50i-h700";
+ 	rocknix-dt-id = "sun50i-h700-anbernic-rg40xx-h";
+ };
+ 
+-&joypad {
+-	invert-absrx;
+-	invert-absry;
+-	amux-count = <4>;
+-	pwms = <&pwm 3 1000000 0>;
+-	pinctrl-0 = <&joy_mux_pin>, <&pwm3_pin>;
+-};
+-
+ &uart5 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart5_ph_pins>;
+ 	status = "okay";	
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-v.dts b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-v.dts
+index b3d873941d44..4f8b906738a0 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-v.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rg40xx-v.dts
+@@ -10,14 +10,8 @@ / {
+ 	compatible = "anbernic,rg40xx-V", "allwinner,sun50i-h700";
+ 	rocknix-dt-id = "sun50i-h700-anbernic-rg40xx-v";
+ };
+ 
+-&joypad {
+-	amux-count = <4>;
+-	pwms = <&pwm 3 1000000 0>;
+-	pinctrl-0 = <&joy_mux_pin>, <&pwm3_pin>;
+-};
+-
+ &uart5 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart5_ph_pins>;
+ 	status = "okay";	
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rgcubexx.dts b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rgcubexx.dts
+index 6a91b73c2c5a..4f16e24e0a49 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rgcubexx.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h700-anbernic-rgcubexx.dts
+@@ -11,16 +11,8 @@ / {
+ 	compatible = "anbernic,rgcubexx", "allwinner,sun50i-h700";
+ 	rocknix-dt-id = "sun50i-h700-anbernic-rgcubexx";
+ };
+ 
+-&joypad {
+-	invert-absrx;
+-	invert-absry;
+-	amux-count = <4>;
+-	pwms = <&pwm 3 1000000 0>;
+-	pinctrl-0 = <&joy_mux_pin>, <&pwm3_pin>;
+-};
+-
+ &uart5 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart5_ph_pins>;
+ 	status = "okay";	

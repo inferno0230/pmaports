@@ -1,0 +1,17 @@
+projects/ROCKNIX/devices/H700/patches/linux/0002-rg35xx-enable-HDMI-LCD.patch
+projects/ROCKNIX/devices/H700/patches/linux/0003-Update-sun8i_tcon_top.c.patch
+projects/ROCKNIX/devices/H700/patches/linux/0008-sun20i-add-pwm-driver.patch
+projects/ROCKNIX/devices/H700/patches/linux/0009-h616-add-pwm-node.patch
+projects/ROCKNIX/devices/H700/patches/linux/0010-rg35xx-enable-pwm-backlight.patch
+projects/ROCKNIX/devices/H700/patches/linux/0040-Revert-usb-musb-Fix-hardware-lockup-on-first-Rx-endp.patch
+projects/ROCKNIX/devices/H700/patches/linux/0110-v2_20250226_kikuchan98_drm_panel_add_generic_mipi_panel_driver.patch
+projects/ROCKNIX/devices/H700/patches/linux/0111-rg35xx-2024-use-panel-mipi-dpi-spi-driver.patch
+projects/ROCKNIX/devices/H700/patches/linux/0126-20241018_macroalpha82_rg35xx_add_additional_hardware_support.patch
+projects/ROCKNIX/devices/H700/patches/linux/0127-enable-mmc1-for-RG35XX-2024.patch
+projects/ROCKNIX/devices/H700/patches/linux/0151-phy-fix-OTG-host-mode.patch
+projects/ROCKNIX/devices/H700/patches/linux/0152-rg35xx-2024-enable-usb-otg.patch
+projects/ROCKNIX/devices/H700/patches/linux/0153-enable-rgb-leds.patch
+projects/ROCKNIX/devices/H700/patches/linux/0155-sun4i-set-rgb-connector-as-DSI.patch
+projects/ROCKNIX/devices/H700/patches/linux/0203-sound-soc-Add-sunxi_v2-for-h616-ahub.patch.disabled
+projects/ROCKNIX/devices/H700/patches/linux/0204-dts-Enable-hdmi-sound.patch
+projects/ROCKNIX/devices/H700/patches/linux/0901-dts-rg35xx-2024-fix-led-1-color.patch
