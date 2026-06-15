@@ -2,7 +2,7 @@
 maintainer="Craig Comstock <craig@unreasonablefarm.org>"
 pkgname=postmarketos-ui-shelli
 pkgver=3
-pkgrel=8
+pkgrel=9
 pkgdesc="Plain console with touchscreen gesture support"
 url="https://gitlab.com/unrznbl/shelli"
 arch="all"
@@ -15,8 +15,14 @@ depends="
 	postmarketos-base-ui-audio
 	postmarketos-base-ui-networkmanager
 	shelli
+	shelli-opinionated
 	"
 subpackages="$pkgname-openrc"
+install="
+	$pkgname-openrc.post-install
+	$pkgname-openrc.post-upgrade
+	$pkgname-openrc.pre-deinstall
+	"
 options="!check" # No tests
 
 package() {
@@ -24,8 +30,6 @@ package() {
 }
 
 openrc() {
-	install_if="$pkgname=$pkgver-r$pkgrel openrc"
-	install="$subpkgname.post-install $subpkgname.pre-deinstall $subpkgname.post-upgrade"
 	depends="
 		networkmanager-openrc
 		ofono-openrc
