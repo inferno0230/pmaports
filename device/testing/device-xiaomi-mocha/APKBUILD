@@ -1,0 +1,32 @@
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-xiaomi-mocha
+pkgdesc="Xiaomi Mi Pad"
+pkgver=1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="armv7"
+options="!check !archcheck"
+depends="
+	linux-xiaomi-mocha
+	postmarketos-base
+	linux-firmware-nvidia
+	linux-firmware-brcm
+	firmware-xiaomi-mocha-brcm
+"
+makedepends="devicepkg-dev"
+source="
+	deviceinfo
+"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+sha512sums="
+1f8b3295dac348efceaf63936e198a583646f910461fe9177114a2a592cc1cb0b5b2d9e265bf44483f36711b8b197beffc900264c9c3fa59750f61eec19ca007  deviceinfo
+"
