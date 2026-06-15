@@ -1,0 +1,39 @@
+From 73847bdaa8a8ed980254a634ca8c5f873f9fe852 Mon Sep 17 00:00:00 2001
+From: Robert Mader <robert.mader@collabora.com>
+Date: Thu, 11 Jun 2026 19:44:25 +0200
+Subject: [PATCH 12/12] software_isp: debayer_egl: Consider border for scaling
+
+The debayer algorithm produces a sligtly smaller output resolution
+compared to the input one, using a border at the edges depending on the
+pattern. This wasn't considered when scaling to the final output buffer
+size, resulting in garbage pixels at the right - or in case or 90 degree
+rotated sensors - the bottom of the image.
+
+Use the correct algorithm output size instead - the maximum output
+buffer size.
+
+Fixes: f520b29fe (libcamera: software_isp: debayer_egl: Add an eGL Debayer class)
+Signed-off-by: Robert Mader <robert.mader@collabora.com>
+---
+ src/libcamera/software_isp/debayer_egl.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/libcamera/software_isp/debayer_egl.cpp b/src/libcamera/software_isp/debayer_egl.cpp
+index 0f470a69c..7c86a457c 100644
+--- a/src/libcamera/software_isp/debayer_egl.cpp
++++ b/src/libcamera/software_isp/debayer_egl.cpp
+@@ -397,8 +397,9 @@ void DebayerEGL::setShaderVariableValues(const DebayerParams &params)
+ 	 * Scale input to output size, keeping the aspect ratio and preferring
+ 	 * cropping over black bars.
+ 	 */
+-	GLfloat scale = std::max((GLfloat)window_.width / width_,
+-				 (GLfloat)window_.height / height_);
++	Size maxInputSize = sizes(inputPixelFormat_, {width_, height_}).max;
++	GLfloat scale = std::max((GLfloat)window_.width / maxInputSize.width,
++				 (GLfloat)window_.height / maxInputSize.height);
+ 	GLfloat trans = -(1.0f - scale);
+ 	GLfloat projMatrix[] = {
+ 		scale, 0, 0, 0,
+-- 
+2.54.0
+
