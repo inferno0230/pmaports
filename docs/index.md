@@ -14,18 +14,6 @@ in pmaports and the processes around device categorization.
    :hidden:
 
    releases
-   approval-rules
-   device-categorization
-   deviceinfo-reference
-   ci-tags
-   firmware
-   generic-device-packages
-   generic-kernels
-   hardware-ci
-   kconfig-fragments
-   kconfigcheck
-   kernel-cmdline
-   kernel-versions
-   packaging-guidelines
-   ui-packages
+   merge-requests
+   packaging
 ```
