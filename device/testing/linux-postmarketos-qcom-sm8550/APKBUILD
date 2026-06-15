@@ -1,0 +1,63 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm64/configs/defconfig
+# Maintainer: alghiffaryfa19 <alghiffaryfa19@gmail.com>
+
+_flavor="postmarketos-qcom-sm8550"
+pkgname=linux-$_flavor
+pkgver=7.0.0
+pkgrel=1
+pkgdesc="Mainline kernel fork for SM8550"
+arch="aarch64"
+_carch="arm64"
+url="https://github.com/ianchb/sm8550-mainline"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps
+	pmb:cross-native
+	pmb:kconfigcheck-nftables
+	pmb:kconfigcheck-community
+"
+makedepends="
+	bash
+	bison
+	findutils
+	flex
+	openssl-dev
+	perl
+	postmarketos-installkernel
+	python3
+	zstd
+"
+
+# Source
+_commit="e42d4dd4c83a43e86823520285796b6a7c8f5fdd"
+source="
+	$pkgname-$_commit.tar.gz::https://github.com/ianchb/sm8550-mainline/archive/$_commit.tar.gz
+	config-postmarketos-qcom-sm8550.aarch64
+"
+builddir="$srcdir/sm8550-mainline-$_commit"
+
+prepare() {
+	default_prepare
+	cp "$srcdir/config-postmarketos-qcom-sm8550.aarch64" .config
+}
+
+build() {
+	unset LDFLAGS
+	make ARCH="$_carch" CC="${CC:-gcc}" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-$_flavor"
+}
+
+package() {
+	mkdir -p "$pkgdir"/boot
+
+	make zinstall modules_install dtbs_install \
+		ARCH="$_carch" \
+		INSTALL_PATH="$pkgdir"/boot/ \
+		INSTALL_MOD_PATH="$pkgdir" \
+		INSTALL_MOD_STRIP=1 \
+		INSTALL_DTBS_PATH="$pkgdir/boot/dtbs"
+	rm -f "$pkgdir"/lib/modules/*/build "$pkgdir"/lib/modules/*/source
+
+	install -D "$builddir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
+}

@@ -1,0 +1,48 @@
+pkgname="sheng-mipps"
+_commit=4683d443f6d62231fb01dd9bd2fd545b5e770af6
+pkgver=1.0
+pkgdesc="Automatic Xiaomi MiPPS charger authentication for sheng"
+pkgrel=1
+arch="aarch64"
+url="https://github.com/ianchb/xiaomi-mipps-auth"
+license="BSD-3-Clause"
+makedepends="
+	git
+	make
+	clang
+	linux-headers
+    python3-dev
+    util-linux
+    glib-dev
+"
+source="
+    	90-xiaomi-mipps-auth.rules
+        xiaomi-mipps-auth
+        xiaomi-mipps-auth.service
+
+"
+
+builddir="$srcdir/xiaomi-mipps-auth-$_commit"
+
+build() {
+    cd "$srcdir"
+}
+
+package() {
+    cd "$srcdir"
+
+    mkdir -p "$pkgdir/usr/libexec"
+    mkdir -p "$pkgdir/usr/lib/systemd/system"
+    mkdir -p "$pkgdir/usr/lib/udev/rules.d"
+
+    install -m 0755 "$srcdir/xiaomi-mipps-auth" "$pkgdir/usr/libexec/xiaomi-mipps-auth"
+    install -m 0644 "$srcdir/xiaomi-mipps-auth.service" "$pkgdir/usr/lib/systemd/system/xiaomi-mipps-auth.service"
+    install -m 0644 "$srcdir/90-xiaomi-mipps-auth.rules" "$pkgdir/usr/lib/udev/rules.d/90-xiaomi-mipps-auth.rules"
+}
+
+sha512sums="
+fc977063ad7840f6b2ba4d6eba9d90e2e7857d101d2d5bd160a6e5bb154120c767b149133e874efcb26f9e551ca75d22941bc2824347a95c6beef851ed0192b3  90-xiaomi-mipps-auth.rules
+1e649aecba56bbc4ce3552dd44f0c3a5d978487f4edc579260da7b6ad2b0977a08d2522347fb0934cfba9b38ac8f5161d1383a624f10136d7db2e40b5d96f61c  xiaomi-mipps-auth
+86b83be0bc20cc187d8fa75775985fe2cf5c4720617bf7275b281c78107ae259a380fed525800266b0a3f0aee288c38e8d6702b73e47337a55a7fcf9a757803a  xiaomi-mipps-auth.service
+"
+
